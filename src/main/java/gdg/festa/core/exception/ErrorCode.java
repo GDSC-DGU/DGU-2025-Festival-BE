@@ -39,6 +39,8 @@ public enum ErrorCode {
     INVALID_APPLE_IDENTITY_TOKEN_ERROR("40106", HttpStatus.UNAUTHORIZED, "잘못된 Apple Identity 토큰입니다."),
     EXPIRED_APPLE_IDENTITY_TOKEN_ERROR("40107", HttpStatus.UNAUTHORIZED, "만료된 Apple Identity 토큰입니다."),
     INVALID_APPLE_PUBLIC_KEY_ERROR("40108", HttpStatus.UNAUTHORIZED, "잘못된 Apple 공개키입니다."),
+    INVALID_LOGIN_TYPE("40109", HttpStatus.UNAUTHORIZED, "잘못된 로그인 요청입니다."),
+    INVALID_PASSWORD("40110", HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다. "),
 
     /**
      * 403** Access Denied
@@ -57,6 +59,9 @@ public enum ErrorCode {
     NOT_FOUND_REPORT("40404", HttpStatus.NOT_FOUND, "해당 신고가 존재하지 않습니다."),
     NOT_FOUND_MATCH("40405", HttpStatus.NOT_FOUND, "매칭을 찾을 수 없습니다."),
     NOT_FOUND_AUTHORIZATION_HEADER("40406", HttpStatus.NOT_FOUND, "요청 헤더 없음"),
+    NOT_FOUND_PUBADMIN("40407", HttpStatus.NOT_FOUND, "해당 주점 관리자가 존재하지 않습니다."),
+    NOT_FOUND_FESTAADMIN("40408", HttpStatus.NOT_FOUND, "해당 축기단이 존재하지 않습니다."),
+
     /**
      * 405** Method Not Allowed
      */

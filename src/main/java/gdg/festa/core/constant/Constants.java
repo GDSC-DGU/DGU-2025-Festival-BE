@@ -25,11 +25,9 @@ public final class Constants {
             "/oauth/login/google",
             "/oauth/login/google/callback",
             "/api/v1/auth/admin/login",
-
-            //성우
-            "/admin/pub/{pubAdminId}",
+            "/admin/login/register",
+            "/admin/login/**",
             "/pubs",
-
             "/ws",
             "/ws-stomp",
             "/ws-stomp/**",
