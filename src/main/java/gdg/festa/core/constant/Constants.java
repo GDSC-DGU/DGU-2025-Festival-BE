@@ -25,7 +25,8 @@ public final class Constants {
             "/oauth/login/google",
             "/oauth/login/google/callback",
             "/api/v1/auth/admin/login",
-
+            "/admin/login/register",
+            "/admin/login/**",
             "/ws",
             "/ws-stomp",
             "/ws-stomp/**",
