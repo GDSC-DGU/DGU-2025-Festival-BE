@@ -33,6 +33,7 @@ public class PubsAdmin {
     @JoinColumn(name = "pubs_id")
     private Pubs pubs;
 
+
     @Column(name = "login_id",nullable = false)
     private String loginId;
 

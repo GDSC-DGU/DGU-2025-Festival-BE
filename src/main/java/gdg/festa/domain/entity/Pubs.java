@@ -1,17 +1,10 @@
 package gdg.festa.domain.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import gdg.festa.domain.type.PubsStatus;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Getter
@@ -40,4 +33,12 @@ public class Pubs {
 
     @Column(name = "wait_people")
     private Long waitPeople;
+
+    @Column(name = "pub_state",nullable = false)
+    @Enumerated(EnumType.STRING)
+    private PubsStatus pubsStatus;
+
+    public void updateState(PubsStatus pubsStatus) {
+        this.pubsStatus = pubsStatus;
+    }
 }
