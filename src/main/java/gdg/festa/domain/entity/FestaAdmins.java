@@ -10,6 +10,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -17,8 +19,8 @@ import lombok.NoArgsConstructor;
 public class FestaAdmins {
     @Id
     @Column(name = "festa_admins_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long festaAdminsId;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID festaAdminsId;
 
     @Column(name = "login_id",nullable = false)
     private String loginId;

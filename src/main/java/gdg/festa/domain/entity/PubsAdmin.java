@@ -22,12 +22,15 @@ import java.util.UUID;
 public class PubsAdmin {
     @Id
     @Column(name = "pubs_admin_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long pubsAdminId;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID pubsAdminId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pubs_id")
     private Pubs pubs;
+
+    @Column(name = "refresh_token")
+    private String refreshToken;
 
     @Column(name = "login_id",nullable = false)
     private String loginId;
