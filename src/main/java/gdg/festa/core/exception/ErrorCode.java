@@ -41,7 +41,7 @@ public enum ErrorCode {
     INVALID_APPLE_PUBLIC_KEY_ERROR("40108", HttpStatus.UNAUTHORIZED, "잘못된 Apple 공개키입니다."),
     INVALID_LOGIN_TYPE("40109", HttpStatus.UNAUTHORIZED, "잘못된 로그인 요청입니다."),
     INVALID_PASSWORD("40110", HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다. "),
-
+    SMS_VERIFY_FAILED("40111", HttpStatus.UNAUTHORIZED, "휴대전화 인증 실패"),
     /**
      * 403** Access Denied
      */
@@ -79,6 +79,7 @@ public enum ErrorCode {
      * 500** Server Error
      */
     SERVER_ERROR("50000", HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 오류입니다."),
+    SMS_SEND_FAIL("50102", HttpStatus.INTERNAL_SERVER_ERROR, "메세지 전송 실패"),
     EXTERNAL_SERVER_ERROR("50101", HttpStatus.INTERNAL_SERVER_ERROR, "서버 외부 오류");
     private final String code;
     private final HttpStatus httpStatus;

@@ -27,6 +27,7 @@ public final class Constants {
             "/api/v1/auth/admin/login",
             "/admin/login/register",
             "/admin/login/**",
+            "/sms/**",
             "/ws",
             "/ws-stomp",
             "/ws-stomp/**",
