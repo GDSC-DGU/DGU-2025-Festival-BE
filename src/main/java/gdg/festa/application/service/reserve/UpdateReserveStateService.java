@@ -26,7 +26,7 @@ public class UpdateReserveStateService implements UpdateReverseUsecase {
 
 
     @Override
-    public Boolean execute(String number, ReserveStatus reserveStatus) {
+    public Boolean execute(String number) {
 
 
         Reserves reserves = reserveRepository.findByNumber(number);
@@ -39,7 +39,7 @@ public class UpdateReserveStateService implements UpdateReverseUsecase {
          *
          *  */
 
-        reserves.updateStatus(reserveStatus);
+        reserves.updateStatus();
 
         return true;
     }

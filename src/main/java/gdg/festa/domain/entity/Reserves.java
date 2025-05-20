@@ -33,8 +33,8 @@ public class Reserves {
     @Enumerated(EnumType.STRING)
     private ReserveStatus reserveStatus;
 
-    public void updateStatus(ReserveStatus reserveStatus) {
-        this.reserveStatus = reserveStatus;
+    public void updateStatus() {
+        this.reserveStatus = ReserveStatus.CANCEL;
     }
 
 

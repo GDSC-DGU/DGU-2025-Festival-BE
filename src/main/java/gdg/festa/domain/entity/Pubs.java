@@ -16,6 +16,9 @@ public class Pubs {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long pubsId;
 
+    @Column(name = "name")
+    private String name;
+
     @Column(name = "location")
     private String location;
 

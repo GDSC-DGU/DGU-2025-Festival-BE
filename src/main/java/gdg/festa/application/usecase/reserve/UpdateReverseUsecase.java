@@ -6,6 +6,6 @@ import gdg.festa.domain.type.ReserveStatus;
 
 @UseCase
 public interface UpdateReverseUsecase {
-    Boolean execute(String number, ReserveStatus reserveStatus);
+    Boolean execute(String number);
 
 }
