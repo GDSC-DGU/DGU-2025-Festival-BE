@@ -20,7 +20,6 @@ public class PubsController {
 
     @PatchMapping("/admin/pub")
     public CommonResponseDto<?> updateState(
-        //    @PathVariable(name = "pubAdminId") Long pubAdminId,
             @UserId UUID pubAdminId,
             @RequestParam(name = "pubsStatus") PubsStatus pubsStatus
     ){

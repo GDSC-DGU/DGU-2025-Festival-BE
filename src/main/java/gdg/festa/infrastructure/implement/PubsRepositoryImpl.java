@@ -20,9 +20,8 @@ public class PubsRepositoryImpl implements PubsRepository {
 
     @Override
     public Pubs findById(Long id) {
-
         return pubsJpaRepository.findById(id)
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_BOOTHS));
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_PUBS));
     }
 
     @Override

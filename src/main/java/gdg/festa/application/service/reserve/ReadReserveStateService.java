@@ -26,7 +26,7 @@ public class ReadReserveStateService implements ReadReverseUsecase {
         Pubs pubs = pubsRepository.findById(reserves.getPubs().getPubsId()); // 예약 정보 -> 주점 정보 -> 주점 대기 인원 조회
 
         return ReadReserveStateDto.builder()
-                .state(reserves.getStatus())
+                .reserveStatus(reserves.getReserveStatus())
                 .waitTeam(pubs.getWaitPeople())
                 .build();
     }

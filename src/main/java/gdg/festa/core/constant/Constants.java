@@ -27,8 +27,9 @@ public final class Constants {
             "/api/v1/auth/admin/login",
             "/admin/login/register",
             "/admin/login/**",
-            "/pubs",
+            "/pubs", // 모든 주점 조회
             "/ws",
+            "/reserve", // 번호 기반 예약 정보 조회
             "/ws-stomp",
             "/ws-stomp/**",
             "/pub/**",

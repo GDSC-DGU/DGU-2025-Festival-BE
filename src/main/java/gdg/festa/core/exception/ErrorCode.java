@@ -61,6 +61,7 @@ public enum ErrorCode {
     NOT_FOUND_AUTHORIZATION_HEADER("40406", HttpStatus.NOT_FOUND, "요청 헤더 없음"),
     NOT_FOUND_PUBADMIN("40407", HttpStatus.NOT_FOUND, "해당 주점 관리자가 존재하지 않습니다."),
     NOT_FOUND_FESTAADMIN("40408", HttpStatus.NOT_FOUND, "해당 축기단이 존재하지 않습니다."),
+    NOT_FOUND_PUBS("40409", HttpStatus.NOT_FOUND, "해당 주점이 존재하지 않습니다."),
 
     /**
      * 405** Method Not Allowed

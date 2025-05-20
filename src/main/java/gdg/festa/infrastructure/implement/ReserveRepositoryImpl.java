@@ -19,6 +19,7 @@ public class ReserveRepositoryImpl implements ReserveRepository {
 
     @Override
     public Reserves findByNumber(String number) {
-        return reserveJpaRepository.findByPhoneNumber(number);
+        return reserveJpaRepository.findByPhoneNumber(number)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
     }
 }

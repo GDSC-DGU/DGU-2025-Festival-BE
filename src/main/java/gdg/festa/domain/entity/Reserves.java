@@ -23,9 +23,6 @@ public class Reserves {
     @JoinColumn(name = "pubs_id")
     private Pubs pubs;
 
-    @Column(name = "status", nullable = false,  columnDefinition = "VARCHAR(20) DEFAULT '예약중'")
-    private String status;
-
     @Column(name = "attendance", nullable = false)
     private Long attendance;
 
@@ -37,7 +34,7 @@ public class Reserves {
     private ReserveStatus reserveStatus;
 
     public void updateStatus(ReserveStatus reserveStatus) {
-        this.status = this.status;
+        this.reserveStatus = reserveStatus;
     }
 
 

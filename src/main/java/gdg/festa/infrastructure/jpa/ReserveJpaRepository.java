@@ -2,9 +2,8 @@ package gdg.festa.infrastructure.jpa;
 
 import gdg.festa.domain.entity.Reserves;
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import java.util.List;
+import java.util.Optional;
 
 public interface ReserveJpaRepository extends JpaRepository<Reserves, Long> {
-    Reserves findByPhoneNumber(String phoneNumber);
+    Optional<Reserves> findByPhoneNumber(String phoneNumber);
 }
