@@ -1,6 +1,7 @@
 package gdg.festa.domain.entity;
 
 import gdg.festa.domain.type.TagStatus;
+import gdg.festa.presentation.request.losts.LostsRequestDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -30,25 +31,25 @@ public class Losts {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long lostsId;
 
-    @Column(name = "tilte",nullable = true)
+    @Column(name = "losts_title",nullable = false)
     private String title;
 
-    @Column(name = "color",nullable = true)
+    @Column(name = "losts_color",nullable = false)
     private String color;
 
-    @Column(name = "brand")
+    @Column(name = "losts_brand")
     private String brand;
 
-    @Column(name = "location")
+    @Column(name = "losts_location")
     private String location;
 
-    @Column(name = "note")
+    @Column(name = "losts_note")
     private String note;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "tag", nullable = true)
+    @Column(name = "losts_tag", nullable = false)
     private TagStatus tag;
 
-    @Column(name = "category")
+    @Column(name = "losts_category")
     private String category;
 }
