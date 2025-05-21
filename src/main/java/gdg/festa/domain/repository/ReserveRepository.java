@@ -20,4 +20,5 @@ public interface ReserveRepository {
 
 
     List<Reserves> findByPubsAndReserveStatus(Pubs pubs);
+    List<Reserves> findAllByPubId(Long pubId);
 }

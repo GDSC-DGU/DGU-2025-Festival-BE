@@ -1,5 +1,7 @@
 package gdg.festa.presentation.controller;
 
+import gdg.festa.application.dto.pubs.ReadPubWaitingUserListResponseDto;
+import gdg.festa.application.usecase.pubs.ReadAdminPubsUsecase;
 import gdg.festa.application.usecase.pubs.ReadPubsUsecase;
 import gdg.festa.application.usecase.pubs.UpdatePubsUsecase;
 import gdg.festa.application.usecase.reserve.CompleteReserveUseCase;
@@ -19,6 +21,7 @@ public class PubsController {
     private final UpdatePubsUsecase updatePubsUsecase;
     private final ReadPubsUsecase readPubsUsecase;
     private final CompleteReserveUseCase completeReserveUseCase;
+    private final ReadAdminPubsUsecase readAdminPubsUsecase;
 
 
     @PatchMapping("/admin/pub")
@@ -41,5 +44,12 @@ public class PubsController {
             @RequestBody CompletedReserveRequestDto completedReserveRequestDto
     ) {
         return CommonResponseDto.ok(completeReserveUseCase.execute(adminId, completedReserveRequestDto));
+    }
+
+    @GetMapping("/admin/pub")
+    public CommonResponseDto<ReadPubWaitingUserListResponseDto> findAllReserver(
+            @UserId UUID pubAdminId
+    ){
+        return CommonResponseDto.ok(readAdminPubsUsecase.execute(pubAdminId));
     }
 }

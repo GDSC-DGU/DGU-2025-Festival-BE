@@ -46,4 +46,9 @@ public class ReserveRepositoryImpl implements ReserveRepository {
     public List<Reserves> findByPubsAndReserveStatus(Pubs pubs) {
         return reserveJpaRepository.findByPubsAndReserveStatus(pubs, ReserveStatus.WAITING);
     }
+
+    @Override
+    public List<Reserves> findAllByPubId(Long pubId) {
+        return reserveJpaRepository.findAllByPubsId(pubId);
+    }
 }
