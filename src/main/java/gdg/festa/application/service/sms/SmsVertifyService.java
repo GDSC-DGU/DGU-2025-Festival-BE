@@ -1,10 +1,10 @@
-package gdg.festa.application.service;
+package gdg.festa.application.service.sms;
 
 import gdg.festa.application.usecase.sms.SmsVertifyUseCase;
 import gdg.festa.core.exception.CustomException;
 import gdg.festa.core.exception.ErrorCode;
 import gdg.festa.infrastructure.redis.SmsCertification;
-import gdg.festa.presentation.request.SmsVerifyRequestDto;
+import gdg.festa.presentation.request.sms.SmsVerifyRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
