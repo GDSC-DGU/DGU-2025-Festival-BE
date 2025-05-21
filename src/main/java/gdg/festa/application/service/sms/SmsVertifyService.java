@@ -28,7 +28,11 @@ public class SmsVertifyService implements SmsVertifyUseCase {
 
         smsCertification.deleteSmsCertification(smsVerifyRequestDto.phoneNumber());
 
-        Reserves reserves = reservesMapper.toEntity(smsVerifyRequestDto.phoneNumber());
+        Reserves reserves = reservesMapper.toEntity(
+                smsVerifyRequestDto.phoneNumber(),
+                smsVerifyRequestDto.browserToken()
+        );
+
         reserveRepository.save(reserves);
 
         return true;
