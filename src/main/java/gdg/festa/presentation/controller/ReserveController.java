@@ -1,29 +1,30 @@
 package gdg.festa.presentation.controller;
 
-import gdg.festa.application.usecase.reserve.ReadReverseUsecase;
-import gdg.festa.application.usecase.reserve.UpdateReverseUsecase;
+import gdg.festa.application.usecase.reserve.ReadReserveUsecase;
+import gdg.festa.application.usecase.reserve.UpdateReserveUsecase;
 import gdg.festa.core.common.CommonResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/reserve")
 public class ReserveController {
 
-    private final ReadReverseUsecase readReverseUsecase;
-    private final UpdateReverseUsecase updateReverseUsecase;
+    private final ReadReserveUsecase readReserveUsecase;
+    private final UpdateReserveUsecase updateReserveUsecase;
 
-    @GetMapping("/reserve")
-    public CommonResponseDto<?> findreserve(
+    @GetMapping("")
+    public CommonResponseDto<?> findReserve(
             @RequestParam String number
     ){
-        return CommonResponseDto.ok(readReverseUsecase.execute(number));
+        return CommonResponseDto.ok(readReserveUsecase.execute(number));
     }
 
-    @PatchMapping("/reserve")
+    @PatchMapping("")
     public CommonResponseDto<?> cancelReserve(
             @RequestParam String number
     ){
-        return CommonResponseDto.ok(updateReverseUsecase.execute(number));
+        return CommonResponseDto.ok(updateReserveUsecase.execute(number));
     }
 }

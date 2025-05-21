@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface ReserveRepository {
 
-    Reserves findByNumber(String number);
+    Reserves findByPhoneNumber(String number);
 
 }

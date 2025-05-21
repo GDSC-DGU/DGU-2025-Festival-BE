@@ -10,6 +10,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -29,4 +30,10 @@ public class NoticeImages {
 
     @Column(name = "image_url")
     private String imageUrl;
+
+    @Builder
+    public NoticeImages(Notices notice, String imageUrl) {
+        this.notice = notice;
+        this.imageUrl = imageUrl;
+    }
 }

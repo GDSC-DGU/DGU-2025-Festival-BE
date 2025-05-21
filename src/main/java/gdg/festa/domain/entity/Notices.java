@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -25,4 +26,10 @@ public class Notices {
 
     @Column(name = "note", length = 1024)
     private String note;
+
+    @Builder
+    public Notices(String title, String note) {
+        this.title = title;
+        this.note = note;
+    }
 }
