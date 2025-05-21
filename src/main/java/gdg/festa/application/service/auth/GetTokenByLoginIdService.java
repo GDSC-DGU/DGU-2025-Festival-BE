@@ -1,11 +1,10 @@
-package gdg.festa.application.service;
+package gdg.festa.application.service.auth;
 
 import gdg.festa.application.dto.oauth.JwtTokenDto;
 import gdg.festa.application.usecase.auth.GetTokenByLoginIdUseCase;
 import gdg.festa.core.exception.CustomException;
 import gdg.festa.core.exception.ErrorCode;
 import gdg.festa.core.util.JwtUtil;
-import gdg.festa.core.util.PasswordUtil;
 import gdg.festa.domain.entity.FestaAdmins;
 import gdg.festa.domain.entity.PubsAdmin;
 import gdg.festa.domain.repository.FestaAdminsRepository;
@@ -13,7 +12,6 @@ import gdg.festa.domain.repository.PubsAdminRepository;
 import gdg.festa.domain.type.ERole;
 import gdg.festa.presentation.request.LoginRequestDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

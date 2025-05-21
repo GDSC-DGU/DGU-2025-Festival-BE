@@ -28,6 +28,7 @@ public final class Constants {
             "/admin/login/register",
             "/admin/login/**",
             "/sms/**",
+            "/reserve/**",
             "/pubs", // 모든 주점 조회
             "/ws",
             "/reserve", // 번호 기반 예약 정보 조회

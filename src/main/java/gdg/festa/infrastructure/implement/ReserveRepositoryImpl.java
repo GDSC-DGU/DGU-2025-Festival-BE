@@ -5,6 +5,7 @@ import gdg.festa.core.exception.ErrorCode;
 import gdg.festa.domain.entity.Pubs;
 import gdg.festa.domain.entity.Reserves;
 import gdg.festa.domain.repository.ReserveRepository;
+import gdg.festa.domain.type.ReserveStatus;
 import gdg.festa.infrastructure.jpa.ReserveJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -22,4 +23,16 @@ public class ReserveRepositoryImpl implements ReserveRepository {
         return reserveJpaRepository.findByPhoneNumber(number)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
     }
+
+    @Override
+    public void save(Reserves reserves) {
+        reserveJpaRepository.save(reserves);
+    }
+
+    @Override
+    public Reserves findByPhoneNumberAndReserveStatus(String phoneNumber) {
+        return reserveJpaRepository.findByPhoneNumberAndReserveStatus(phoneNumber, ReserveStatus.ENABLED)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_VERIFY));
+    }
+
 }
