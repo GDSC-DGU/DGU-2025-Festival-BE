@@ -21,6 +21,10 @@ public interface ReserveJpaRepository extends JpaRepository<Reserves, UUID> {
             + "order by r.createdAt DESC "
             + "limit 2")
     List<Reserves> findByPubsAndReserveStatus(Pubs pubs, ReserveStatus reserveStatus);
+    @Query("SELECT r "
+            + "FROM Reserves r "
+            + "where r.pubs = :pubs AND r.reserveStatus = :reserveStatus ")
+    List<Reserves> findAllPubsAndReserveStatus(Pubs pubs, ReserveStatus reserveStatus);
 
     @Query(value = """
     SELECT COALESCE((

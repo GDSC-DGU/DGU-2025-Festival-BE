@@ -41,8 +41,8 @@ public class UpdatePubService implements UpdatePubsUsecase {
 
         pubs.updateState(pubsStatus);
         if (pubsStatus == PubsStatus.END) {
-            List<Reserves> reserves = reserveRepository.findByPubsAndReserveStatus(pubs);
-
+            List<Reserves> reserves = reserveRepository.findAllPubsAndReserveStatus(pubs);
+            System.err.println(reserves.size());
             reserves.stream()
                     .forEach(reserve -> fcmUtil.sendMessage(
                             pubs.getName() + " 주점 휴식 알림",
