@@ -17,7 +17,7 @@ public class ReserveController {
     private final CreateReserveUseCase createReserveUseCase;
 
     @GetMapping("")
-    public CommonResponseDto<?> findreserve(
+    public CommonResponseDto<?> findReserve(
             @RequestParam String number
     ){
         return CommonResponseDto.ok(readReserveUsecase.execute(number));

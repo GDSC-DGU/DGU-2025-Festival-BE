@@ -7,6 +7,7 @@ public enum PubsStatus {
 
     AVAILABLE("AVAILABLE"),
     FULL("FULL"),
+    END("END"),
     PREPARING("PREPARING");
 
     private final String pubsStatus;
