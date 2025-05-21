@@ -1,7 +1,11 @@
 package gdg.festa.domain.entity;
 
+import gdg.festa.domain.type.TagStatus;
+import gdg.festa.presentation.request.losts.LostsRequestDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -27,29 +31,25 @@ public class Losts {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long lostsId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "categories_id")
-    private Categories categories;
-
-    @Column(name = "tilte")
+    @Column(name = "losts_title",nullable = false)
     private String title;
 
-    @Column(name = "color")
+    @Column(name = "losts_color",nullable = false)
     private String color;
 
-    @Column(name = "brand")
+    @Column(name = "losts_brand")
     private String brand;
 
-    @Column(name = "location")
+    @Column(name = "losts_location")
     private String location;
 
-    @Column(name = "note")
+    @Column(name = "losts_note")
     private String note;
 
-    @Column(name = "tag")
-    private String tag;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "losts_tag", nullable = false)
+    private TagStatus tag;
 
-    public void setCategories(Categories categories){
-        this.categories=categories;
-    }
+    @Column(name = "losts_category")
+    private String category;
 }
