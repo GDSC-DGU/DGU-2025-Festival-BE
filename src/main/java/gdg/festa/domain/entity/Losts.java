@@ -10,11 +10,15 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@AllArgsConstructor
+@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "losts")
 public class Losts {
@@ -45,4 +49,7 @@ public class Losts {
     @Column(name = "tag")
     private String tag;
 
+    public void setCategories(Categories categories){
+        this.categories=categories;
+    }
 }
