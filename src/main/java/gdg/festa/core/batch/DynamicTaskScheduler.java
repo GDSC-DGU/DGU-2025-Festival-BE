@@ -2,6 +2,7 @@ package gdg.festa.core.batch;
 
 
 import gdg.festa.domain.entity.Reserves;
+import gdg.festa.domain.repository.ReserveRepository;
 import gdg.festa.domain.type.ReserveStatus;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -26,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class DynamicTaskScheduler {
 
     private final ThreadPoolTaskScheduler taskScheduler;
+    private final ReserveRepository reserveRepository;
 
     private final Map<UUID, ScheduledFuture<?>> scheduledTasks = new ConcurrentHashMap<>();
 
@@ -39,7 +41,12 @@ public class DynamicTaskScheduler {
 
     private void scheduleTask(Reserves reserves , long delay) {
         ScheduledFuture<?> future = taskScheduler.schedule(
-                () -> reserves.updateStatus(ReserveStatus.LATE),
+                () -> {
+                    Reserves checkReserves = reserveRepository.findById(reserves.getReserveId());
+                    if ( checkReserves.getReserveStatus() == ReserveStatus.CALLED) {
+                        checkReserves.updateStatus(ReserveStatus.LATE);
+                    }
+                },
                 new Date(System.currentTimeMillis() + delay)
         );
 
