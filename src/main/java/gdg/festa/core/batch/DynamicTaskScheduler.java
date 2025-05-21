@@ -31,7 +31,7 @@ public class DynamicTaskScheduler {
 
     @Transactional
     public void scheduleSingleUserTask(Reserves reserves) {
-        LocalTime adjustedTime = LocalTime.from(LocalDateTime.now().plusMinutes(3));
+        LocalTime adjustedTime = LocalTime.from(LocalDateTime.now().plusMinutes(5));
         long delay = calculateDelay(adjustedTime);
 
         scheduleTask(reserves, delay);

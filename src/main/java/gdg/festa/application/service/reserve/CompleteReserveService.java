@@ -28,10 +28,9 @@ public class CompleteReserveService implements CompleteReserveUseCase {
     public Boolean execute(UUID adminId, CompletedReserveRequestDto completedReserveRequestDto) {
         Reserves reserves = reserveRepository.findById(completedReserveRequestDto.reserveId());
 
-        reserves.updateStatus(ReserveStatus.CALLED);
+        reserves.updateStatus(ReserveStatus.COMPLETED);
 
-        // 스케쥴러 3분 돌리기
-        dynamicTaskScheduler.scheduleSingleUserTask(reserves);
+
 
         PubsAdmin pubsAdmin = pubsAdminRepository.findById(adminId);
 

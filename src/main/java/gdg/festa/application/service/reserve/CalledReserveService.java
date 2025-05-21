@@ -1,5 +1,6 @@
 package gdg.festa.application.service.reserve;
 
+import gdg.festa.core.batch.DynamicTaskScheduler;
 import gdg.festa.core.util.FcmUtil;
 import gdg.festa.domain.entity.Reserves;
 import gdg.festa.domain.repository.ReserveRepository;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class CalledReserveService {
     private final FcmUtil fcmUtil;
     private final ReserveRepository reserveRepository;
+    private final DynamicTaskScheduler dynamicTaskScheduler;
 
     public Boolean execute(CompletedReserveRequestDto completedReserveRequestDto) {
         Reserves reserves = reserveRepository.findById(completedReserveRequestDto.reserveId());
@@ -24,6 +26,9 @@ public class CalledReserveService {
                 reserves.getBrowserToken(),
                 reserves.getReserveId()
         );
+
+        // 스케쥴러 3분 돌리기
+        dynamicTaskScheduler.scheduleSingleUserTask(reserves);
 
         return true;
     }
