@@ -43,7 +43,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         UUID userId = UUID.fromString(claims.get(Constants.USER_ID_CLAIM_NAME, String.class));
         ERole userRole = ERole.valueOf(String.valueOf(claims.get(Constants.USER_ROLE_CLAIM_NAME, String.class)));
 
-        UserPrincipal userPrincipal = (UserPrincipal) customUserDetailService.loadUserById(userId);
+        UserPrincipal userPrincipal = (UserPrincipal) customUserDetailService.loadUserById(userId, userRole);
 
         if(!userPrincipal.getUserRole().equals(userRole)) {
             throw new CustomException(ErrorCode.ACCESS_DENIED_ERROR);
