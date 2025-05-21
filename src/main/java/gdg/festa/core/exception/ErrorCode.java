@@ -50,6 +50,7 @@ public enum ErrorCode {
     EMPTY_AUTHENTICATION("40301", HttpStatus.FORBIDDEN, "인증 토큰이 비었습니다."),
     ACCESS_DENIED_LEADER("40301", HttpStatus.FORBIDDEN, "당신은 리더가 아닙니다."),
     INVALID_ROLE("40303", HttpStatus.FORBIDDEN, "권한이 맞지 않습니다."),
+
     /**
      * 404** Not Found
      */
@@ -63,6 +64,8 @@ public enum ErrorCode {
     NOT_FOUND_PUBADMIN("40407", HttpStatus.NOT_FOUND, "해당 주점 관리자가 존재하지 않습니다."),
     NOT_FOUND_FESTAADMIN("40408", HttpStatus.NOT_FOUND, "해당 축기단이 존재하지 않습니다."),
     NOT_FOUND_PUBS("40409", HttpStatus.NOT_FOUND, "해당 주점이 존재하지 않습니다."),
+    NOT_FOUND_VERIFY("40410", HttpStatus.NOT_FOUND, "전화번호 확인이 되어있지 않습니다."),
+    NOT_FOUND_RESERVE("40411", HttpStatus.NOT_FOUND, "예약정보를 찾을 수 없습니다."),
 
     /**
      * 405** Method Not Allowed

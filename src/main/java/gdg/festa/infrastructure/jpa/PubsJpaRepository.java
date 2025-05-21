@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PubsJpaRepository extends JpaRepository<Pubs, Long> {
-
     Optional<Pubs> findById(Long id);
     List<Pubs> findAll();
 }

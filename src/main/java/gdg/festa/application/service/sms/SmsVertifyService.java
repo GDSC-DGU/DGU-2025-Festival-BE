@@ -1,27 +1,39 @@
-package gdg.festa.application.service;
+package gdg.festa.application.service.sms;
 
+import gdg.festa.application.mapper.ReservesMapper;
 import gdg.festa.application.usecase.sms.SmsVertifyUseCase;
 import gdg.festa.core.exception.CustomException;
 import gdg.festa.core.exception.ErrorCode;
+import gdg.festa.domain.entity.Reserves;
+import gdg.festa.domain.repository.ReserveRepository;
 import gdg.festa.infrastructure.redis.SmsCertification;
-import gdg.festa.presentation.request.SmsVerifyRequestDto;
+import gdg.festa.presentation.request.sms.SmsVerifyRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional
 public class SmsVertifyService implements SmsVertifyUseCase {
-
-    private SmsCertification smsCertification;
+    private final ReservesMapper reservesMapper;
+    private final ReserveRepository reserveRepository;
+    private final SmsCertification smsCertification;
 
     @Override
     public Boolean execute(SmsVerifyRequestDto smsVerifyRequestDto) {
         if (isVerify(smsVerifyRequestDto)) {
             throw new CustomException(ErrorCode.SMS_VERIFY_FAILED);
         }
+
         smsCertification.deleteSmsCertification(smsVerifyRequestDto.phoneNumber());
+
+        Reserves reserves = reservesMapper.toEntity(
+                smsVerifyRequestDto.phoneNumber(),
+                smsVerifyRequestDto.browserToken()
+        );
+
+        reserveRepository.save(reserves);
 
         return true;
     }
