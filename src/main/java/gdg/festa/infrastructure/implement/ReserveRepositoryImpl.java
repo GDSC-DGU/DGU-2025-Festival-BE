@@ -20,7 +20,7 @@ public class ReserveRepositoryImpl implements ReserveRepository {
     private final ReserveJpaRepository reserveJpaRepository;
 
     @Override
-    public Reserves findByNumber(String number) {
+    public Reserves findByPhoneNumber(String number) {
         return reserveJpaRepository.findByPhoneNumber(number)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
     }
@@ -45,5 +45,20 @@ public class ReserveRepositoryImpl implements ReserveRepository {
     @Override
     public List<Reserves> findByPubsAndReserveStatus(Pubs pubs) {
         return reserveJpaRepository.findByPubsAndReserveStatus(pubs, ReserveStatus.WAITING);
+    }
+
+    @Override
+    public List<Reserves> findAllPubsAndReserveStatus(Pubs pubs) {
+        return reserveJpaRepository.findAllPubsAndReserveStatus(pubs, ReserveStatus.WAITING);
+    }
+
+    @Override
+    public Long findMyOrder(String phoneNumber) {
+        return reserveJpaRepository.findMyOrder(phoneNumber, ReserveStatus.WAITING);
+    }
+
+    @Override
+    public List<Reserves> findByPubsAndReserveStatusAndOrderIn(Pubs pubs, List<Integer> orders) {
+        return reserveJpaRepository.findByPubsAndReserveStatusAndOrderIn(pubs, ReserveStatus.WAITING, orders);
     }
 }
