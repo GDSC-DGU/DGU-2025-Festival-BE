@@ -2,9 +2,11 @@ package gdg.festa.presentation.controller;
 
 import gdg.festa.application.usecase.pubs.ReadPubsUsecase;
 import gdg.festa.application.usecase.pubs.UpdatePubsUsecase;
+import gdg.festa.application.usecase.reserve.CompleteReserveUseCase;
 import gdg.festa.core.annotation.UserId;
 import gdg.festa.core.common.CommonResponseDto;
 import gdg.festa.domain.type.PubsStatus;
+import gdg.festa.presentation.request.reserve.CompletedReserveRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +18,7 @@ public class PubsController {
 
     private final UpdatePubsUsecase updatePubsUsecase;
     private final ReadPubsUsecase readPubsUsecase;
+    private final CompleteReserveUseCase completeReserveUseCase;
 
 
     @PatchMapping("/admin/pub")
@@ -30,5 +33,13 @@ public class PubsController {
     public CommonResponseDto<?> findAllWaiting(
     ){
         return CommonResponseDto.ok(readPubsUsecase.execute());
+    }
+
+    @PatchMapping("/admin/pub/reserve")
+    public CommonResponseDto<?> reserveComplete(
+            @UserId UUID adminId,
+            @RequestBody CompletedReserveRequestDto completedReserveRequestDto
+    ) {
+        return CommonResponseDto.ok(completeReserveUseCase.execute(adminId, completedReserveRequestDto));
     }
 }
