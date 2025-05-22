@@ -10,11 +10,15 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "lost_images")
 public class LostImages {
@@ -27,6 +31,6 @@ public class LostImages {
     @JoinColumn(name = "losts_id")
     private Losts losts;
 
-    @Column(name = "image_url")
+    @Column(name = "lostImages_image_url")
     private String imageUrl;
 }

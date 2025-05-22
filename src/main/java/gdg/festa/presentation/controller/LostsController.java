@@ -9,6 +9,7 @@ import gdg.festa.presentation.request.losts.LostsRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,10 +29,10 @@ public class LostsController {
 
     @PostMapping("/")
     public CommonResponseDto<?> LostsRegister(
-        @RequestBody LostsRequestDto lostsRequestDto
+        @ModelAttribute LostsRequestDto lostsRequestDto
     ){
         registerLostsUsecase.execute(lostsRequestDto);
-        return CommonResponseDto.ok("분실물 등록 완료");
+        return CommonResponseDto.created(true);
     }
 
     @GetMapping("/{lostsId}")
