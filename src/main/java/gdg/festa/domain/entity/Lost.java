@@ -8,7 +8,7 @@ import lombok.*;
 @Entity
 @Getter
 @AllArgsConstructor
-@Builder(builderMethodName = "LostsBuilder")
+@Builder(builderMethodName = "LostBuilder")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "losts")
 public class Lost extends BaseEntity {

@@ -27,7 +27,7 @@ public class Reserve extends BaseEntity {
     @Column(name = "reserve_attendance")
     private Long attendance;
 
-    @Column(name = "reserve_phoneNumber", nullable = false)
+    @Column(name = "reserve_phone_Number", nullable = false)
     private String phoneNumber;
 
     @Column(name = "reserve_state",nullable = false)

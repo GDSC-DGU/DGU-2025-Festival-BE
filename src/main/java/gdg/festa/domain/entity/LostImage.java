@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@Builder(builderMethodName = "LostImagesBuilder")
+@Builder(builderMethodName = "LostImageBuilder")
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "lost_images")
