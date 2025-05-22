@@ -5,11 +5,12 @@ import gdg.festa.domain.entity.LostImages;
 import gdg.festa.domain.entity.Losts;
 import gdg.festa.presentation.request.losts.LostsRequestDto;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
 
-@Component
+@Service
 public class LostsMapper {
 
     public Losts toEntity(LostsRequestDto lostsRequestDto) {
