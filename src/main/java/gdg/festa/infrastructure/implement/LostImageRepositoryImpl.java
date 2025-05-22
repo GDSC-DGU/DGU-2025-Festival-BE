@@ -13,30 +13,30 @@ import java.util.List;
 @RequiredArgsConstructor
 public class LostImageRepositoryImpl implements LostImageRepository {
 
-    private final LostImageJpaRepository lostsImageJpaRepository;
+    private final LostImageJpaRepository lostImageJpaRepository;
 
     @Override
     public void saveAll(List<LostImage> lostImages){
-        lostsImageJpaRepository.saveAll(lostImages);
+        lostImageJpaRepository.saveAll(lostImages);
     }
 
     @Override
-    public List<LostImage> findByLostsLostsId(Long lostsId){
-        return lostsImageJpaRepository.findByLostsLostsId(lostsId);
+    public List<LostImage> findByLostId(Long lostId){
+        return lostImageJpaRepository.findByLostId(lostId);
     }
 
     @Override
-    public List<LostImage> findByLosts(Lost lost){
-        return lostsImageJpaRepository.findByLosts(lost);
+    public List<LostImage> findByLost(Lost lost){
+        return lostImageJpaRepository.findByLost(lost);
     }
 
     @Override
-    public void deleteByLosts(Lost lost){
-        lostsImageJpaRepository.deleteByLosts(lost);
+    public void deleteByLost(Lost lost){
+        lostImageJpaRepository.deleteByLost(lost);
     }
 
     @Override
-    public List<LostImage> findByLostsAndDeletedAtIsNull(Lost lost) {
-        return lostsImageJpaRepository.findByLostsAndDeletedAtIsNull(lost);
+    public List<LostImage> findByLostAndDeletedAtIsNull(Lost lost) {
+        return lostImageJpaRepository.findByLostAndDeletedAtIsNull(lost);
     }
 }

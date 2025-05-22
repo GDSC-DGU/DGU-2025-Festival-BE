@@ -5,7 +5,7 @@ import gdg.festa.core.batch.DynamicTaskScheduler;
 import gdg.festa.core.util.FcmUtil;
 import gdg.festa.domain.entity.PubAdmin;
 import gdg.festa.domain.entity.Reserve;
-import gdg.festa.domain.repository.PubsAdminRepository;
+import gdg.festa.domain.repository.PubAdminRepository;
 import gdg.festa.domain.repository.ReserveRepository;
 import gdg.festa.domain.type.ReserveStatus;
 import gdg.festa.presentation.request.reserve.CompletedReserveRequestDto;
@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class CompleteReserveService implements CompleteReserveUseCase {
     private final ReserveRepository reserveRepository;
-    private final PubsAdminRepository pubsAdminRepository;
+    private final PubAdminRepository pubAdminRepository;
     private final FcmUtil fcmUtil;
     private final DynamicTaskScheduler dynamicTaskScheduler;
 
@@ -32,7 +32,7 @@ public class CompleteReserveService implements CompleteReserveUseCase {
 
 
 
-        PubAdmin pubAdmin = pubsAdminRepository.findById(adminId);
+        PubAdmin pubAdmin = pubAdminRepository.findById(adminId);
 
         List<Reserve> nextReserve = reserveRepository.findByPubsAndReserveStatus(pubAdmin.getPub());
 

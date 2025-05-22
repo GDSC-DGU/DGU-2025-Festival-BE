@@ -6,10 +6,10 @@ import gdg.festa.core.exception.ErrorCode;
 import gdg.festa.domain.entity.FestaAdmin;
 import gdg.festa.domain.entity.PubAdmin;
 import gdg.festa.domain.type.ERole;
-import gdg.festa.infrastructure.jpa.FestaAdminsJpaRepository;
-import gdg.festa.infrastructure.jpa.PubsAdminJpaRepository;
+import gdg.festa.infrastructure.jpa.FestaAdminJpaRepository;
+import gdg.festa.infrastructure.jpa.PubAdminJpaRepository;
 import gdg.festa.infrastructure.jpa.UserJpaRepository;
-import gdg.festa.presentation.request.LoginRequestDto;
+import gdg.festa.presentation.request.auth.LoginRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,8 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class RegisterService implements RegisterUseCase {
     private final UserJpaRepository userJpaRepository;
     private final PasswordEncoder passwordEncoder;
-    private final PubsAdminJpaRepository pubsAdminJpaRepository;
-    private final FestaAdminsJpaRepository festaAdminsJpaRepository;
+    private final PubAdminJpaRepository pubAdminJpaRepository;
+    private final FestaAdminJpaRepository festaAdminJpaRepository;
 
     @Override
     public Boolean execute(LoginRequestDto loginRequestDto) {
@@ -48,7 +48,7 @@ public class RegisterService implements RegisterUseCase {
                                 .role(ERole.ADPUB)
                                 .build();
 
-        pubsAdminJpaRepository.save(pubAdmin);
+        pubAdminJpaRepository.save(pubAdmin);
     }
 
     private void findAdFesta(String loginId, String password) {
@@ -57,7 +57,7 @@ public class RegisterService implements RegisterUseCase {
                 .password(passwordEncoder.encode(password))
                 .role(ERole.ADFESTA)
                 .build();
-        festaAdminsJpaRepository.save(festaAdmin);
+        festaAdminJpaRepository.save(festaAdmin);
 
     }
 }

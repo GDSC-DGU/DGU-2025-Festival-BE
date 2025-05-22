@@ -7,8 +7,8 @@ import java.util.List;
 
 public interface LostImageRepository {
     void saveAll(List<LostImage> lostImages);
-    List<LostImage> findByLostsLostsId(Long lostsId);
-    List<LostImage> findByLosts(Lost lost);
-    void deleteByLosts(Lost lost);
-    List<LostImage> findByLostsAndDeletedAtIsNull(Lost lost);
+    List<LostImage> findByLostId(Long lostId);
+    List<LostImage> findByLost(Lost lost);
+    void deleteByLost(Lost lost);
+    List<LostImage> findByLostAndDeletedAtIsNull(Lost lost);
 }

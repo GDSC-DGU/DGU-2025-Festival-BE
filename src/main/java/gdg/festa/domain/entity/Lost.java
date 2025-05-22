@@ -1,7 +1,7 @@
 package gdg.festa.domain.entity;
 
 import gdg.festa.domain.type.TagStatus;
-import gdg.festa.presentation.request.losts.LostsRequestDto;
+import gdg.festa.presentation.request.lost.LostRequestDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -40,13 +40,13 @@ public class Lost extends BaseEntity {
     @Column(name = "lost_category")
     private String category;
 
-    public void setLost(LostsRequestDto lostsRequestDto){
-        if (lostsRequestDto.title() != null) this.title = lostsRequestDto.title();
-        if (lostsRequestDto.color() != null) this.color = lostsRequestDto.color();
-        if (lostsRequestDto.brand() != null) this.brand = lostsRequestDto.brand();
-        if (lostsRequestDto.location() != null) this.location = lostsRequestDto.location();
-        if (lostsRequestDto.note() != null) this.note = lostsRequestDto.note();
-        if (lostsRequestDto.tag() != null) this.tag = lostsRequestDto.tag();
-        if (lostsRequestDto.category() != null) this.category = lostsRequestDto.category();
+    public void setLost(LostRequestDto lostRequestDto){
+        if (lostRequestDto.title() != null) this.title = lostRequestDto.title();
+        if (lostRequestDto.color() != null) this.color = lostRequestDto.color();
+        if (lostRequestDto.brand() != null) this.brand = lostRequestDto.brand();
+        if (lostRequestDto.location() != null) this.location = lostRequestDto.location();
+        if (lostRequestDto.note() != null) this.note = lostRequestDto.note();
+        if (lostRequestDto.tag() != null) this.tag = lostRequestDto.tag();
+        if (lostRequestDto.category() != null) this.category = lostRequestDto.category();
     }
 }

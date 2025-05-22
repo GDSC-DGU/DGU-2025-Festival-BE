@@ -1,6 +1,6 @@
 package gdg.festa.domain.entity;
 
-import gdg.festa.domain.type.PubsStatus;
+import gdg.festa.domain.type.PubStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -37,10 +37,10 @@ public class Pub {
 
     @Column(name = "pub_state",nullable = false)
     @Enumerated(EnumType.STRING)
-    private PubsStatus pubStatus;
+    private PubStatus pubStatus;
 
-    public void updateState(PubsStatus pubsStatus) {
-        this.pubStatus = pubsStatus;
+    public void updateState(PubStatus pubStatus) {
+        this.pubStatus = pubStatus;
     }
     public void updateWaitPeople(Long people) {
         this.waitPeople = people - 1L;

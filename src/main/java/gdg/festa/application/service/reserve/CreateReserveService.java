@@ -3,7 +3,7 @@ package gdg.festa.application.service.reserve;
 import gdg.festa.application.usecase.reserve.CreateReserveUseCase;
 import gdg.festa.domain.entity.Pub;
 import gdg.festa.domain.entity.Reserve;
-import gdg.festa.domain.repository.PubsRepository;
+import gdg.festa.domain.repository.PubRepository;
 import gdg.festa.domain.repository.ReserveRepository;
 import gdg.festa.presentation.request.reserve.CreateReserveRequestDto;
 import lombok.RequiredArgsConstructor;
@@ -15,12 +15,12 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class CreateReserveService implements CreateReserveUseCase {
     private final ReserveRepository reserveRepository;
-    private final PubsRepository pubsRepository;
+    private final PubRepository pubRepository;
     @Override
     public Boolean execute(Long boothId, CreateReserveRequestDto createReserveRequestDto) {
         Reserve reserve = reserveRepository.findByPhoneNumberAndReserveStatus(createReserveRequestDto.phoneNumber());
 
-        Pub pub = pubsRepository.findById(boothId);
+        Pub pub = pubRepository.findById(boothId);
 
         reserve.updateReserve(
                 createReserveRequestDto.attendance(),

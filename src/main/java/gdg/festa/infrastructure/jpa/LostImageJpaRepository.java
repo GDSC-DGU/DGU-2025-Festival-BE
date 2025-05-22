@@ -11,12 +11,12 @@ import java.util.List;
 
 public interface LostImageJpaRepository extends JpaRepository<LostImage,Long> {
 
-    List<LostImage> findByLostsLostsId(Long lostsId);
-    List<LostImage> findByLosts(Lost lost);
+    List<LostImage> findByLostId(Long lostId);
+    List<LostImage> findByLost(Lost lost);
 
     @Modifying
-    @Query("DELETE FROM LostImage li WHERE li.losts = :losts")
-    void deleteByLosts(@Param("losts") Lost lost);
+    @Query("DELETE FROM LostImage li WHERE li.lost = :lost")
+    void deleteByLost(@Param("lost") Lost lost);
 
-    List<LostImage> findByLostsAndDeletedAtIsNull(Lost lost);
+    List<LostImage> findByLostAndDeletedAtIsNull(Lost lost);
 }

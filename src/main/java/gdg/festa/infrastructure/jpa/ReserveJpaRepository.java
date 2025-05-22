@@ -16,17 +16,17 @@ public interface ReserveJpaRepository extends JpaRepository<Reserve, UUID> {
 
     @Query("SELECT r "
             + "FROM Reserve r "
-            + "where r.pubs = :pubs AND r.reserveStatus = :reserveStatus "
+            + "where r.pub = :pub AND r.reserveStatus = :reserveStatus "
             + "order by r.createdAt DESC "
             + "limit 2")
-    List<Reserve> findByPubsAndReserveStatus(Pub pub, ReserveStatus reserveStatus);
+    List<Reserve> findByPubAndReserveStatus(Pub pub, ReserveStatus reserveStatus);
 
-    @Query("SELECT r FROM Reserve r WHERE r.pubs.id = :pubId")
-    List<Reserve> findAllByPubsId(Long pubId);
+    @Query("SELECT r FROM Reserve r WHERE r.pub.pubId = :pubId")
+    List<Reserve> findAllByPubId(Long pubId);
 
     @Query("SELECT r "
             + "FROM Reserve r "
-            + "where r.pubs = :pubs AND r.reserveStatus = :reserveStatus ")
+            + "where r.pub = :pub AND r.reserveStatus = :reserveStatus ")
     List<Reserve> findAllPubsAndReserveStatus(Pub pub, ReserveStatus reserveStatus);
 
     @Query(value = """
@@ -36,8 +36,8 @@ public interface ReserveJpaRepository extends JpaRepository<Reserve, UUID> {
             ROW_NUMBER() OVER (ORDER BY created_at) AS ranking
         FROM reserve
         WHERE reserve_state = :reserveStatus
-          AND pubs_id = (
-              SELECT pubs_id FROM reserve
+          AND pub_id = (
+              SELECT pub_id FROM reserve
               WHERE phone_number = :phoneNumber
               AND reserve_state = :reserveStatus
               ORDER BY created_at DESC
@@ -46,7 +46,7 @@ public interface ReserveJpaRepository extends JpaRepository<Reserve, UUID> {
     ) ranked
     WHERE reserve_id = (
         SELECT reserve_id FROM reserve
-        WHERE phone_number = :phoneNumber
+        WHERE reserve_phone_number = :phoneNumber
         AND reserve_state = :reserveStatus
         ORDER BY created_at DESC
         LIMIT 1
@@ -60,12 +60,12 @@ public interface ReserveJpaRepository extends JpaRepository<Reserve, UUID> {
                ROW_NUMBER() OVER (ORDER BY created_at) AS row_num
         FROM reserve
         WHERE reserve_state = :reserveStatus
-          AND pubs_id = :pubsId
+          AND pub_id = :pubId
     ) AS ordered
     WHERE row_num IN (:orders)
     """, nativeQuery = true)
     List<Reserve> findByPubsAndReserveStatusAndOrderIn(
-            Long pubsId,
+            Long pubId,
             String reserveStatus,
             List<Integer> orders
     );

@@ -6,7 +6,7 @@ import gdg.festa.core.exception.ErrorCode;
 import gdg.festa.core.util.FcmUtil;
 import gdg.festa.domain.entity.Pub;
 import gdg.festa.domain.entity.Reserve;
-import gdg.festa.domain.repository.PubsRepository;
+import gdg.festa.domain.repository.PubRepository;
 import gdg.festa.domain.repository.ReserveRepository;
 import gdg.festa.domain.type.ReserveStatus;
 import jakarta.transaction.Transactional;
@@ -23,7 +23,7 @@ import java.util.List;
 public class UpdateReserveStateService implements UpdateReserveUsecase {
 
     private final ReserveRepository reserveRepository;
-    private final PubsRepository pubsRepository;
+    private final PubRepository pubRepository;
     private final FcmUtil fcmUtil;
 
     @Override
@@ -63,7 +63,7 @@ public class UpdateReserveStateService implements UpdateReserveUsecase {
         // 대기 순번 - 하기
         Pub pub = reserves.getPub();
         pub.updateWaitPeople(pub.getWaitPeople());
-        pubsRepository.decreseWaitPeople(pub.getPubId());
+        pubRepository.decreseWaitPeople(pub.getPubId());
 
         // LATE인 사용자는 분기 종료
         if (status == ReserveStatus.LATE) {
