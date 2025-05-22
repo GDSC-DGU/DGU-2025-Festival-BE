@@ -49,7 +49,7 @@ public class ReserveRepositoryImpl implements ReserveRepository {
 
     @Override
     public List<Reserves> findAllByPubId(Long pubId) {
-        return reserveJpaRepository.findAllByPubsId(pubId);
+        return reserveJpaRepository.findAllByPubsId(pubId);}
       
     @Override
     public List<Reserves> findAllPubsAndReserveStatus(Pubs pubs) {
@@ -66,3 +66,4 @@ public class ReserveRepositoryImpl implements ReserveRepository {
         return reserveJpaRepository.findByPubsAndReserveStatusAndOrderIn(pubsId, ReserveStatus.WAITING.name(), orders);
     }
 }
+

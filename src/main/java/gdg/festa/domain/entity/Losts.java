@@ -1,6 +1,7 @@
 package gdg.festa.domain.entity;
 
 import gdg.festa.domain.type.TagStatus;
+import gdg.festa.presentation.request.losts.LostsRequestDto;
 import jakarta.persistence.*;
 import lombok.*;
 

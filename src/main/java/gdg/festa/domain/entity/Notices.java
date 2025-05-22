@@ -29,7 +29,7 @@ public class Notices extends BaseEntity{
     @Column(name = "notice_note", length = 1024)
     private String note;
 
-    @Builder
+    @Builder(builderMethodName = "noticeBuilder")
     public Notices(String title, String note) {
         super(LocalDateTime.now(), LocalDateTime.now(), null);
         this.title = title;

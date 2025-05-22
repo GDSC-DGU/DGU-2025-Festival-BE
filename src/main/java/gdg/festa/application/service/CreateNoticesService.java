@@ -26,7 +26,7 @@ public class CreateNoticesService implements CreateNoticesUsecase {
         List<String> imageUrls = s3Util.upload(createNoticesRequestDto.images());
         // imageUrl을 DB에 저장 등 추가 로직
 
-        Notices notices = Notices.builder()
+        Notices notices = Notices.noticeBuilder()
                 .title(createNoticesRequestDto.title())
                 .note(createNoticesRequestDto.description())
                 .build();
