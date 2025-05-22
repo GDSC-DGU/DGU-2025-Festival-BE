@@ -8,6 +8,7 @@ import gdg.festa.domain.entity.Pubs;
 import gdg.festa.domain.entity.Reserves;
 import gdg.festa.domain.repository.PubsRepository;
 import gdg.festa.domain.repository.ReserveRepository;
+import gdg.festa.domain.type.PubsStatus;
 import gdg.festa.domain.type.ReserveStatus;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,6 @@ import java.util.List;
 @Service
 @Transactional
 @RequiredArgsConstructor
-@Slf4j
 public class UpdateReserveStateService implements UpdateReserveUsecase {
 
     private final ReserveRepository reserveRepository;
@@ -35,14 +35,17 @@ public class UpdateReserveStateService implements UpdateReserveUsecase {
         Reserves reserves = reserveRepository.findByPhoneNumber(number);
 
         /*  예약자가 예약을 취소하는 경우
-         *  CANCLE 으로 바뀌는 경우, 대기 인원(-하고,) 해당 2,3순번에게 알람 전송하기
+         *  CANCELED 으로 바뀌는 경우, 대기 인원(-하고,) 해당 2,3순번에게 알람 전송하기
          *
          *  WAITING("WAITING"),CALLED("CALLED"), LATE("LATE"),
-         *  인 경우에만 cancel 가능하고, 나머지 상태에서는 각각 요청에 맞는 FCM 메세지 전달하기
+         *  인 경우에만 cancel 가능하고, 나머지 상태에서는 각각 요청에 맞는 에러 메세지 전달하기
          *
+         *  취소 이후, pubs_wait_people 값 -1
+         *
+         *  취소한 사용자의 대기 순번에 따라, FCM 메세지 전달하기
          *
          *  */
-        log.error("11");
+
         ReserveStatus status = reserves.getReserveStatus();
         // 취소 가능한 상태 확인
         switch (status) {
@@ -58,33 +61,49 @@ public class UpdateReserveStateService implements UpdateReserveUsecase {
             default -> throw new CustomException(ErrorCode.NOT_FOUND_RESERVE);
         }
         // 내 대기 순번이, 3등 이상일때는 그냥 취소처리
-        log.error("22");
-        // 취소 처리
-        reserves.updateStatus(ReserveStatus.CANCELED);
+
 
         // 대기 순번 - 하기
         Pubs pubs = reserves.getPubs();
+        pubs.updateWaitPeople(pubs.getWaitPeople());
         pubsRepository.decreseWaitPeople(pubs.getPubsId());
 
-        // 취소한 사용자의 대기 순번이 3등 이하인 경우
-        Long currentOrder = reserveRepository.findMyOrder(reserves.getPhoneNumber());
+        // LATE인 사용자는 분기 종료
+        if (status == ReserveStatus.LATE) {
+            reserves.updateStatus(ReserveStatus.CANCELED);
+            return true;
+        }
+
+        // CALLED인 사용자는 대기순이 1번이므로,
+        Integer currentOrder;
+        if (status == ReserveStatus.CALLED) {
+            currentOrder = 1;
+        } else {
+            // WAITING 상태일 때 실제 순번 조회
+            currentOrder = reserveRepository.findMyOrder(number);
+        }
+
+        // 취소 처리
+        reserves.updateStatus(ReserveStatus.CANCELED);
 
 
-        List<Reserves> notifyList = switch (currentOrder.intValue()) {
-            case 1 -> reserveRepository.findByPubsAndReserveStatusAndOrderIn(pubs, Arrays.asList(2, 3, 4));
-            case 2 -> reserveRepository.findByPubsAndReserveStatusAndOrderIn(pubs, Arrays.asList(3, 4));
-            case 3 -> reserveRepository.findByPubsAndReserveStatusAndOrderIn(pubs, Collections.singletonList(4));
+
+
+        List<Reserves> notifyList = switch (currentOrder) {
+            case 1 -> reserveRepository.findByPubsAndReserveStatusAndOrderIn(pubs.getPubsId(), Arrays.asList(2, 3, 4));
+            case 2 -> reserveRepository.findByPubsAndReserveStatusAndOrderIn(pubs.getPubsId(), Arrays.asList(3, 4));
+            case 3 -> reserveRepository.findByPubsAndReserveStatusAndOrderIn(pubs.getPubsId(), Collections.singletonList(4));
             default -> Collections.emptyList();
         };
 
-        notifyList.forEach(reserve -> {
-            fcmUtil.sendMessage(
+        notifyList.stream()
+                .forEach(reserve -> fcmUtil.sendMessage(
                     pubs.getName() + " 대기 순번 변경 알림",
                     "앞 순서가 취소되어 대기 순번이 앞당겨졌습니다.",
                     reserve.getBrowserToken(),
                     reserve.getReserveId()
-            );
-        });
+            ));
+
 
         return true;
     }

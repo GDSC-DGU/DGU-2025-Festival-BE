@@ -27,7 +27,7 @@ public class PubsController {
     @PatchMapping("/admin/pub")
     public CommonResponseDto<?> updateState(
             @UserId UUID pubAdminId,
-            @RequestParam(name = "pubsStatus") PubsStatus pubsStatus
+            @RequestParam(name = "pubsStatus") String pubsStatus
     ){
         return CommonResponseDto.ok(updatePubsUsecase.execute(pubAdminId, pubsStatus));
     }

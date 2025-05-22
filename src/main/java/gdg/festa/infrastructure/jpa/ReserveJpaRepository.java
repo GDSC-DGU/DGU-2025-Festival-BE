@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import software.amazon.awssdk.services.s3.endpoints.internal.Value;
 
 public interface ReserveJpaRepository extends JpaRepository<Reserves, UUID> {
     Optional<Reserves> findByPhoneNumber(String phoneNumber);
@@ -34,24 +35,29 @@ public interface ReserveJpaRepository extends JpaRepository<Reserves, UUID> {
     List<Reserves> findAllPubsAndReserveStatus(Pubs pubs, ReserveStatus reserveStatus);
 
     @Query(value = """
-    SELECT COALESCE((
-        SELECT COUNT(*) + 1
-        FROM reserves r
-        JOIN reserves r2
-          ON r.pubs_id = r2.pubs_id
-          AND r2.phone_number = :phoneNumber
-          AND r2.reserve_state = :reserveStatus
-        WHERE r.reserve_state = :reserveStatus
-          AND r.created_at < (
-              SELECT MAX(r3.created_at)
-              FROM reserves r3
-              WHERE r3.phone_number = :phoneNumber
-                AND r3.reserve_state = :reserveStatus
+    SELECT ranking FROM (
+        SELECT
+            reserve_id,
+            ROW_NUMBER() OVER (ORDER BY created_at) AS ranking
+        FROM reserves
+        WHERE reserve_state = :reserveStatus
+          AND pubs_id = (
+              SELECT pubs_id FROM reserves
+              WHERE phone_number = :phoneNumber
+              AND reserve_state = :reserveStatus
+              ORDER BY created_at DESC
+              LIMIT 1
           )
-    ), 1)
+    ) ranked
+    WHERE reserve_id = (
+        SELECT reserve_id FROM reserves
+        WHERE phone_number = :phoneNumber
+        AND reserve_state = :reserveStatus
+        ORDER BY created_at DESC
+        LIMIT 1
+    )
     """, nativeQuery = true)
-    Long findMyOrder(String phoneNumber,
-                     ReserveStatus reserveStatus);
+    Integer findMyOrder(String phoneNumber, String reserveStatus);
 
     @Query(value = """
     SELECT * FROM (
@@ -59,12 +65,13 @@ public interface ReserveJpaRepository extends JpaRepository<Reserves, UUID> {
                ROW_NUMBER() OVER (ORDER BY created_at) AS row_num
         FROM reserves
         WHERE reserve_state = :reserveStatus
+          AND pubs_id = :pubsId
     ) AS ordered
     WHERE row_num IN (:orders)
     """, nativeQuery = true)
     List<Reserves> findByPubsAndReserveStatusAndOrderIn(
-            Pubs pubs,
-            ReserveStatus reserveStatus,
+            Long pubsId,
+            String reserveStatus,
             List<Integer> orders
     );
 }

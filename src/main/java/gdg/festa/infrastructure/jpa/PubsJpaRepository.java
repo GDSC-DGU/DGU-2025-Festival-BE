@@ -13,7 +13,9 @@ public interface PubsJpaRepository extends JpaRepository<Pubs, Long> {
     Optional<Pubs> findById(Long id);
     List<Pubs> findAll();
 
-    @Modifying
-    @Query("UPDATE Pubs p SET p.waitPeople = p.waitPeople - 1 WHERE p.pubsId = :id AND p.waitPeople > 0")
+    @Modifying(clearAutomatically = true)
+    @Query(value = "UPDATE pubs SET wait_people = wait_people - 1 WHERE pubs_id = :id AND wait_people > 0",
+            nativeQuery = true)
     void decreseWaitPeople(Long id);
+
 }

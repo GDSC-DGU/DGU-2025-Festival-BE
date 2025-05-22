@@ -7,5 +7,5 @@ import java.util.UUID;
 
 @UseCase
 public interface UpdatePubsUsecase {
-    Boolean execute(UUID id, PubsStatus pubsStatus);
+    Boolean execute(UUID id, String pubsStatus);
 }
