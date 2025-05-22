@@ -1,13 +1,12 @@
 package gdg.festa.domain.repository;
 
-import gdg.festa.domain.entity.Booths;
-import gdg.festa.domain.entity.Pubs;
+import gdg.festa.domain.entity.Pub;
 
 import java.util.List;
 
 public interface PubsRepository {
-    Pubs findById(Long id);
-    List<Pubs> findAll();
+    Pub findById(Long id);
+    List<Pub> findAll();
 
     void decreseWaitPeople(Long id);
 }

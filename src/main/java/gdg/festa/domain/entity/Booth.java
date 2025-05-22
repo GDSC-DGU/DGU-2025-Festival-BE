@@ -14,15 +14,16 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "booths")
-public class Booths {
-    @Id
-    @Column(name = "booths_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long boothsId;
+public class Booth {
 
-    @Column(name = "title",nullable = false)
+    @Id
+    @Column(name = "booth_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long boothId;
+
+    @Column(name = "booth_title",nullable = false)
     private String title;
 
-    @Column(name = "like_cnt",nullable = false)
+    @Column(name = "booth_like_cnt",nullable = false)
     private Long likeCnt;
 }

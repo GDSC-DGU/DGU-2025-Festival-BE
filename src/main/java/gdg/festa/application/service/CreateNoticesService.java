@@ -2,8 +2,8 @@ package gdg.festa.application.service;
 
 import gdg.festa.application.usecase.notices.CreateNoticesUsecase;
 import gdg.festa.core.util.S3Util;
-import gdg.festa.domain.entity.NoticeImages;
-import gdg.festa.domain.entity.Notices;
+import gdg.festa.domain.entity.NoticeImage;
+import gdg.festa.domain.entity.Notice;
 import gdg.festa.domain.repository.NoticeImagesRepository;
 import gdg.festa.domain.repository.NoticesRepository;
 import gdg.festa.presentation.request.CreateNoticesRequestDto;
@@ -26,16 +26,16 @@ public class CreateNoticesService implements CreateNoticesUsecase {
         List<String> imageUrls = s3Util.upload(createNoticesRequestDto.images());
         // imageUrl을 DB에 저장 등 추가 로직
 
-        Notices notices = Notices.noticeBuilder()
+        Notice notice = Notice.noticeBuilder()
                 .title(createNoticesRequestDto.title())
                 .note(createNoticesRequestDto.description())
                 .build();
 
-        noticesRepository.save(notices);
+        noticesRepository.save(notice);
 
-        List<NoticeImages> noticeImages = imageUrls.stream()
-                .map(imageUrl -> NoticeImages.builder()
-                        .notice(notices)
+        List<NoticeImage> noticeImages = imageUrls.stream()
+                .map(imageUrl -> NoticeImage.builder()
+                        .notice(notice)
                         .imageUrl(imageUrl)
                         .build())
                 .collect(Collectors.toList());

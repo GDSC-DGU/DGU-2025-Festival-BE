@@ -4,7 +4,7 @@ import gdg.festa.application.dto.pubs.ReadPubWaitingUserListResponseDto;
 import gdg.festa.application.dto.reserve.ReserveInfo;
 import gdg.festa.application.service.reserve.ReserveQueryService;
 import gdg.festa.application.usecase.pubs.ReadAdminPubsUsecase;
-import gdg.festa.domain.entity.PubsAdmin;
+import gdg.festa.domain.entity.PubAdmin;
 import gdg.festa.domain.repository.PubsAdminRepository;
 import gdg.festa.domain.type.ReserveStatus;
 import lombok.RequiredArgsConstructor;
@@ -25,9 +25,9 @@ public class ReadPubService implements ReadAdminPubsUsecase {
     @Override
     public ReadPubWaitingUserListResponseDto execute(UUID pubAdminId) {
 
-        PubsAdmin pubsAdmin = pubsAdminRepository.findById(pubAdminId);
+        PubAdmin pubAdmin = pubsAdminRepository.findById(pubAdminId);
 
-        Long pubId = pubsAdmin.getPubs().getPubsId();
+        Long pubId = pubAdmin.getPub().getPubId();
 
         List<ReserveInfo> reserveList = reserveQueryService.readAllReserveInfoOf(pubId);
 

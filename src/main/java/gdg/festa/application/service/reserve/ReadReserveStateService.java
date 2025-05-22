@@ -2,8 +2,8 @@ package gdg.festa.application.service.reserve;
 
 import gdg.festa.application.dto.reserve.ReadReserveStateDto;
 import gdg.festa.application.usecase.reserve.ReadReserveUsecase;
-import gdg.festa.domain.entity.Pubs;
-import gdg.festa.domain.entity.Reserves;
+import gdg.festa.domain.entity.Pub;
+import gdg.festa.domain.entity.Reserve;
 import gdg.festa.domain.repository.PubsRepository;
 import gdg.festa.domain.repository.ReserveRepository;
 import jakarta.transaction.Transactional;
@@ -22,12 +22,12 @@ public class ReadReserveStateService implements ReadReserveUsecase {
     @Override
     public ReadReserveStateDto execute(String number){
 
-        Reserves reserves = reserveRepository.findByPhoneNumber(number); // 번호 기반 예약 정보 조회
-        Pubs pubs = pubsRepository.findById(reserves.getPubs().getPubsId()); // 예약 정보 -> 주점 정보 -> 주점 대기 인원 조회
+        Reserve reserve = reserveRepository.findByPhoneNumber(number); // 번호 기반 예약 정보 조회
+        Pub pub = pubsRepository.findById(reserve.getPub().getPubId()); // 예약 정보 -> 주점 정보 -> 주점 대기 인원 조회
 
         return ReadReserveStateDto.builder()
-                .reserveStatus(reserves.getReserveStatus())
-                .waitTeam(pubs.getWaitPeople())
+                .reserveStatus(reserve.getReserveStatus())
+                .waitTeam(pub.getWaitPeople())
                 .build();
     }
 }

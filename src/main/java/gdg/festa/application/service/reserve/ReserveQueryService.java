@@ -1,7 +1,7 @@
 package gdg.festa.application.service.reserve;
 
 import gdg.festa.application.dto.reserve.ReserveInfo;
-import gdg.festa.domain.entity.Reserves;
+import gdg.festa.domain.entity.Reserve;
 import gdg.festa.domain.repository.ReserveRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.List;
 
 @Service
@@ -20,7 +19,7 @@ public class ReserveQueryService {
 
     public List<ReserveInfo> readAllReserveInfoOf(Long pubId) {
 
-        List<Reserves> reserves = reserveRepository.findAllByPubId(pubId);
+        List<Reserve> reserves = reserveRepository.findAllByPubId(pubId);
 
         return reserves.stream()
                 .map(reserve -> {

@@ -1,21 +1,16 @@
 package gdg.festa.application.service.Losts;
 
 import gdg.festa.application.mapper.LostsImageMapper;
-import gdg.festa.application.mapper.LostsMapper;
 import gdg.festa.application.usecase.Losts.EditLostsUsecase;
-import gdg.festa.core.exception.CustomException;
-import gdg.festa.core.exception.ErrorCode;
 import gdg.festa.core.util.S3Util;
-import gdg.festa.domain.entity.LostImages;
-import gdg.festa.domain.entity.Losts;
+import gdg.festa.domain.entity.LostImage;
+import gdg.festa.domain.entity.Lost;
 import gdg.festa.domain.repository.LostImageRepository;
 import gdg.festa.domain.repository.LostsRepository;
-import gdg.festa.infrastructure.jpa.LostsJpaRepository;
 import gdg.festa.presentation.request.losts.LostsRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,11 +27,11 @@ public class EditLostsService implements EditLostsUsecase {
 
     @Override
     public void execute(Long lostsId, LostsRequestDto lostsRequestDto) {
-        Losts losts = lostsRepository.findById(lostsId);
+        Lost lost = lostsRepository.findById(lostsId);
 
-        losts.setLosts(lostsRequestDto);
+        lost.setLost(lostsRequestDto);
 
-        List<LostImages> oldImages = lostImageRepository.findByLostsAndDeletedAtIsNull(losts);
+        List<LostImage> oldImages = lostImageRepository.findByLostsAndDeletedAtIsNull(lost);
         oldImages.forEach(img -> {
             img.delete();  // deletedAt = now()
 
@@ -44,8 +39,8 @@ public class EditLostsService implements EditLostsUsecase {
 
         List<String> imageUrls = s3Util.upload(lostsRequestDto.images());
 
-        List<LostImages> newImageEntities = imageUrls.stream()
-                .map(url -> lostsImageMapper.toEntity(url, losts))
+        List<LostImage> newImageEntities = imageUrls.stream()
+                .map(url -> lostsImageMapper.toEntity(url, lost))
                 .collect(Collectors.toList());
 
         lostImageRepository.saveAll(newImageEntities);

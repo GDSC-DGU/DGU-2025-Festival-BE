@@ -2,13 +2,12 @@ package gdg.festa.core.security.info;
 
 
 
-import gdg.festa.domain.entity.FestaAdmins;
-import gdg.festa.domain.entity.PubsAdmin;
+import gdg.festa.domain.entity.FestaAdmin;
+import gdg.festa.domain.entity.PubAdmin;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
-import gdg.festa.domain.entity.User;
 import gdg.festa.domain.type.ERole;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,20 +26,20 @@ public class UserPrincipal implements UserDetails {
     private final Collection<? extends GrantedAuthority> authorities;
 
 
-    public static UserPrincipal createPub(PubsAdmin pubsAdmin) {
-        List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + pubsAdmin.getRole()));
+    public static UserPrincipal createPub(PubAdmin pubAdmin) {
+        List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + pubAdmin.getRole()));
         return UserPrincipal.builder()
-                .uuid(pubsAdmin.getPubsAdminId())
-                .userRole(pubsAdmin.getRole())
+                .uuid(pubAdmin.getPubAdminId())
+                .userRole(pubAdmin.getRole())
                 .authorities(authorities)
                 .build();
     }
 
-    public static UserPrincipal createFesta(FestaAdmins festaAdmins) {
-        List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + festaAdmins.getRole()));
+    public static UserPrincipal createFesta(FestaAdmin festaAdmin) {
+        List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + festaAdmin.getRole()));
         return UserPrincipal.builder()
-                .uuid(festaAdmins.getFestaAdminsId())
-                .userRole(festaAdmins.getRole())
+                .uuid(festaAdmin.getFestaAdminId())
+                .userRole(festaAdmin.getRole())
                 .authorities(authorities)
                 .build();
     }

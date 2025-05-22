@@ -2,8 +2,7 @@ package gdg.festa.infrastructure.implement;
 
 import gdg.festa.core.exception.CustomException;
 import gdg.festa.core.exception.ErrorCode;
-import gdg.festa.domain.entity.Pubs;
-import gdg.festa.domain.entity.Reserves;
+import gdg.festa.domain.entity.Pub;
 import gdg.festa.domain.repository.PubsRepository;
 import gdg.festa.infrastructure.jpa.PubsJpaRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,13 +18,13 @@ public class PubsRepositoryImpl implements PubsRepository {
     private final PubsJpaRepository pubsJpaRepository;
 
     @Override
-    public Pubs findById(Long id) {
+    public Pub findById(Long id) {
         return pubsJpaRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_PUBS));
     }
 
     @Override
-    public List<Pubs> findAll() {
+    public List<Pub> findAll() {
         return pubsJpaRepository.findAll();
     }
 

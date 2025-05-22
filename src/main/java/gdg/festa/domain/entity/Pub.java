@@ -10,36 +10,37 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "pubs")
-public class Pubs {
-    @Id
-    @Column(name = "pubs_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long pubsId;
+public class Pub {
 
-    @Column(name = "name")
+    @Id
+    @Column(name = "pub_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long pubId;
+
+    @Column(name = "pub_name")
     private String name;
 
-    @Column(name = "location")
+    @Column(name = "pub_location")
     private String location;
 
-    @Column(name = "menus")
+    @Column(name = "pub_menus")
     private String menus;
 
-    @Column(name = "picture")
+    @Column(name = "pub_picture")
     private String picture;
 
-    @Column(name = "note")
+    @Column(name = "pub_note")
     private String note;
 
-    @Column(name = "wait_people")
+    @Column(name = "pub_wait_people")
     private Long waitPeople;
 
     @Column(name = "pub_state",nullable = false)
     @Enumerated(EnumType.STRING)
-    private PubsStatus pubsStatus;
+    private PubsStatus pubStatus;
 
     public void updateState(PubsStatus pubsStatus) {
-        this.pubsStatus = pubsStatus;
+        this.pubStatus = pubsStatus;
     }
     public void updateWaitPeople(Long people) {
         this.waitPeople = people - 1L;

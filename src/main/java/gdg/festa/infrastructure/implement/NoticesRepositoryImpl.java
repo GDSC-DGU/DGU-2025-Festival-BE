@@ -1,6 +1,6 @@
 package gdg.festa.infrastructure.implement;
 
-import gdg.festa.domain.entity.Notices;
+import gdg.festa.domain.entity.Notice;
 import gdg.festa.domain.repository.NoticesRepository;
 import gdg.festa.infrastructure.jpa.NoticesJpaRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,8 +13,8 @@ public class NoticesRepositoryImpl implements NoticesRepository {
     private final NoticesJpaRepository noticesJpaRepository;
 
     @Override
-    public void save(Notices notices) {
-        noticesJpaRepository.save(notices);
+    public void save(Notice notice) {
+        noticesJpaRepository.save(notice);
 
     }
 }

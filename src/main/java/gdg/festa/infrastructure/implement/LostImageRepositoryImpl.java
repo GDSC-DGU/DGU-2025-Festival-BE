@@ -1,11 +1,9 @@
 package gdg.festa.infrastructure.implement;
 
-import gdg.festa.domain.entity.LostImages;
-import gdg.festa.domain.entity.Losts;
+import gdg.festa.domain.entity.LostImage;
+import gdg.festa.domain.entity.Lost;
 import gdg.festa.domain.repository.LostImageRepository;
-import gdg.festa.domain.repository.LostsRepository;
 import gdg.festa.infrastructure.jpa.LostImageJpaRepository;
-import gdg.festa.infrastructure.jpa.LostsJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -18,27 +16,27 @@ public class LostImageRepositoryImpl implements LostImageRepository {
     private final LostImageJpaRepository lostsImageJpaRepository;
 
     @Override
-    public void saveAll(List<LostImages> lostImages){
+    public void saveAll(List<LostImage> lostImages){
         lostsImageJpaRepository.saveAll(lostImages);
     }
 
     @Override
-    public List<LostImages> findByLostsLostsId(Long lostsId){
+    public List<LostImage> findByLostsLostsId(Long lostsId){
         return lostsImageJpaRepository.findByLostsLostsId(lostsId);
     }
 
     @Override
-    public List<LostImages> findByLosts(Losts losts){
-        return lostsImageJpaRepository.findByLosts(losts);
+    public List<LostImage> findByLosts(Lost lost){
+        return lostsImageJpaRepository.findByLosts(lost);
     }
 
     @Override
-    public void deleteByLosts(Losts losts){
-        lostsImageJpaRepository.deleteByLosts(losts);
+    public void deleteByLosts(Lost lost){
+        lostsImageJpaRepository.deleteByLosts(lost);
     }
 
     @Override
-    public List<LostImages> findByLostsAndDeletedAtIsNull(Losts losts) {
-        return lostsImageJpaRepository.findByLostsAndDeletedAtIsNull(losts);
+    public List<LostImage> findByLostsAndDeletedAtIsNull(Lost lost) {
+        return lostsImageJpaRepository.findByLostsAndDeletedAtIsNull(lost);
     }
 }

@@ -5,8 +5,8 @@ import gdg.festa.application.usecase.auth.GetTokenByLoginIdUseCase;
 import gdg.festa.core.exception.CustomException;
 import gdg.festa.core.exception.ErrorCode;
 import gdg.festa.core.util.JwtUtil;
-import gdg.festa.domain.entity.FestaAdmins;
-import gdg.festa.domain.entity.PubsAdmin;
+import gdg.festa.domain.entity.FestaAdmin;
+import gdg.festa.domain.entity.PubAdmin;
 import gdg.festa.domain.repository.FestaAdminsRepository;
 import gdg.festa.domain.repository.PubsAdminRepository;
 import gdg.festa.domain.type.ERole;
@@ -35,16 +35,16 @@ public class GetTokenByLoginIdService implements GetTokenByLoginIdUseCase {
     }
 
     private JwtTokenDto findAdPub(String loginId, String password) {
-        PubsAdmin pubsAdmin = pubsAdminRepository.findByLoginId(loginId);
-        if(!passwordEncoder.matches(password, pubsAdmin.getPassword()))
+        PubAdmin pubAdmin = pubsAdminRepository.findByLoginId(loginId);
+        if(!passwordEncoder.matches(password, pubAdmin.getPassword()))
             throw new CustomException(ErrorCode.INVALID_PASSWORD);
-        return jwtUtil.generateTokens(pubsAdmin.getPubsAdminId(), ERole.ADPUB);
+        return jwtUtil.generateTokens(pubAdmin.getPubAdminId(), ERole.ADPUB);
     }
 
     private JwtTokenDto findAdFesta(String loginId, String password) {
-        FestaAdmins festaAdmins = festaAdminsRepository.findByLoginId(loginId);
-        if(!passwordEncoder.matches(password, festaAdmins.getPassword()))
+        FestaAdmin festaAdmin = festaAdminsRepository.findByLoginId(loginId);
+        if(!passwordEncoder.matches(password, festaAdmin.getPassword()))
             throw new CustomException(ErrorCode.INVALID_PASSWORD);
-        return jwtUtil.generateTokens(festaAdmins.getFestaAdminsId(), ERole.ADFESTA);
+        return jwtUtil.generateTokens(festaAdmin.getFestaAdminId(), ERole.ADFESTA);
     }
 }

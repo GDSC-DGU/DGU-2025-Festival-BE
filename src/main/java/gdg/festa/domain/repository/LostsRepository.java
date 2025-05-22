@@ -1,11 +1,9 @@
 package gdg.festa.domain.repository;
 
-import gdg.festa.domain.entity.Losts;
-
-import java.util.Optional;
+import gdg.festa.domain.entity.Lost;
 
 public interface LostsRepository {
-    Losts save(Losts losts);
-    Losts findById(Long lostsId);
+    Lost save(Lost lost);
+    Lost findById(Long lostsId);
     void deleteById(Long lostsId);
 }

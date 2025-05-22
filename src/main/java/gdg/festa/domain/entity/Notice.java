@@ -17,20 +17,21 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "notices")
-public class Notices extends BaseEntity{
+public class Notice extends BaseEntity {
+
     @Id
     @Column(name = "notice_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long noticesId;
+    private Long noticeId;
 
-    @Column(name = "notice_title",nullable = false)
+    @Column(name = "notice_title", nullable = false)
     private String title;
 
     @Column(name = "notice_note", length = 1024)
     private String note;
 
     @Builder(builderMethodName = "noticeBuilder")
-    public Notices(String title, String note) {
+    public Notice(String title, String note) {
         super(LocalDateTime.now(), LocalDateTime.now(), null);
         this.title = title;
         this.note = note;

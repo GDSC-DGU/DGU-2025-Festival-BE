@@ -2,7 +2,7 @@ package gdg.festa.application.service.pubs;
 
 import gdg.festa.application.dto.pubs.ReadPubsWaitingUserListResponseDto;
 import gdg.festa.application.usecase.pubs.ReadPubsUsecase;
-import gdg.festa.domain.entity.Pubs;
+import gdg.festa.domain.entity.Pub;
 import gdg.festa.domain.repository.PubsRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -19,10 +19,10 @@ public class ReadPubsService implements ReadPubsUsecase {
 
     @Override
     public List<ReadPubsWaitingUserListResponseDto> execute() {
-        List<Pubs> pubsList = pubsRepository.findAll();
-        return pubsList.stream()
+        List<Pub> pubList = pubsRepository.findAll();
+        return pubList.stream()
                 .map(pubs -> ReadPubsWaitingUserListResponseDto.builder()
-                        .pubsId(pubs.getPubsId())
+                        .pubsId(pubs.getPubId())
                         .waitTeam(pubs.getWaitPeople())
                         .build())
                 .collect(Collectors.toList());

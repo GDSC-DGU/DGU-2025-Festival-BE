@@ -1,7 +1,7 @@
 package gdg.festa.domain.repository;
 
-import gdg.festa.domain.entity.Notices;
+import gdg.festa.domain.entity.Notice;
 
 public interface NoticesRepository {
-    void save(Notices notices);
+    void save(Notice notice);
 }

@@ -1,13 +1,10 @@
 package gdg.festa.application.service.Losts;
 
 import gdg.festa.application.dto.Losts.GetLostsResponseDto;
-import gdg.festa.application.mapper.LostsImageMapper;
 import gdg.festa.application.mapper.LostsMapper;
 import gdg.festa.application.usecase.Losts.GetLostsUsecase;
-import gdg.festa.core.exception.CustomException;
-import gdg.festa.core.exception.ErrorCode;
-import gdg.festa.domain.entity.LostImages;
-import gdg.festa.domain.entity.Losts;
+import gdg.festa.domain.entity.LostImage;
+import gdg.festa.domain.entity.Lost;
 import gdg.festa.domain.repository.LostImageRepository;
 import gdg.festa.domain.repository.LostsRepository;
 import lombok.RequiredArgsConstructor;
@@ -29,13 +26,13 @@ public class GetLostsService implements GetLostsUsecase {
     // 이미지만 추가해서 넣으면 된다
     @Override
     public GetLostsResponseDto execute(Long lostsId){
-        Losts getLosts = lostsRepository.findById(lostsId);
-        List<LostImages> getLostImages =  lostImageRepository.findByLostsLostsId(lostsId);
+        Lost getLost = lostsRepository.findById(lostsId);
+        List<LostImage> getLostImages =  lostImageRepository.findByLostsLostsId(lostsId);
 
-        GetLostsResponseDto getLostsResponseDto = lostsMapper.toDto(getLosts);
+        GetLostsResponseDto getLostsResponseDto = lostsMapper.toDto(getLost);
 
         List<String> images = getLostImages.stream()
-                .map(LostImages::getImageUrl)
+                .map(LostImage::getImageUrl)
                 .collect(Collectors.toList());
 
         return new GetLostsResponseDto(

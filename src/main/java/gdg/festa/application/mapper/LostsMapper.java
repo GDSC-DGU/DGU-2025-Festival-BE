@@ -1,20 +1,17 @@
 package gdg.festa.application.mapper;
 
 import gdg.festa.application.dto.Losts.GetLostsResponseDto;
-import gdg.festa.domain.entity.LostImages;
-import gdg.festa.domain.entity.Losts;
+import gdg.festa.domain.entity.Lost;
 import gdg.festa.presentation.request.losts.LostsRequestDto;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
-import java.util.List;
 
 @Service
 public class LostsMapper {
 
-    public Losts toEntity(LostsRequestDto lostsRequestDto) {
-        return Losts.LostsBuilder()
+    public Lost toEntity(LostsRequestDto lostsRequestDto) {
+        return Lost.LostsBuilder()
                 .title(lostsRequestDto.title())
                 .color(lostsRequestDto.color())
                 .brand(lostsRequestDto.brand())
@@ -25,15 +22,15 @@ public class LostsMapper {
                 .build();
     }
 
-    public GetLostsResponseDto toDto(Losts losts){
+    public GetLostsResponseDto toDto(Lost lost){
         return new GetLostsResponseDto(
-                losts.getTitle(),
-                losts.getColor(),
-                losts.getBrand(),
-                losts.getLocation(),
-                losts.getNote(),
-                losts.getTag(),
-                losts.getCategory(),
+                lost.getTitle(),
+                lost.getColor(),
+                lost.getBrand(),
+                lost.getLocation(),
+                lost.getNote(),
+                lost.getTag(),
+                lost.getCategory(),
                 Collections.emptyList()
         );
     }

@@ -1,11 +1,11 @@
 package gdg.festa.domain.repository;
 
-import gdg.festa.domain.entity.PubsAdmin;
+import gdg.festa.domain.entity.PubAdmin;
 import java.util.UUID;
 
 public interface PubsAdminRepository {
-    PubsAdmin findById(UUID id);
+    PubAdmin findById(UUID id);
 
-    PubsAdmin findByLoginId(String loginId);
+    PubAdmin findByLoginId(String loginId);
 }
 

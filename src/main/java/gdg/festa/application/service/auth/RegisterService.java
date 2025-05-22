@@ -3,8 +3,8 @@ package gdg.festa.application.service.auth;
 import gdg.festa.application.usecase.auth.RegisterUseCase;
 import gdg.festa.core.exception.CustomException;
 import gdg.festa.core.exception.ErrorCode;
-import gdg.festa.domain.entity.FestaAdmins;
-import gdg.festa.domain.entity.PubsAdmin;
+import gdg.festa.domain.entity.FestaAdmin;
+import gdg.festa.domain.entity.PubAdmin;
 import gdg.festa.domain.type.ERole;
 import gdg.festa.infrastructure.jpa.FestaAdminsJpaRepository;
 import gdg.festa.infrastructure.jpa.PubsAdminJpaRepository;
@@ -42,22 +42,22 @@ public class RegisterService implements RegisterUseCase {
     }
 
     private void findAdPub(String loginId, String password) {
-        PubsAdmin pubsAdmin = PubsAdmin.builder()
+        PubAdmin pubAdmin = PubAdmin.builder()
                                 .loginId(loginId)
                                 .password(passwordEncoder.encode(password))
                                 .role(ERole.ADPUB)
                                 .build();
 
-        pubsAdminJpaRepository.save(pubsAdmin);
+        pubsAdminJpaRepository.save(pubAdmin);
     }
 
     private void findAdFesta(String loginId, String password) {
-        FestaAdmins festaAdmins = FestaAdmins.builder()
+        FestaAdmin festaAdmin = FestaAdmin.builder()
                 .loginId(loginId)
                 .password(passwordEncoder.encode(password))
                 .role(ERole.ADFESTA)
                 .build();
-        festaAdminsJpaRepository.save(festaAdmins);
+        festaAdminsJpaRepository.save(festaAdmin);
 
     }
 }

@@ -4,7 +4,7 @@ import gdg.festa.application.mapper.ReservesMapper;
 import gdg.festa.application.usecase.sms.SmsVertifyUseCase;
 import gdg.festa.core.exception.CustomException;
 import gdg.festa.core.exception.ErrorCode;
-import gdg.festa.domain.entity.Reserves;
+import gdg.festa.domain.entity.Reserve;
 import gdg.festa.domain.repository.ReserveRepository;
 import gdg.festa.infrastructure.redis.SmsCertification;
 import gdg.festa.presentation.request.sms.SmsVerifyRequestDto;
@@ -28,12 +28,12 @@ public class SmsVertifyService implements SmsVertifyUseCase {
 
         smsCertification.deleteSmsCertification(smsVerifyRequestDto.phoneNumber());
 
-        Reserves reserves = reservesMapper.toEntity(
+        Reserve reserve = reservesMapper.toEntity(
                 smsVerifyRequestDto.phoneNumber(),
                 smsVerifyRequestDto.browserToken()
         );
 
-        reserveRepository.save(reserves);
+        reserveRepository.save(reserve);
 
         return true;
     }

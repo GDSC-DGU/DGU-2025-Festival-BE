@@ -1,13 +1,13 @@
 package gdg.festa.application.mapper;
 
-import gdg.festa.domain.entity.Reserves;
+import gdg.festa.domain.entity.Reserve;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ReservesMapper {
 
-    public Reserves toEntity(String phoneNumber, String browserToken) {
-        return Reserves.reservesBuilder()
+    public Reserve toEntity(String phoneNumber, String browserToken) {
+        return Reserve.reservesBuilder()
                 .phoneNumber(phoneNumber)
                 .browserToken(browserToken)
                 .build();

@@ -3,8 +3,8 @@ package gdg.festa.application.service.reserve;
 import gdg.festa.application.usecase.reserve.CompleteReserveUseCase;
 import gdg.festa.core.batch.DynamicTaskScheduler;
 import gdg.festa.core.util.FcmUtil;
-import gdg.festa.domain.entity.PubsAdmin;
-import gdg.festa.domain.entity.Reserves;
+import gdg.festa.domain.entity.PubAdmin;
+import gdg.festa.domain.entity.Reserve;
 import gdg.festa.domain.repository.PubsAdminRepository;
 import gdg.festa.domain.repository.ReserveRepository;
 import gdg.festa.domain.type.ReserveStatus;
@@ -26,20 +26,20 @@ public class CompleteReserveService implements CompleteReserveUseCase {
 
     @Override
     public Boolean execute(UUID adminId, CompletedReserveRequestDto completedReserveRequestDto) {
-        Reserves reserves = reserveRepository.findById(completedReserveRequestDto.reserveId());
+        Reserve reserve = reserveRepository.findById(completedReserveRequestDto.reserveId());
 
-        reserves.updateStatus(ReserveStatus.COMPLETED);
+        reserve.updateStatus(ReserveStatus.COMPLETED);
 
 
 
-        PubsAdmin pubsAdmin = pubsAdminRepository.findById(adminId);
+        PubAdmin pubAdmin = pubsAdminRepository.findById(adminId);
 
-        List<Reserves> nextReserve = reserveRepository.findByPubsAndReserveStatus(pubsAdmin.getPubs());
+        List<Reserve> nextReserve = reserveRepository.findByPubsAndReserveStatus(pubAdmin.getPub());
 
         //fcm 근처에서 대기하십쇼
         nextReserve.forEach(
                 reserves1 -> fcmUtil.sendMessage(
-                        reserves1.getPubs().getName() + " 주점 대기 번호 임박 알림 ",
+                        reserves1.getPub().getName() + " 주점 대기 번호 임박 알림 ",
                         "대기 번호가 가까워 졌습니다. 부스 근처에서 대기해주세요.",
                         reserves1.getBrowserToken(),
                         reserves1.getReserveId()

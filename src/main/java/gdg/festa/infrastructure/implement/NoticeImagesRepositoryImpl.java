@@ -1,6 +1,6 @@
 package gdg.festa.infrastructure.implement;
 
-import gdg.festa.domain.entity.NoticeImages;
+import gdg.festa.domain.entity.NoticeImage;
 import gdg.festa.domain.repository.NoticeImagesRepository;
 import gdg.festa.infrastructure.jpa.NoticeImagesJpaRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,12 +15,12 @@ public class NoticeImagesRepositoryImpl implements NoticeImagesRepository {
     private final NoticeImagesJpaRepository noticeImagesJpaRepository;
 
     @Override
-    public void save(NoticeImages noticeImages) {
-        noticeImagesJpaRepository.save(noticeImages);
+    public void save(NoticeImage noticeImage) {
+        noticeImagesJpaRepository.save(noticeImage);
     }
 
     @Override
-    public void saveAll(List<NoticeImages> noticeImages) {
+    public void saveAll(List<NoticeImage> noticeImages) {
         noticeImagesJpaRepository.saveAll(noticeImages);
     }
 

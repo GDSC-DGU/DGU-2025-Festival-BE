@@ -1,20 +1,15 @@
 package gdg.festa.application.mapper;
 
-import gdg.festa.domain.entity.LostImages;
-import gdg.festa.domain.entity.Losts;
-import gdg.festa.presentation.request.losts.LostsRequestDto;
-import org.springframework.stereotype.Component;
+import gdg.festa.domain.entity.LostImage;
+import gdg.festa.domain.entity.Lost;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 @Service
 public class LostsImageMapper {
 
-    public LostImages toEntity(String imagesUrl,Losts losts){
-        return LostImages.LostImagesBuilder()
-                .losts(losts)
+    public LostImage toEntity(String imagesUrl, Lost lost){
+        return LostImage.LostImagesBuilder()
+                .lost(lost)
                 .imageUrl(imagesUrl)
                 .build();
     }

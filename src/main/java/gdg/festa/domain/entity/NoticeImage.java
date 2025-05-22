@@ -10,27 +10,32 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@Builder(builderMethodName = "LostImagesBuilder")
-@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "lost_images")
-public class LostImages extends BaseEntity {
+@Table(name = "notice_images")
+// TODO: NoticeImage도 BaseEntity 상속받기
+public class NoticeImage {
+
     @Id
-    @Column(name = "lost_images_id")
+    @Column(name = "image_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long lostImagesId;
+    private Long imageId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "losts_id")
-    private Losts losts;
+    @JoinColumn(name = "notice_id")
+    private Notice notice;
 
-    @Column(name = "lost_images_image_url")
+    @Column(name = "notice_image_url")
     private String imageUrl;
+
+    @Builder
+    public NoticeImage(Notice notice, String imageUrl) {
+        this.notice = notice;
+        this.imageUrl = imageUrl;
+    }
 }

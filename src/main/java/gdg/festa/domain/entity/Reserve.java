@@ -13,34 +13,35 @@ import java.util.UUID;
 @Getter
 @NoArgsConstructor
 @Table(name = "reserves")
-public class Reserves extends BaseEntity{
+public class Reserve extends BaseEntity {
+
     @Id
     @Column(name = "reserve_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID reserveId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "pubs_id")
-    private Pubs pubs;
+    @JoinColumn(name = "pub_id")
+    private Pub pub;
 
-    @Column(name = "attendance")
+    @Column(name = "reserve_attendance")
     private Long attendance;
 
-    @Column(name = "phoneNumber", nullable = false)
+    @Column(name = "reserve_phoneNumber", nullable = false)
     private String phoneNumber;
 
     @Column(name = "reserve_state",nullable = false)
     @Enumerated(EnumType.STRING)
     private ReserveStatus reserveStatus;
 
-    @Column(name = "name")
+    @Column(name = "reserve_name")
     private String name;
 
-    @Column(name = "browser_token")
+    @Column(name = "reserve_browser_token")
     private String browserToken;
 
     @Builder(builderMethodName = "reservesBuilder")
-    public Reserves(String phoneNumber, String browserToken) {
+    public Reserve(String phoneNumber, String browserToken) {
         super(LocalDateTime.now(), LocalDateTime.now(), null);
         this.phoneNumber = phoneNumber;
         this.reserveStatus = ReserveStatus.ENABLED;
@@ -54,10 +55,10 @@ public class Reserves extends BaseEntity{
     public void updateStatus(ReserveStatus reserveStatus) {
         this.reserveStatus = reserveStatus;
     }
-    public void updateReserve(Long attendance, String name, Pubs pubs) {
+    public void updateReserve(Long attendance, String name, Pub pub) {
         this.attendance = attendance;
         this.name = name;
-        this.pubs = pubs;
+        this.pub = pub;
         this.reserveStatus = ReserveStatus.WAITING;
     }
 

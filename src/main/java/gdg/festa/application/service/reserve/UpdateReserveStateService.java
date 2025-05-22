@@ -4,18 +4,15 @@ import gdg.festa.application.usecase.reserve.UpdateReserveUsecase;
 import gdg.festa.core.exception.CustomException;
 import gdg.festa.core.exception.ErrorCode;
 import gdg.festa.core.util.FcmUtil;
-import gdg.festa.domain.entity.Pubs;
-import gdg.festa.domain.entity.Reserves;
+import gdg.festa.domain.entity.Pub;
+import gdg.festa.domain.entity.Reserve;
 import gdg.festa.domain.repository.PubsRepository;
 import gdg.festa.domain.repository.ReserveRepository;
-import gdg.festa.domain.type.PubsStatus;
 import gdg.festa.domain.type.ReserveStatus;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -32,7 +29,7 @@ public class UpdateReserveStateService implements UpdateReserveUsecase {
     @Override
     public Boolean execute(String number) {
 
-        Reserves reserves = reserveRepository.findByPhoneNumber(number);
+        Reserve reserves = reserveRepository.findByPhoneNumber(number);
 
         /*  예약자가 예약을 취소하는 경우
          *  CANCELED 으로 바뀌는 경우, 대기 인원(-하고,) 해당 2,3순번에게 알람 전송하기
@@ -64,9 +61,9 @@ public class UpdateReserveStateService implements UpdateReserveUsecase {
 
 
         // 대기 순번 - 하기
-        Pubs pubs = reserves.getPubs();
-        pubs.updateWaitPeople(pubs.getWaitPeople());
-        pubsRepository.decreseWaitPeople(pubs.getPubsId());
+        Pub pub = reserves.getPub();
+        pub.updateWaitPeople(pub.getWaitPeople());
+        pubsRepository.decreseWaitPeople(pub.getPubId());
 
         // LATE인 사용자는 분기 종료
         if (status == ReserveStatus.LATE) {
@@ -89,16 +86,16 @@ public class UpdateReserveStateService implements UpdateReserveUsecase {
 
 
 
-        List<Reserves> notifyList = switch (currentOrder) {
-            case 1 -> reserveRepository.findByPubsAndReserveStatusAndOrderIn(pubs.getPubsId(), Arrays.asList(2, 3, 4));
-            case 2 -> reserveRepository.findByPubsAndReserveStatusAndOrderIn(pubs.getPubsId(), Arrays.asList(3, 4));
-            case 3 -> reserveRepository.findByPubsAndReserveStatusAndOrderIn(pubs.getPubsId(), Collections.singletonList(4));
+        List<Reserve> notifyList = switch (currentOrder) {
+            case 1 -> reserveRepository.findByPubsAndReserveStatusAndOrderIn(pub.getPubId(), Arrays.asList(2, 3, 4));
+            case 2 -> reserveRepository.findByPubsAndReserveStatusAndOrderIn(pub.getPubId(), Arrays.asList(3, 4));
+            case 3 -> reserveRepository.findByPubsAndReserveStatusAndOrderIn(pub.getPubId(), Collections.singletonList(4));
             default -> Collections.emptyList();
         };
 
         notifyList.stream()
                 .forEach(reserve -> fcmUtil.sendMessage(
-                    pubs.getName() + " 대기 순번 변경 알림",
+                    pub.getName() + " 대기 순번 변경 알림",
                     "앞 순서가 취소되어 대기 순번이 앞당겨졌습니다.",
                     reserve.getBrowserToken(),
                     reserve.getReserveId()

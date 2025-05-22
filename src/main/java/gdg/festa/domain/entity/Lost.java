@@ -11,35 +11,36 @@ import lombok.*;
 @Builder(builderMethodName = "LostsBuilder")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "losts")
-public class Losts extends BaseEntity {
-    @Id
-    @Column(name = "losts_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long lostsId;
+public class Lost extends BaseEntity {
 
-    @Column(name = "losts_title",nullable = false)
+    @Id
+    @Column(name = "lost_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long lostId;
+
+    @Column(name = "lost_title",nullable = false)
     private String title;
 
-    @Column(name = "losts_color",nullable = false)
+    @Column(name = "lost_color",nullable = false)
     private String color;
 
-    @Column(name = "losts_brand")
+    @Column(name = "lost_brand")
     private String brand;
 
-    @Column(name = "losts_location")
+    @Column(name = "lost_location")
     private String location;
 
-    @Column(name = "losts_note")
+    @Column(name = "lost_note")
     private String note;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "losts_tag", nullable = false)
+    @Column(name = "lost_tag", nullable = false)
     private TagStatus tag;
 
-    @Column(name = "losts_category")
+    @Column(name = "lost_category")
     private String category;
 
-    public void setLosts(LostsRequestDto lostsRequestDto){
+    public void setLost(LostsRequestDto lostsRequestDto){
         if (lostsRequestDto.title() != null) this.title = lostsRequestDto.title();
         if (lostsRequestDto.color() != null) this.color = lostsRequestDto.color();
         if (lostsRequestDto.brand() != null) this.brand = lostsRequestDto.brand();
