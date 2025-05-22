@@ -8,10 +8,10 @@ import lombok.*;
 @Entity
 @Getter
 @AllArgsConstructor
-@Builder
+@Builder(builderMethodName = "LostsBuilder")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "losts")
-public class Losts {
+public class Losts extends BaseEntity {
     @Id
     @Column(name = "losts_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

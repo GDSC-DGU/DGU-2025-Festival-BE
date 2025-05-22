@@ -14,7 +14,7 @@ import java.util.List;
 public class LostsMapper {
 
     public Losts toEntity(LostsRequestDto lostsRequestDto) {
-        return Losts.builder()
+        return Losts.LostsBuilder()
                 .title(lostsRequestDto.title())
                 .color(lostsRequestDto.color())
                 .brand(lostsRequestDto.brand())

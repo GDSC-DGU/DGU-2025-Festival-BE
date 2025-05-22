@@ -34,12 +34,13 @@ public class EditLostsService implements EditLostsUsecase {
     public void execute(Long lostsId, LostsRequestDto lostsRequestDto) {
         Losts losts = lostsRepository.findById(lostsId);
 
-        losts.setLosts(lostsRequestDto); // setLosts 메서드는 엔티티 내부에 정의되어 있어야 함
+        losts.setLosts(lostsRequestDto);
 
-        List<LostImages> oldImages = lostImageRepository.findByLosts(losts);
-        lostImageRepository.deleteByLosts(losts);
+        List<LostImages> oldImages = lostImageRepository.findByLostsAndDeletedAtIsNull(losts);
+        oldImages.forEach(img -> {
+            img.delete();  // deletedAt = now()
 
-        oldImages.forEach(img -> s3Util.delete(img.getImageUrl()));
+        });
 
         List<String> imageUrls = s3Util.upload(lostsRequestDto.images());
 
