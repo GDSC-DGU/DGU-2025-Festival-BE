@@ -1,0 +1,52 @@
+package gdg.festa.application.service.Losts;
+
+import gdg.festa.application.mapper.LostsImageMapper;
+import gdg.festa.application.mapper.LostsMapper;
+import gdg.festa.application.usecase.Losts.EditLostsUsecase;
+import gdg.festa.core.exception.CustomException;
+import gdg.festa.core.exception.ErrorCode;
+import gdg.festa.core.util.S3Util;
+import gdg.festa.domain.entity.LostImages;
+import gdg.festa.domain.entity.Losts;
+import gdg.festa.domain.repository.LostImageRepository;
+import gdg.festa.domain.repository.LostsRepository;
+import gdg.festa.infrastructure.jpa.LostsJpaRepository;
+import gdg.festa.presentation.request.losts.LostsRequestDto;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+@Transactional
+@RequiredArgsConstructor
+public class EditLostsService implements EditLostsUsecase {
+
+    private final LostsRepository lostsRepository;
+    private final LostImageRepository lostImageRepository;
+    private final LostsImageMapper lostsImageMapper;
+    private final S3Util s3Util;
+
+    @Override
+    public void execute(Long lostsId, LostsRequestDto lostsRequestDto) {
+        Losts losts = lostsRepository.findById(lostsId);
+
+        losts.setLosts(lostsRequestDto); // setLosts 메서드는 엔티티 내부에 정의되어 있어야 함
+
+        List<LostImages> oldImages = lostImageRepository.findByLosts(losts);
+        lostImageRepository.deleteByLosts(losts);
+
+        oldImages.forEach(img -> s3Util.delete(img.getImageUrl()));
+
+        List<String> imageUrls = s3Util.upload(lostsRequestDto.images());
+
+        List<LostImages> newImageEntities = imageUrls.stream()
+                .map(url -> lostsImageMapper.toEntity(url, losts))
+                .collect(Collectors.toList());
+
+        lostImageRepository.saveAll(newImageEntities);
+    }
+}
