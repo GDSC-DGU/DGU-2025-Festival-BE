@@ -28,21 +28,21 @@ public class UpdatePubService implements UpdatePubsUsecase {
     private final FcmUtil fcmUtil;
 
     @Override
-    public Boolean execute(UUID id, PubsStatus pubsStatus) {
+    public Boolean execute(UUID id, String status) {
 
 
         PubsAdmin pubsAdmin = pubsAdminRepository.findById(id);
         Pubs pubs = pubsRepository.findById(pubsAdmin.getPubs().getPubsId());
 
-
+        PubsStatus pubsStatus = PubsStatus.valueOf(status);
         /* Pub 관리자 전용. 일반 사용자 로직에서 불러오면 안됨.
         *  END 으로 바뀌는 경우, 대기 인원들에게 알람 전송하기
         *  */
 
         pubs.updateState(pubsStatus);
+
         if (pubsStatus == PubsStatus.END) {
             List<Reserves> reserves = reserveRepository.findAllPubsAndReserveStatus(pubs);
-            System.err.println(reserves.size());
             reserves.stream()
                     .forEach(reserve -> fcmUtil.sendMessage(
                             pubs.getName() + " 주점 휴식 알림",
