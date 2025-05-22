@@ -11,25 +11,29 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "notices")
-public class Notices {
+public class Notices extends BaseEntity{
     @Id
-    @Column(name = "notices_id")
+    @Column(name = "notice_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long noticesId;
 
-    @Column(name = "title",nullable = false)
+    @Column(name = "notice_title",nullable = false)
     private String title;
 
-    @Column(name = "note", length = 1024)
+    @Column(name = "notice_note", length = 1024)
     private String note;
 
     @Builder
     public Notices(String title, String note) {
+        super(LocalDateTime.now(), LocalDateTime.now(), null);
         this.title = title;
         this.note = note;
     }
+
 }
