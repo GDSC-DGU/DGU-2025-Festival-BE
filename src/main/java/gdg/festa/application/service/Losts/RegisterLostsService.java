@@ -1,44 +1,53 @@
 package gdg.festa.application.service.Losts;
 
-import gdg.festa.application.mapper.CategoryMapper;
+import gdg.festa.application.mapper.LostsImageMapper;
 import gdg.festa.application.mapper.LostsMapper;
-import gdg.festa.application.usecase.Losts.RegisterLostsUsecase;
-import gdg.festa.domain.entity.Categories;
+import gdg.festa.application.usecase.Losts.RegistLostsUsecase;
+import gdg.festa.core.exception.CustomException;
+import gdg.festa.core.exception.ErrorCode;
+import gdg.festa.core.util.S3Util;
+import gdg.festa.domain.entity.LostImages;
 import gdg.festa.domain.entity.Losts;
-import gdg.festa.domain.repository.CategoriesRepository;
+import gdg.festa.domain.repository.LostImageRepository;
 import gdg.festa.domain.repository.LostsRepository;
-import gdg.festa.presentation.request.CategoryRequestDto;
-import gdg.festa.presentation.request.LostsRequestDto;
+import gdg.festa.presentation.request.losts.LostsRequestDto;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class RegisterLostsService implements RegisterLostsUsecase {
-
+public class RegisterLostsService implements RegistLostsUsecase {
     private final LostsRepository lostsRepository;
+    private final LostImageRepository lostImageRepository;
     private final LostsMapper lostsMapper;
-    private final CategoriesRepository categoriesRepository;
-    private final CategoryMapper categoryMapper;
+    private final LostsImageMapper lostsImageMapper;
+    private final S3Util s3Util;
 
     @Override
-    public void execute(LostsRequestDto lostsRequestDto, CategoryRequestDto categoryRequestDto) {
-        Categories categories = categoryMapper.toEntity(categoryRequestDto);
-        try{
-            Categories saveCategory = categoriesRepository.save(categories);
-        } catch (Exception e) {
-            throw new RuntimeException("카테고리 저장 중 오류 발생",e);
-        }
+    public void execute(LostsRequestDto lostsRequestDto) {
 
+        List<String> imageUrls = s3Util.upload(lostsRequestDto.images());
+
+        Losts savelosts;
         Losts losts = lostsMapper.toEntity(lostsRequestDto);
-        losts.setCategories(categories);
         try{
-            Losts savelosts = lostsRepository.save(losts);
+            savelosts = lostsRepository.save(losts);
         } catch (Exception e) {
-            throw new RuntimeException("분실물 저장 중 오류 발생",e);
+            throw new CustomException(ErrorCode.NOT_SAVE_PROPER);
         }
 
+        List<LostImages> lostImages = imageUrls.stream()
+                .map(imageUrl -> {
+                    LostImages img = lostsImageMapper.toEntity(imageUrl, savelosts);
+                    return img;
+                }).collect(Collectors.toList());
+
+        lostImageRepository.saveAll(lostImages);
     }
+
 }

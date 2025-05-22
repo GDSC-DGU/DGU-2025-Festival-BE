@@ -28,4 +28,11 @@ public class PubsRepositoryImpl implements PubsRepository {
     public List<Pubs> findAll() {
         return pubsJpaRepository.findAll();
     }
+
+    @Override
+    public void decreseWaitPeople(Long id) {
+        pubsJpaRepository.decreseWaitPeople(id);
+    }
+
+
 }

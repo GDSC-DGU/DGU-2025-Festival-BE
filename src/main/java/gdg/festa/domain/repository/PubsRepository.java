@@ -8,4 +8,6 @@ import java.util.List;
 public interface PubsRepository {
     Pubs findById(Long id);
     List<Pubs> findAll();
+
+    void decreseWaitPeople(Long id);
 }
