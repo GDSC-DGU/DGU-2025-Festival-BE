@@ -52,4 +52,14 @@ public class Losts {
 
     @Column(name = "losts_category")
     private String category;
+
+    public void setLosts(LostsRequestDto lostsRequestDto){
+        if (lostsRequestDto.title() != null) this.title = lostsRequestDto.title();
+        if (lostsRequestDto.color() != null) this.color = lostsRequestDto.color();
+        if (lostsRequestDto.brand() != null) this.brand = lostsRequestDto.brand();
+        if (lostsRequestDto.location() != null) this.location = lostsRequestDto.location();
+        if (lostsRequestDto.note() != null) this.note = lostsRequestDto.note();
+        if (lostsRequestDto.tag() != null) this.tag = lostsRequestDto.tag();
+        if (lostsRequestDto.category() != null) this.category = lostsRequestDto.category();
+    }
 }

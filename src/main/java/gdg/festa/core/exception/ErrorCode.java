@@ -26,6 +26,7 @@ public enum ErrorCode {
     ALREADY_ENTERED("40013", HttpStatus.BAD_REQUEST, "이미 입장한 상태입니다."),
     INVALID_LABEL_TYPE("40014", HttpStatus.BAD_REQUEST, "잘못된 라벨 타입입니다."),
     NOT_FOUND_MISSION("40015", HttpStatus.BAD_REQUEST, "해당 미션을 찾을 수 없습니다."),
+    NOT_SAVE_PROPER("40016",HttpStatus.BAD_REQUEST,"저장에 실패하였습니다"),
 
     /**
      * 401** Unauthorized
@@ -66,6 +67,7 @@ public enum ErrorCode {
     NOT_FOUND_PUBS("40409", HttpStatus.NOT_FOUND, "해당 주점이 존재하지 않습니다."),
     NOT_FOUND_VERIFY("40410", HttpStatus.NOT_FOUND, "전화번호 확인이 되어있지 않습니다."),
     NOT_FOUND_RESERVE("40411", HttpStatus.NOT_FOUND, "예약정보를 찾을 수 없습니다."),
+    NOT_FOUND_LOST("40412", HttpStatus.NOT_FOUND, "분실물을 찾을 수 없습니다"),
 
     /**
      * 405** Method Not Allowed
