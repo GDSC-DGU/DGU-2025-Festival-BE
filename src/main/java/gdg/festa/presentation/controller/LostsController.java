@@ -45,7 +45,7 @@ public class LostsController {
     @PatchMapping("/{lostsId}")
     public CommonResponseDto<?> editLostsItem(
             @PathVariable Long lostsId,
-            @RequestBody LostsRequestDto lostsRequestDto
+            @ModelAttribute LostsRequestDto lostsRequestDto
     ) {
         editLostsUsecase.execute(lostsId,lostsRequestDto);
         return CommonResponseDto.created(true);

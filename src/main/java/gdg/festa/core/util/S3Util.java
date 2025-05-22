@@ -53,4 +53,27 @@ public class S3Util {
                 .collect(Collectors.toList());
     }
 
+    public void delete(String imageUrl) {
+        try {
+            String key = extractKeyFromUrl(imageUrl);
+            DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(key)
+                    .build();
+            s3Client.deleteObject(deleteObjectRequest);
+            log.info("S3 이미지 삭제 완료: {}", imageUrl);
+        } catch (Exception e) {
+            log.error("S3 이미지 삭제 중 오류 발생: {}", imageUrl, e);
+            throw new RuntimeException("S3 이미지 삭제 중 오류 발생: " + imageUrl, e);
+        }
+    }
+
+    private String extractKeyFromUrl(String imageUrl) {
+        String baseUrl = "https://" + bucketName + ".s3." + region + ".amazonaws.com/";
+        if (!imageUrl.startsWith(baseUrl)) {
+            throw new IllegalArgumentException("올바르지 않은 S3 URL 형식입니다: " + imageUrl);
+        }
+        return imageUrl.substring(baseUrl.length());
+    }
+
 }
