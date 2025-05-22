@@ -53,12 +53,12 @@ public class ReserveRepositoryImpl implements ReserveRepository {
     }
 
     @Override
-    public Long findMyOrder(String phoneNumber) {
-        return reserveJpaRepository.findMyOrder(phoneNumber, ReserveStatus.WAITING);
+    public Integer findMyOrder(String phoneNumber) {
+        return reserveJpaRepository.findMyOrder(phoneNumber, ReserveStatus.WAITING.name());
     }
 
     @Override
-    public List<Reserves> findByPubsAndReserveStatusAndOrderIn(Pubs pubs, List<Integer> orders) {
-        return reserveJpaRepository.findByPubsAndReserveStatusAndOrderIn(pubs, ReserveStatus.WAITING, orders);
+    public List<Reserves> findByPubsAndReserveStatusAndOrderIn(Long pubsId, List<Integer> orders) {
+        return reserveJpaRepository.findByPubsAndReserveStatusAndOrderIn(pubsId, ReserveStatus.WAITING.name(), orders);
     }
 }

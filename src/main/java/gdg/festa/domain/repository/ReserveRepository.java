@@ -23,8 +23,8 @@ public interface ReserveRepository {
     List<Reserves> findByPubsAndReserveStatus(Pubs pubs);
     List<Reserves> findAllPubsAndReserveStatus(Pubs pubs);
 
-    Long findMyOrder(String phoneNumber);
+    Integer findMyOrder(String phoneNumber);
 
-    List<Reserves> findByPubsAndReserveStatusAndOrderIn(Pubs pubs,List<Integer> orders);
+    List<Reserves> findByPubsAndReserveStatusAndOrderIn(Long pubsId,List<Integer> orders);
 
 }

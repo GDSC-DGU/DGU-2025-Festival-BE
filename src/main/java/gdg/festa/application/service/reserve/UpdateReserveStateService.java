@@ -65,26 +65,36 @@ public class UpdateReserveStateService implements UpdateReserveUsecase {
 
         // 대기 순번 - 하기
         Pubs pubs = reserves.getPubs();
+        pubs.updateWaitPeople(pubs.getWaitPeople());
         pubsRepository.decreseWaitPeople(pubs.getPubsId());
+
+        // LATE인 사용자는 분기 종료
+        if (status == ReserveStatus.LATE) {
+            reserves.updateStatus(ReserveStatus.CANCELED);
+            return true;
+        }
+
+        // CALLED인 사용자는 대기순이 1번이므로,
+        Integer currentOrder;
+        if (status == ReserveStatus.CALLED) {
+            currentOrder = 1;
+        } else {
+            // WAITING 상태일 때 실제 순번 조회
+            currentOrder = reserveRepository.findMyOrder(number);
+        }
 
         // 취소 처리
         reserves.updateStatus(ReserveStatus.CANCELED);
 
-        // 취소한 사용자의 대기 순번이 3등 이하인 경우
-        Long currentOrder = reserveRepository.findMyOrder(reserves.getPhoneNumber());
 
 
 
-        System.err.println("currentOrder" + currentOrder);
-
-
-        List<Reserves> notifyList = switch (currentOrder.intValue()) {
-            case 1 -> reserveRepository.findByPubsAndReserveStatusAndOrderIn(pubs, Arrays.asList(2, 3, 4));
-            case 2 -> reserveRepository.findByPubsAndReserveStatusAndOrderIn(pubs, Arrays.asList(3, 4));
-            case 3 -> reserveRepository.findByPubsAndReserveStatusAndOrderIn(pubs, Collections.singletonList(4));
+        List<Reserves> notifyList = switch (currentOrder) {
+            case 1 -> reserveRepository.findByPubsAndReserveStatusAndOrderIn(pubs.getPubsId(), Arrays.asList(2, 3, 4));
+            case 2 -> reserveRepository.findByPubsAndReserveStatusAndOrderIn(pubs.getPubsId(), Arrays.asList(3, 4));
+            case 3 -> reserveRepository.findByPubsAndReserveStatusAndOrderIn(pubs.getPubsId(), Collections.singletonList(4));
             default -> Collections.emptyList();
         };
-        System.err.println("notifyListSize" + notifyList.size());
 
         notifyList.stream()
                 .forEach(reserve -> fcmUtil.sendMessage(

@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import software.amazon.awssdk.services.s3.endpoints.internal.Value;
 
 public interface ReserveJpaRepository extends JpaRepository<Reserves, UUID> {
     Optional<Reserves> findByPhoneNumber(String phoneNumber);
@@ -29,14 +30,27 @@ public interface ReserveJpaRepository extends JpaRepository<Reserves, UUID> {
     @Query(value = """
     SELECT ranking FROM (
         SELECT
-            phone_number,
+            reserve_id,
             ROW_NUMBER() OVER (ORDER BY created_at) AS ranking
         FROM reserves
         WHERE reserve_state = :reserveStatus
+          AND pubs_id = (
+              SELECT pubs_id FROM reserves
+              WHERE phone_number = :phoneNumber
+              AND reserve_state = :reserveStatus
+              ORDER BY created_at DESC
+              LIMIT 1
+          )
     ) ranked
-    WHERE phone_number = :phoneNumber
+    WHERE reserve_id = (
+        SELECT reserve_id FROM reserves
+        WHERE phone_number = :phoneNumber
+        AND reserve_state = :reserveStatus
+        ORDER BY created_at DESC
+        LIMIT 1
+    )
     """, nativeQuery = true)
-    Long findMyOrder(String phoneNumber, ReserveStatus reserveStatus);
+    Integer findMyOrder(String phoneNumber, String reserveStatus);
 
     @Query(value = """
     SELECT * FROM (
@@ -44,12 +58,13 @@ public interface ReserveJpaRepository extends JpaRepository<Reserves, UUID> {
                ROW_NUMBER() OVER (ORDER BY created_at) AS row_num
         FROM reserves
         WHERE reserve_state = :reserveStatus
+          AND pubs_id = :pubsId
     ) AS ordered
     WHERE row_num IN (:orders)
     """, nativeQuery = true)
     List<Reserves> findByPubsAndReserveStatusAndOrderIn(
-            Pubs pubs,
-            ReserveStatus reserveStatus,
+            Long pubsId,
+            String reserveStatus,
             List<Integer> orders
     );
 }

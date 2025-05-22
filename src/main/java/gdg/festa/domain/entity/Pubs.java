@@ -41,4 +41,7 @@ public class Pubs {
     public void updateState(PubsStatus pubsStatus) {
         this.pubsStatus = pubsStatus;
     }
+    public void updateWaitPeople(Long people) {
+        this.waitPeople = people - 1L;
+    }
 }
