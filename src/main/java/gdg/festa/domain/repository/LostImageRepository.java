@@ -11,4 +11,5 @@ public interface LostImageRepository {
     List<LostImages> findByLostsLostsId(Long lostsId);
     List<LostImages> findByLosts(Losts losts);
     void deleteByLosts(Losts losts);
+    List<LostImages> findByLostsAndDeletedAtIsNull(Losts losts);
 }

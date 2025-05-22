@@ -36,4 +36,9 @@ public class LostImageRepositoryImpl implements LostImageRepository {
     public void deleteByLosts(Losts losts){
         lostsImageJpaRepository.deleteByLosts(losts);
     }
+
+    @Override
+    public List<LostImages> findByLostsAndDeletedAtIsNull(Losts losts) {
+        return lostsImageJpaRepository.findByLostsAndDeletedAtIsNull(losts);
+    }
 }
