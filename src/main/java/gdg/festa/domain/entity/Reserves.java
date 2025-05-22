@@ -49,10 +49,6 @@ public class Reserves extends BaseEntity {
     }
 
 
-    public void updateStatus() {
-        this.reserveStatus = ReserveStatus.CANCELED;
-    }
-
     public void updateStatus(ReserveStatus reserveStatus) {
         this.reserveStatus = reserveStatus;
     }
