@@ -7,6 +7,9 @@ import gdg.festa.domain.type.ReserveStatus;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -21,6 +24,10 @@ public interface ReserveJpaRepository extends JpaRepository<Reserves, UUID> {
             + "order by r.createdAt DESC "
             + "limit 2")
     List<Reserves> findByPubsAndReserveStatus(Pubs pubs, ReserveStatus reserveStatus);
+
+    @Query("SELECT r FROM Reserves r WHERE r.pubs.id = :pubId")
+    List<Reserves> findAllByPubsId(Long pubId);
+
     @Query("SELECT r "
             + "FROM Reserves r "
             + "where r.pubs = :pubs AND r.reserveStatus = :reserveStatus ")

@@ -2,7 +2,6 @@ package gdg.festa.domain.entity;
 
 import gdg.festa.domain.type.ReserveStatus;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,9 +11,9 @@ import java.util.UUID;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @Table(name = "reserves")
-public class Reserves extends BaseEntity {
+public class Reserves extends BaseEntity{
     @Id
     @Column(name = "reserve_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -48,6 +47,9 @@ public class Reserves extends BaseEntity {
         this.browserToken = browserToken;
     }
 
+    public void updateStatus() {
+        this.reserveStatus = ReserveStatus.CANCELED;
+    }
 
     public void updateStatus(ReserveStatus reserveStatus) {
         this.reserveStatus = reserveStatus;
