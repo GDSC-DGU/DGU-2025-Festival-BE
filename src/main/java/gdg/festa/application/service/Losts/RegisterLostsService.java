@@ -3,6 +3,8 @@ package gdg.festa.application.service.Losts;
 import gdg.festa.application.mapper.LostsImageMapper;
 import gdg.festa.application.mapper.LostsMapper;
 import gdg.festa.application.usecase.Losts.RegistLostsUsecase;
+import gdg.festa.core.exception.CustomException;
+import gdg.festa.core.exception.ErrorCode;
 import gdg.festa.core.util.S3Util;
 import gdg.festa.domain.entity.LostImages;
 import gdg.festa.domain.entity.Losts;
@@ -36,13 +38,12 @@ public class RegisterLostsService implements RegistLostsUsecase {
         try{
             savelosts = lostsRepository.save(losts);
         } catch (Exception e) {
-            throw new RuntimeException("분실물 저장 중 오류 발생",e);
+            throw new CustomException(ErrorCode.NOT_SAVE_PROPER);
         }
 
         List<LostImages> lostImages = imageUrls.stream()
                 .map(imageUrl -> {
                     LostImages img = lostsImageMapper.toEntity(imageUrl, savelosts);
-                    System.out.println("Saving image: " + img.getImageUrl() + " with lostsId=" + savelosts.getLostsId());
                     return img;
                 }).collect(Collectors.toList());
 
