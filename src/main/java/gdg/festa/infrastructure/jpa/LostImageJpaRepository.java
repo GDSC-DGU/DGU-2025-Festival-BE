@@ -17,4 +17,6 @@ public interface LostImageJpaRepository extends JpaRepository<LostImages,Long> {
     @Modifying
     @Query("DELETE FROM LostImages li WHERE li.losts = :losts")
     void deleteByLosts(@Param("losts") Losts losts);
+
+    List<LostImages> findByLostsAndDeletedAtIsNull(Losts losts);
 }

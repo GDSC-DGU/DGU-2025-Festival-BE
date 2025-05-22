@@ -17,13 +17,13 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@Builder
+@Builder(builderMethodName = "LostImagesBuilder")
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "lost_images")
-public class LostImages {
+public class LostImages extends BaseEntity {
     @Id
-    @Column(name = "lostImages_id")
+    @Column(name = "lost_images_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long lostImagesId;
 
@@ -31,6 +31,6 @@ public class LostImages {
     @JoinColumn(name = "losts_id")
     private Losts losts;
 
-    @Column(name = "lostImages_image_url")
+    @Column(name = "lost_images_image_url")
     private String imageUrl;
 }

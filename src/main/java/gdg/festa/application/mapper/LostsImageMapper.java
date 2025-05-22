@@ -13,7 +13,7 @@ import java.util.List;
 public class LostsImageMapper {
 
     public LostImages toEntity(String imagesUrl,Losts losts){
-        return LostImages.builder()
+        return LostImages.LostImagesBuilder()
                 .losts(losts)
                 .imageUrl(imagesUrl)
                 .build();
