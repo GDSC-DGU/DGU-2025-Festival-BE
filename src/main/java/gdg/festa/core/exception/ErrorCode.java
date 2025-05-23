@@ -68,6 +68,7 @@ public enum ErrorCode {
     NOT_FOUND_VERIFY("40410", HttpStatus.NOT_FOUND, "전화번호 확인이 되어있지 않습니다."),
     NOT_FOUND_RESERVE("40411", HttpStatus.NOT_FOUND, "예약정보를 찾을 수 없습니다."),
     NOT_FOUND_LOST("40412", HttpStatus.NOT_FOUND, "분실물을 찾을 수 없습니다"),
+    NOT_FOUND_NOTICE("40413",HttpStatus.NOT_FOUND,"공지를 찾을 수 없습니다"),
 
     /**
      * 405** Method Not Allowed
