@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class LostController {
 
-    private final RegistLostUsecase registerLostsUsecase;
+    private final RegistLostUsecase registLostUsecase;
     private final GetLostUsecase getLostUsecase;
     private final EditLostUsecase editLostUsecase;
     private final RemoveLostUsecase removeLostUsecase;
@@ -30,7 +30,7 @@ public class LostController {
     public CommonResponseDto<?> LostsRegister(
         @ModelAttribute LostRequestDto lostRequestDto
     ){
-        registerLostsUsecase.execute(lostRequestDto);
+        registLostUsecase.execute(lostRequestDto);
         return CommonResponseDto.created(true);
     }
 

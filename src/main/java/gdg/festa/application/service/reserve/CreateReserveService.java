@@ -22,6 +22,9 @@ public class CreateReserveService implements CreateReserveUseCase {
 
         Pub pub = pubRepository.findById(boothId);
 
+        Long currentPeople = reserve.getPub().getWaitPeople();
+        pub.updateAddWaitPeople(currentPeople);
+
         reserve.updateReserve(
                 createReserveRequestDto.attendance(),
                 createReserveRequestDto.name(),
