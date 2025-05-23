@@ -3,7 +3,7 @@ package gdg.festa.presentation.controller;
 import gdg.festa.application.usecase.auth.GetTokenByLoginIdUseCase;
 import gdg.festa.application.usecase.auth.RegisterUseCase;
 import gdg.festa.core.common.CommonResponseDto;
-import gdg.festa.presentation.request.LoginRequestDto;
+import gdg.festa.presentation.request.auth.LoginRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

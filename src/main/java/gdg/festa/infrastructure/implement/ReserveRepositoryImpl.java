@@ -2,8 +2,8 @@ package gdg.festa.infrastructure.implement;
 
 import gdg.festa.core.exception.CustomException;
 import gdg.festa.core.exception.ErrorCode;
-import gdg.festa.domain.entity.Pubs;
-import gdg.festa.domain.entity.Reserves;
+import gdg.festa.domain.entity.Pub;
+import gdg.festa.domain.entity.Reserve;
 import gdg.festa.domain.repository.ReserveRepository;
 import gdg.festa.domain.type.ReserveStatus;
 import gdg.festa.infrastructure.jpa.ReserveJpaRepository;
@@ -20,40 +20,40 @@ public class ReserveRepositoryImpl implements ReserveRepository {
     private final ReserveJpaRepository reserveJpaRepository;
 
     @Override
-    public Reserves findByPhoneNumber(String number) {
+    public Reserve findByPhoneNumber(String number) {
         return reserveJpaRepository.findByPhoneNumber(number)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
     }
 
     @Override
-    public void save(Reserves reserves) {
-        reserveJpaRepository.save(reserves);
+    public void save(Reserve reserve) {
+        reserveJpaRepository.save(reserve);
     }
 
     @Override
-    public Reserves findByPhoneNumberAndReserveStatus(String phoneNumber) {
+    public Reserve findByPhoneNumberAndReserveStatus(String phoneNumber) {
         return reserveJpaRepository.findByPhoneNumberAndReserveStatus(phoneNumber, ReserveStatus.ENABLED)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_VERIFY));
     }
 
     @Override
-    public Reserves findById(UUID reserveId) {
+    public Reserve findById(UUID reserveId) {
         return reserveJpaRepository.findById(reserveId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_RESERVE));
     }
 
     @Override
-    public List<Reserves> findByPubsAndReserveStatus(Pubs pubs) {
-        return reserveJpaRepository.findByPubsAndReserveStatus(pubs, ReserveStatus.WAITING);
+    public List<Reserve> findByPubsAndReserveStatus(Pub pub) {
+        return reserveJpaRepository.findByPubAndReserveStatus(pub, ReserveStatus.WAITING);
     }
 
     @Override
-    public List<Reserves> findAllByPubId(Long pubId) {
-        return reserveJpaRepository.findAllByPubsId(pubId);}
+    public List<Reserve> findAllByPubId(Long pubId) {
+        return reserveJpaRepository.findAllByPubId(pubId);}
       
     @Override
-    public List<Reserves> findAllPubsAndReserveStatus(Pubs pubs) {
-        return reserveJpaRepository.findAllPubsAndReserveStatus(pubs, ReserveStatus.WAITING);
+    public List<Reserve> findAllPubsAndReserveStatus(Pub pub) {
+        return reserveJpaRepository.findAllPubsAndReserveStatus(pub, ReserveStatus.WAITING);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class ReserveRepositoryImpl implements ReserveRepository {
     }
 
     @Override
-    public List<Reserves> findByPubsAndReserveStatusAndOrderIn(Long pubsId, List<Integer> orders) {
+    public List<Reserve> findByPubsAndReserveStatusAndOrderIn(Long pubsId, List<Integer> orders) {
         return reserveJpaRepository.findByPubsAndReserveStatusAndOrderIn(pubsId, ReserveStatus.WAITING.name(), orders);
     }
 }
