@@ -21,18 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class LostController {
 
-    private final RegistLostUsecase registLostUsecase;
     private final GetLostUsecase getLostUsecase;
-    private final EditLostUsecase editLostUsecase;
-    private final RemoveLostUsecase removeLostUsecase;
 
-    @PostMapping("/")
-    public CommonResponseDto<?> LostsRegister(
-        @ModelAttribute LostRequestDto lostRequestDto
-    ){
-        registLostUsecase.execute(lostRequestDto);
-        return CommonResponseDto.created(true);
-    }
 
     @GetMapping("/{lostsId}")
     public CommonResponseDto<?> getLostsItem(
@@ -41,21 +31,4 @@ public class LostController {
         return CommonResponseDto.ok(getLostUsecase.execute(lostsId));
     }
 
-    @PatchMapping("/{lostsId}")
-    public CommonResponseDto<?> editLostsItem(
-            @PathVariable Long lostsId,
-            @ModelAttribute LostRequestDto lostRequestDto
-    ) {
-        editLostUsecase.execute(lostsId, lostRequestDto);
-        return CommonResponseDto.created(true);
-    }
-
-
-    @DeleteMapping("/{lostsId}")
-    public CommonResponseDto<?> removeLostsItem(
-            @PathVariable Long lostsId
-    ) {
-        removeLostUsecase.execute(lostsId);
-        return CommonResponseDto.created(true);
-    }
 }
