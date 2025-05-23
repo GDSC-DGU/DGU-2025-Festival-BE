@@ -3,7 +3,7 @@ package gdg.festa.application.service.sms;
 import gdg.festa.application.usecase.sms.SmsCertifyUseCase;
 import gdg.festa.core.exception.CustomException;
 import gdg.festa.core.exception.ErrorCode;
-import gdg.festa.core.util.SmsUtil;
+import gdg.festa.infrastructure.sms.SmsUtil;
 import gdg.festa.infrastructure.redis.SmsCertification;
 import gdg.festa.presentation.request.sms.SmsCertifyRequestDto;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ public class SmsCertifyService implements SmsCertifyUseCase {
 
     public Boolean execute(SmsCertifyRequestDto smsCertifyRequestDto) {
         String phone = smsCertifyRequestDto.phoneNumber();
-        String code = smsUtil.sendSMS(phone);;
+        String code = smsUtil.sendMessage(phone);
         if(code.isEmpty()){
             throw new CustomException(ErrorCode.SMS_SEND_FAIL);
         }
