@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "notice_images")
-public class NoticeImages {
+public class NoticeImages extends BaseEntity {
     @Id
     @Column(name = "image_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,7 +31,7 @@ public class NoticeImages {
     @Column(name = "image_url")
     private String imageUrl;
 
-    @Builder
+    @Builder(builderMethodName = "noticeImagesBuilder")
     public NoticeImages(Notices notice, String imageUrl) {
         this.notice = notice;
         this.imageUrl = imageUrl;

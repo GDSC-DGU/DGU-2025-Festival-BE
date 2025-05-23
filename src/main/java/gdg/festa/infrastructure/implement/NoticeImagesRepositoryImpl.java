@@ -1,6 +1,7 @@
 package gdg.festa.infrastructure.implement;
 
 import gdg.festa.domain.entity.NoticeImages;
+import gdg.festa.domain.entity.Notices;
 import gdg.festa.domain.repository.NoticeImagesRepository;
 import gdg.festa.infrastructure.jpa.NoticeImagesJpaRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,5 +24,8 @@ public class NoticeImagesRepositoryImpl implements NoticeImagesRepository {
     public void saveAll(List<NoticeImages> noticeImages) {
         noticeImagesJpaRepository.saveAll(noticeImages);
     }
+
+    @Override
+    public List<NoticeImages> findByNoticeAndDeletedAtIsNull(Notices notices) { return noticeImagesJpaRepository.findByNoticeAndDeletedAtIsNull(notices); }
 
 }
