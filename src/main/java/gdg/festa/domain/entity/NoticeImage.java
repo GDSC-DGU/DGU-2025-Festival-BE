@@ -14,13 +14,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "notice_images")
-// TODO: NoticeImage도 BaseEntity 상속받기
-public class NoticeImage {
-
+public class NoticeImage extends BaseEntity {
     @Id
     @Column(name = "image_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,8 +33,9 @@ public class NoticeImage {
     @Column(name = "notice_image_url")
     private String imageUrl;
 
-    @Builder
+    @Builder(builderMethodName = "noticeImagesBuilder")
     public NoticeImage(Notice notice, String imageUrl) {
+        super(LocalDateTime.now(), LocalDateTime.now(), null);
         this.notice = notice;
         this.imageUrl = imageUrl;
     }

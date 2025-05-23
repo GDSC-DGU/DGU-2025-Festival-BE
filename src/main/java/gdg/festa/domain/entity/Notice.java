@@ -37,4 +37,9 @@ public class Notice extends BaseEntity {
         this.note = note;
     }
 
+    public void setNotice(String title, String note){
+        this.title = title;
+        if(note!=null) this.note = note;
+    }
+
 }

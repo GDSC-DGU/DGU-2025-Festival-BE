@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 public class LostImageMapper {
 
     public LostImage toEntity(String imagesUrl, Lost lost){
-        return LostImage.LostImagesBuilder()
+        return LostImage.LostImageBuilder()
                 .lost(lost)
                 .imageUrl(imagesUrl)
                 .build();

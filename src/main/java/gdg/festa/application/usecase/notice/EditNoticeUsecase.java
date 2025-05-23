@@ -4,6 +4,6 @@ import gdg.festa.core.annotation.UseCase;
 import gdg.festa.presentation.request.notice.CreateNoticeRequestDto;
 
 @UseCase
-public interface CreateNoticeUsecase {
-    Boolean execute(CreateNoticeRequestDto createNoticeRequestDto);
+public interface EditNoticeUsecase {
+    void execute(Long noticeId, CreateNoticeRequestDto createNoticeRequestDto);
 }

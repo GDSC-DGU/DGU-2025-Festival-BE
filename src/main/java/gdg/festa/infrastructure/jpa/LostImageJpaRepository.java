@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface LostImageJpaRepository extends JpaRepository<LostImage,Long> {
 
-    List<LostImage> findByLostId(Long lostId);
+    //List<LostImage> findByLostId(Long lostId);
     List<LostImage> findByLost(Lost lost);
 
     @Modifying

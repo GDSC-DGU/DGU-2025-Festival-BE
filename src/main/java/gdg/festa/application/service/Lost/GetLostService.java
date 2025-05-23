@@ -27,7 +27,7 @@ public class GetLostService implements GetLostUsecase {
     @Override
     public GetLostResponseDto execute(Long lostId){
         Lost getLost = lostRepository.findById(lostId);
-        List<LostImage> getLostImages =  lostImageRepository.findByLostId(lostId);
+        List<LostImage> getLostImages =  lostImageRepository.findByLost(getLost);
 
         GetLostResponseDto getLostResponseDto = lostMapper.toDto(getLost);
 

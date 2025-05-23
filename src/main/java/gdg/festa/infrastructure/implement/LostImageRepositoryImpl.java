@@ -20,10 +20,10 @@ public class LostImageRepositoryImpl implements LostImageRepository {
         lostImageJpaRepository.saveAll(lostImages);
     }
 
-    @Override
-    public List<LostImage> findByLostId(Long lostId){
-        return lostImageJpaRepository.findByLostId(lostId);
-    }
+//    @Override
+//    public List<LostImage> findByLostId(Long lostId){
+//        return lostImageJpaRepository.findByLostId(lostId);
+//    }
 
     @Override
     public List<LostImage> findByLost(Lost lost){

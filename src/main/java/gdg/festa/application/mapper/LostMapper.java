@@ -11,7 +11,7 @@ import java.util.Collections;
 public class LostMapper {
 
     public Lost toEntity(LostRequestDto lostRequestDto) {
-        return Lost.LostsBuilder()
+        return Lost.LostBuilder()
                 .title(lostRequestDto.title())
                 .color(lostRequestDto.color())
                 .brand(lostRequestDto.brand())
