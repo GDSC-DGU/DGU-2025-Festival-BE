@@ -1,4 +1,4 @@
-package gdg.festa.application.service.Lost;
+package gdg.festa.application.service.lost;
 
 import gdg.festa.application.usecase.lost.RemoveLostUsecase;
 import gdg.festa.domain.entity.LostImage;

@@ -26,11 +26,6 @@ public class LostImageRepositoryImpl implements LostImageRepository {
     }
 
     @Override
-    public List<LostImage> findByLost(Lost lost){
-        return lostImageJpaRepository.findByLost(lost);
-    }
-
-    @Override
     public void deleteByLost(Lost lost){
         lostImageJpaRepository.deleteByLost(lost);
     }

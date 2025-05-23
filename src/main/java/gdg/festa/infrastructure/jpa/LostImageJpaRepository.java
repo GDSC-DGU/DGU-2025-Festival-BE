@@ -11,8 +11,8 @@ import java.util.List;
 
 public interface LostImageJpaRepository extends JpaRepository<LostImage,Long> {
 
+    @Query("SELECT li FROM LostImage li WHERE li.lost.lostId = :lostId")
     List<LostImage> findByLostId(Long lostId);
-    List<LostImage> findByLost(Lost lost);
 
     @Modifying
     @Query("DELETE FROM LostImage li WHERE li.lost = :lost")
