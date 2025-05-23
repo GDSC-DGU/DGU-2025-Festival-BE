@@ -40,8 +40,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
                                 .requestMatchers(Constants.NO_NEED_AUTH_URLS.toArray(String[]::new)).permitAll()
-                                .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
-                                .requestMatchers("/api/v1/users/**").hasRole("USER")
+                                .requestMatchers("/admin/festa/**").hasRole("ADFESTA")
+                                .requestMatchers("/admin/pub/**").hasRole("ADPUB")
                                 .anyRequest().authenticated()
                 )
                 .exceptionHandling((exceptionHandling) ->
