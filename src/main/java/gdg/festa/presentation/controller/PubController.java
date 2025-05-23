@@ -48,7 +48,7 @@ public class PubController {
     }
 
     @PostMapping("/admin/pub/call")
-    public CommonResponseDto<?> reserverCalled(
+    public CommonResponseDto<?> reserveCalled(
             @UserId UUID adminId,
             @RequestBody CompletedReserveRequestDto completedReserveRequestDto
     ) {

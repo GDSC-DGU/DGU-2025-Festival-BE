@@ -45,4 +45,8 @@ public class Pub {
     public void updateWaitPeople(Long people) {
         this.waitPeople = people - 1L;
     }
+
+    public void updateAddWaitPeople(Long people) {
+        this.waitPeople = people + 1L;
+    }
 }

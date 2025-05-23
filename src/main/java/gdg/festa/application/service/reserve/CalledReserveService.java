@@ -22,6 +22,9 @@ public class CalledReserveService implements CalledReserveUseCase {
     public Boolean execute(CompletedReserveRequestDto completedReserveRequestDto) {
         Reserve reserve = reserveRepository.findById(completedReserveRequestDto.reserveId());
 
+        Long currentPeople = reserve.getPub().getWaitPeople();
+        reserve.getPub().updateWaitPeople(currentPeople);
+
         fcmUtil.sendMessage(
                 reserve.getPub().getName() + " 주점 입장 가능 알림 ",
                 "5분내로 오셔야합니다.",
