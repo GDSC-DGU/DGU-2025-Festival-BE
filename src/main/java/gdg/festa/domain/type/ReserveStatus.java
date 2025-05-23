@@ -12,5 +12,5 @@ public enum ReserveStatus {
     LATE("LATE"), //지각생 -> 3분 지각함
     ENABLED("ENABLED"); //휴대폰 인증완료 -> 인증은 완료했지만 아직 예약은 안함
 
-    private final String reserveStatus;
+    private final String r;
 }

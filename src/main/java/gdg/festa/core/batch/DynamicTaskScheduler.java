@@ -1,15 +1,13 @@
 package gdg.festa.core.batch;
 
 
-import gdg.festa.domain.entity.Reserves;
+import gdg.festa.domain.entity.Reserve;
 import gdg.festa.domain.repository.ReserveRepository;
 import gdg.festa.domain.type.ReserveStatus;
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -32,32 +30,31 @@ public class DynamicTaskScheduler {
     private final Map<UUID, ScheduledFuture<?>> scheduledTasks = new ConcurrentHashMap<>();
 
     @Transactional
-    public void scheduleSingleUserTask(Reserves reserves) {
-        LocalTime adjustedTime = LocalTime.from(LocalDateTime.now().plusMinutes(1));
+    public void scheduleSingleUserTask(Reserve reserve) {
+        LocalTime adjustedTime = LocalTime.from(LocalDateTime.now().plusMinutes(5));
         long delay = calculateDelay(adjustedTime);
 
-        scheduleTask(reserves, delay);
+        scheduleTask(reserve, delay);
     }
 
-    private void scheduleTask(Reserves reserves , long delay) {
+    private void scheduleTask(Reserve reserve, long delay) {
         ScheduledFuture<?> future = taskScheduler.schedule(
                 () -> {
-                    Reserves checkReserves = reserveRepository.findById(reserves.getReserveId());
-                    System.err.println(checkReserves.getReserveStatus());
-                    if ( checkReserves.getReserveStatus() == ReserveStatus.CALLED) {
-                        checkReserves.updateStatus(ReserveStatus.LATE);
+                    Reserve checkReserve = reserveRepository.findById(reserve.getReserveId());
+                    if ( checkReserve.getReserveStatus() == ReserveStatus.CALLED) {
+                        checkReserve.updateStatus(ReserveStatus.LATE);
                     }
                 },
                 new Date(System.currentTimeMillis() + delay)
         );
 
-        ScheduledFuture<?> existingTask = scheduledTasks.put(reserves.getReserveId(), future);
+        ScheduledFuture<?> existingTask = scheduledTasks.put(reserve.getReserveId(), future);
         if (existingTask != null) {
             existingTask.cancel(false);
-            log.info("기존 작업 취소: 사용자 {}", reserves.getName());
+            log.info("기존 작업 취소: 사용자 {}", reserve.getName());
         }
 
-        log.info("스케줄링 예약: 사용자 {}, 지연: {} ms", reserves.getName(), delay);
+        log.info("스케줄링 예약: 사용자 {}, 지연: {} ms", reserve.getName(), delay);
     }
 
     private long calculateDelay(LocalTime attendanceTime) {
