@@ -1,33 +1,30 @@
 package gdg.festa.domain.repository;
 
-import gdg.festa.domain.entity.Pubs;
-import gdg.festa.domain.entity.Reserves;
+import gdg.festa.domain.entity.Pub;
+import gdg.festa.domain.entity.Reserve;
 
-import gdg.festa.domain.type.PubsStatus;
-import gdg.festa.domain.type.ReserveStatus;
 import java.util.List;
 import java.util.UUID;
-import org.springframework.data.jpa.repository.Query;
 
 public interface ReserveRepository {
 
-    Reserves findByPhoneNumber(String number);
+    Reserve findByPhoneNumber(String number);
 
-    void save(Reserves reserves);
+    void save(Reserve reserve);
 
-    Reserves findByPhoneNumberAndReserveStatus(String phoneNumber);
+    Reserve findByPhoneNumberAndReserveStatus(String phoneNumber);
 
-    Reserves findById(UUID reserveId);
+    Reserve findById(UUID reserveId);
 
 
-    List<Reserves> findByPubsAndReserveStatus(Pubs pubs);
+    List<Reserve> findByPubsAndReserveStatus(Pub pub);
   
-    List<Reserves> findAllByPubId(Long pubId);
+    List<Reserve> findAllByPubId(Long pubId);
   
-    List<Reserves> findAllPubsAndReserveStatus(Pubs pubs);
+    List<Reserve> findAllPubsAndReserveStatus(Pub pub);
 
     Integer findMyOrder(String phoneNumber);
 
-    List<Reserves> findByPubsAndReserveStatusAndOrderIn(Long pubsId,List<Integer> orders);
+    List<Reserve> findByPubsAndReserveStatusAndOrderIn(Long pubsId, List<Integer> orders);
 
 }

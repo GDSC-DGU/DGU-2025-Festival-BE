@@ -1,8 +1,7 @@
 package gdg.festa.domain.repository;
 
-import gdg.festa.domain.entity.FestaAdmins;
-import gdg.festa.domain.entity.PubsAdmin;
+import gdg.festa.domain.entity.FestaAdmin;
 
 public interface FestaAdminsRepository {
-    FestaAdmins findByLoginId(String loginId);
+    FestaAdmin findByLoginId(String loginId);
 }

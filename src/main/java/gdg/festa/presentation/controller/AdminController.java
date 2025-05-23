@@ -1,10 +1,10 @@
 package gdg.festa.presentation.controller;
 
-import gdg.festa.application.usecase.notices.CreateNoticesUsecase;
-import gdg.festa.application.usecase.notices.EditNoticesUsecase;
-import gdg.festa.application.usecase.notices.RemoveNoticeUsecase;
+import gdg.festa.application.usecase.notice.CreateNoticeUsecase;
+import gdg.festa.application.usecase.notice.EditNoticeUsecase;
+import gdg.festa.application.usecase.notice.RemoveNoticeUsecase;
 import gdg.festa.core.common.CommonResponseDto;
-import gdg.festa.presentation.request.CreateNoticesRequestDto;
+import gdg.festa.presentation.request.notice.CreateNoticeRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,28 +12,28 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/admin")
 @RequiredArgsConstructor
 public class AdminController {
-    private final CreateNoticesUsecase createNoticesUsecase;
-    private final EditNoticesUsecase editNoticesUsecase;
+    private final CreateNoticeUsecase createNoticeUsecase;
+    private final EditNoticeUsecase editNoticeUsecase;
     private final RemoveNoticeUsecase removeNoticeUsecase;
 
     @PostMapping("/notices")
     public CommonResponseDto<?> createNotices(
-            @ModelAttribute CreateNoticesRequestDto createNoticesRequestDto
+            @ModelAttribute CreateNoticeRequestDto createNoticeRequestDto
     ){
-        return CommonResponseDto.ok(createNoticesUsecase.execute(createNoticesRequestDto));
+        return CommonResponseDto.ok(createNoticeUsecase.execute(createNoticeRequestDto));
     }
 
     @PatchMapping("/notices/{noticeId}")
-    public CommonResponseDto<?> editNotices(
+    public CommonResponseDto<?> editNotice(
             @PathVariable Long noticeId,
-            @ModelAttribute CreateNoticesRequestDto createNoticesRequestDto
+            @ModelAttribute CreateNoticeRequestDto createNoticeRequestDto
     ){
-        editNoticesUsecase.execute(noticeId,createNoticesRequestDto);
+        editNoticeUsecase.execute(noticeId,createNoticeRequestDto);
         return CommonResponseDto.created(true);
     }
 
     @DeleteMapping("/notices/{noticeId}")
-    public CommonResponseDto<?> deleteNotices(
+    public CommonResponseDto<?> deleteNotice(
             @PathVariable Long noticeId
     ){
         removeNoticeUsecase.execute(noticeId);

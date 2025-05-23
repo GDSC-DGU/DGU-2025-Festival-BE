@@ -1,15 +1,14 @@
 package gdg.festa.domain.repository;
 
-import gdg.festa.domain.entity.LostImages;
-import gdg.festa.domain.entity.Losts;
+import gdg.festa.domain.entity.LostImage;
+import gdg.festa.domain.entity.Lost;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface LostImageRepository {
-    void saveAll(List<LostImages> lostImages);
-    List<LostImages> findByLostsLostsId(Long lostsId);
-    List<LostImages> findByLosts(Losts losts);
-    void deleteByLosts(Losts losts);
-    List<LostImages> findByLostsAndDeletedAtIsNull(Losts losts);
+    void saveAll(List<LostImage> lostImages);
+    //List<LostImage> findByLostId(Long lostId);
+    List<LostImage> findByLost(Lost lost);
+    void deleteByLost(Lost lost);
+    List<LostImage> findByLostAndDeletedAtIsNull(Lost lost);
 }
