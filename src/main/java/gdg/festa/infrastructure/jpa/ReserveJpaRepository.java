@@ -16,7 +16,7 @@ public interface ReserveJpaRepository extends JpaRepository<Reserves, UUID> {
     @Query("SELECT r "
             + "FROM Reserves r "
             + "where r.pubs = :pubs AND r.reserveStatus = :reserveStatus "
-            + "order by r.createdAt DESC "
+            + "order by r.createdAt ASC "
             + "limit 2")
     List<Reserves> findByPubsAndReserveStatus(Pubs pubs, ReserveStatus reserveStatus);
 }

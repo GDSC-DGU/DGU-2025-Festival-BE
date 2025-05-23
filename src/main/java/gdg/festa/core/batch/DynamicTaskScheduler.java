@@ -33,7 +33,7 @@ public class DynamicTaskScheduler {
 
     @Transactional
     public void scheduleSingleUserTask(Reserves reserves) {
-        LocalTime adjustedTime = LocalTime.from(LocalDateTime.now().plusMinutes(5));
+        LocalTime adjustedTime = LocalTime.from(LocalDateTime.now().plusMinutes(1));
         long delay = calculateDelay(adjustedTime);
 
         scheduleTask(reserves, delay);
@@ -43,6 +43,7 @@ public class DynamicTaskScheduler {
         ScheduledFuture<?> future = taskScheduler.schedule(
                 () -> {
                     Reserves checkReserves = reserveRepository.findById(reserves.getReserveId());
+                    System.err.println(checkReserves.getReserveStatus());
                     if ( checkReserves.getReserveStatus() == ReserveStatus.CALLED) {
                         checkReserves.updateStatus(ReserveStatus.LATE);
                     }
