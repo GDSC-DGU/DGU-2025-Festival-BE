@@ -1,15 +1,12 @@
 name: Java CI with Gradle & Docker Deploy
 
-#on:
-#  pull_request:
-#    types:
-#      - closed
-#    branches:
-#      - dev
 on:
-  push:
+  pull_request:
+    types:
+      - closed
     branches:
-      - git-action
+      - dev
+
       
 jobs:
   build-and-deploy:
