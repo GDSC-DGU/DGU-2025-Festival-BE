@@ -37,13 +37,17 @@ jobs:
             ${{ runner.os }}-gradle-
 
       # 4. make application.yml
-      - name: make application.yml
+      - name: make application.yml and firebase admin sdk
         run: |
-          mkdir -p ./src/main/resources
-          cd ./src/main/resources
-          touch ./application-local.yml
-          chmod 644 application-local.yml
-          echo ${{secrets.APPLICATION_YML}} | base64 --decode > ./application-local.yml
+          mkdir -p ./src/main/resources/firebase
+          
+          # Firebase Admin SDK 생성
+          echo "${{ secrets.FIREBASE_ADMIN_SDK }}" | base64 --decode > ./src/main/resources/firebase/dgu-spring-featival-firebase-adminsdk-fbsvc-31320e8980.json
+          
+          # application-local.yml 생성
+          echo "${{ secrets.APPLICATION_YML }}" | base64 --decode > ./src/main/resources/application-local.yml
+          chmod 644 ./src/main/resources/application-local.yml
+
 
        # 5. Build with Gradle 
       - name: Grant Execute Permission For Gradlew & Build gradle
@@ -68,8 +72,8 @@ jobs:
           tee Dockerfile << EOF
           FROM openjdk:17-jdk
           COPY ${{ env.JAR_FILE }} /app.jar
-          COPY src/main/resources/application.yml application.yml
-          ENV SPRING_CONFIG_LOCATION=application.yml
+          COPY src/main/resources/application-local.yml application-local.yml
+          ENV SPRING_CONFIG_LOCATION=application-local.yml
           EXPOSE 8080
           ENTRYPOINT ["java", "-jar", "/app.jar"]
           EOF
