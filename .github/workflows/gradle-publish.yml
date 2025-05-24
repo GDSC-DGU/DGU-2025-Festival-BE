@@ -76,8 +76,8 @@ jobs:
           tee Dockerfile << EOF
           FROM openjdk:17-jdk
           COPY ${{ env.JAR_FILE }} /app.jar
-          COPY src/main/resources/application.yml application.yml
-          ENV SPRING_CONFIG_LOCATION=application.yml
+          COPY src/main/resources/application-local.yml application-local.yml
+          ENV SPRING_CONFIG_LOCATION=application-local.yml
           EXPOSE 8080
           ENTRYPOINT ["java", "-jar", "/app.jar"]
           EOF
