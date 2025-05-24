@@ -76,7 +76,7 @@ jobs:
 
       # 8. Build Docker image
       - name: Build Docker image
-        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/gamzadev --platform linux/amd64 .
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/festa --platform linux/amd64 .
 
       # 9. Docker Hub login
       - name: Docker login
@@ -87,13 +87,13 @@ jobs:
 
       # 10. Push image to Docker Hub
       - name: Push to Docker Hub
-        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/gamzadev
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/festa
         
       # 11. Deploy to EC2
       - name: Deploy to EC2
         run: |
-          IMAGE=${{ secrets.DOCKERHUB_USERNAME }}/gamzadev:latest
-          CONTAINER_NAME=gamzadev_app
+          IMAGE=${{ secrets.DOCKERHUB_USERNAME }}/festa:latest
+          CONTAINER_NAME=festadev_app
           echo "${{ secrets.EC2_PRIVATE_KEY }}" > deploy_key.pem
           chmod 600 deploy_key.pem
       
