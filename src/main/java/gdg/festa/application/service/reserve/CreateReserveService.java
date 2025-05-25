@@ -1,10 +1,13 @@
 package gdg.festa.application.service.reserve;
 
 import gdg.festa.application.usecase.reserve.CreateReserveUseCase;
+import gdg.festa.core.exception.CustomException;
+import gdg.festa.core.exception.ErrorCode;
 import gdg.festa.domain.entity.Pub;
 import gdg.festa.domain.entity.Reserve;
 import gdg.festa.domain.repository.PubRepository;
 import gdg.festa.domain.repository.ReserveRepository;
+import gdg.festa.domain.type.ReserveStatus;
 import gdg.festa.presentation.request.reserve.CreateReserveRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,6 +21,12 @@ public class CreateReserveService implements CreateReserveUseCase {
     private final PubRepository pubRepository;
     @Override
     public Boolean execute(Long boothId, CreateReserveRequestDto createReserveRequestDto) {
+        if(reserveRepository.existsByPhoneNumberAndReserveStatus(createReserveRequestDto.phoneNumber(), ReserveStatus.WAITING))
+            throw new CustomException(ErrorCode.CONFLICT_RESERVE);
+
+        if(reserveRepository.existsByPhoneNumberAndReserveStatus(createReserveRequestDto.phoneNumber(), ReserveStatus.CALLED))
+            throw new CustomException(ErrorCode.CONFLICT_RESERVE);
+
         Reserve reserve = reserveRepository.findByPhoneNumberAndReserveStatus(createReserveRequestDto.phoneNumber());
 
         Pub pub = pubRepository.findById(boothId);

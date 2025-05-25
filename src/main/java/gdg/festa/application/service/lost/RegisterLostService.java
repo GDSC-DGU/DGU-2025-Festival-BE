@@ -12,7 +12,7 @@ import gdg.festa.domain.entity.LostImage;
 import gdg.festa.domain.entity.Lost;
 import gdg.festa.domain.repository.LostImageRepository;
 import gdg.festa.domain.repository.LostRepository;
-import gdg.festa.presentation.request.lost.LostRequestDto;
+import gdg.festa.presentation.request.lost.CreateLostRequestDto;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,12 +40,12 @@ public class RegisterLostService implements RegistLostUsecase {
     }
 
     @Override
-    public void execute(LostRequestDto lostRequestDto) {
+    public void execute(CreateLostRequestDto createLostRequestDto) {
 
-        List<String> imageUrls = s3Util.upload(lostRequestDto.images());
+        List<String> imageUrls = s3Util.upload(createLostRequestDto.images());
 
         Lost savelost;
-        Lost lost = lostMapper.toEntity(lostRequestDto);
+        Lost lost = lostMapper.toEntity(createLostRequestDto);
         try{
             savelost = lostRepository.save(lost);
         } catch (Exception e) {
