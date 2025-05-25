@@ -3,6 +3,7 @@ package gdg.festa.domain.repository;
 import gdg.festa.domain.entity.Pub;
 import gdg.festa.domain.entity.Reserve;
 
+import gdg.festa.domain.type.ReserveStatus;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,4 +28,5 @@ public interface ReserveRepository {
 
     List<Reserve> findByPubsAndReserveStatusAndOrderIn(Long pubsId, List<Integer> orders);
 
+    Boolean existsByPhoneNumberAndReserveStatus(String phoneNumber, ReserveStatus reserveStatus);
 }

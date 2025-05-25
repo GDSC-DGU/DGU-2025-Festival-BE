@@ -69,4 +69,6 @@ public interface ReserveJpaRepository extends JpaRepository<Reserve, UUID> {
             String reserveStatus,
             List<Integer> orders
     );
+
+    Boolean existsByPhoneNumberAndReserveStatus(String phoneNumber, ReserveStatus reserveStatus);
 }
