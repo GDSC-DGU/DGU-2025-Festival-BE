@@ -4,6 +4,7 @@ import gdg.festa.application.usecase.pubs.DeleteAdminReserveUseCase;
 import gdg.festa.core.util.FcmUtil;
 import gdg.festa.domain.entity.Reserve;
 import gdg.festa.domain.repository.ReserveRepository;
+import gdg.festa.domain.type.ReserveStatus;
 import gdg.festa.presentation.request.reserve.CompletedReserveRequestDto;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +24,7 @@ public class DeleteAdminReserveService implements DeleteAdminReserveUseCase {
 
         Long currentPeople = reserve.getPub().getWaitPeople();
         reserve.getPub().updateWaitPeople(currentPeople);
-
-        reserve.deleteReserve();
+        reserve.updateStatus(ReserveStatus.CANCELED);
 
         fcmUtil.sendMessage(
                 reserve.getPub().getName() + " 대기자 취소알림  ",
