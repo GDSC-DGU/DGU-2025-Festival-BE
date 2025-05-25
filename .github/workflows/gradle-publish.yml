@@ -1,0 +1,133 @@
+name: Java CI with Gradle & Docker Deploy
+
+on:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - dev
+
+      
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      # 1. Checkout code
+      - uses: actions/checkout@v4
+
+      # 2. Set up JDK 17
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      # 3. Cache Gradle packages
+      - name: Cache Gradle packages
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      # 4. make application.yml
+      - name: make application.yml and firebase admin sdk
+        run: |
+          mkdir -p ./src/main/resources/firebase
+          
+          # Firebase Admin SDK 생성
+          echo "${{ secrets.FIREBASE_ADMIN_SDK }}" | base64 --decode > ./src/main/resources/firebase/dgu-spring-featival-firebase-adminsdk-fbsvc-31320e8980.json
+          
+          # application-local.yml 생성
+          echo "${{ secrets.APPLICATION_YML }}" | base64 --decode > ./src/main/resources/application-local.yml
+          chmod 644 ./src/main/resources/application-local.yml
+
+
+       # 5. Build with Gradle 
+      - name: Grant Execute Permission For Gradlew & Build gradle
+        run: |
+          gradle wrapper
+          chmod +x gradlew
+          ./gradlew clean build -x test 
+
+      # 6. Set JAR_FILE environment variable
+      - name: Set JAR_FILE env
+        run: |
+          mkdir -p build/libs
+          JAR_FILE=$(ls build/libs/*SNAPSHOT.jar | head -n1)
+          echo "JAR_FILE=$JAR_FILE" >> $GITHUB_ENV
+
+      - name: Check JAR manifest
+        run: unzip -p ${{ env.JAR_FILE }} META-INF/MANIFEST.MF
+
+      # 7. Generate Dockerfile
+      - name: Generate Dockerfile
+        run: |
+          tee Dockerfile << EOF
+          FROM openjdk:17-jdk
+          COPY ${{ env.JAR_FILE }} /app.jar
+          COPY src/main/resources/application-local.yml application-local.yml
+          ENV SPRING_CONFIG_LOCATION=application-local.yml
+          EXPOSE 8080
+          ENTRYPOINT ["java", "-jar", "/app.jar"]
+          EOF
+
+      # 8. Build Docker image
+      - name: Build Docker image
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/festa --platform linux/amd64 .
+
+      # 9. Docker Hub login
+      - name: Docker login
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      # 10. Push image to Docker Hub
+      - name: Push to Docker Hub
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/festa
+        
+      # 11. Deploy to EC2
+      - name: Deploy to EC2
+        run: |
+          IMAGE=${{ secrets.DOCKERHUB_USERNAME }}/festa:latest
+          CONTAINER_NAME=festadev_app
+          echo "${{ secrets.EC2_PRIVATE_KEY }}" > deploy_key.pem
+          chmod 600 deploy_key.pem
+      
+          ssh -i deploy_key.pem -o StrictHostKeyChecking=no \
+              ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} << EOF
+            REMOTE_IMAGE=${IMAGE}
+            REMOTE_CONTAINER_NAME=${CONTAINER_NAME}
+      
+            # 1) 포트 8080 노출 컨테이너 강제 종료·삭제
+            ALL_PORT_CONTAINERS=\$(sudo docker ps -aq --filter "publish=8080")
+            if [ -n "\$ALL_PORT_CONTAINERS" ]; then
+              echo "Found containers publishing 8080: \$ALL_PORT_CONTAINERS"
+              sudo docker rm -f \$ALL_PORT_CONTAINERS
+            else
+              echo "No containers publishing port 8080"
+            fi
+      
+            # 2) 혹시 남아있는 포트 점유 프로세스도 제거
+            if sudo fuser -k 8080/tcp; then
+              echo "Killed any process holding port 8080"
+            fi
+      
+            # 3) 이미지 풀 & 새 컨테이너 실행
+            sudo docker pull \${REMOTE_IMAGE}
+            sudo docker run -d \
+              --name \${REMOTE_CONTAINER_NAME} \
+              -p 8080:8080 \
+              --restart unless-stopped \
+              \${REMOTE_IMAGE}
+      
+            # 4) 사용하지 않는 이미지·볼륨 정리
+            sudo docker system prune -a -f --volumes
+          EOF

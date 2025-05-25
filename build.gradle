@@ -80,5 +80,5 @@ jar {
 }
 
 bootJar {
-	archiveFileName = 'peekaboo-0.0.1-SNAPSHOT.jar'
+	archiveFileName = 'gdg-0.0.1-SNAPSHOT.jar'
 }
