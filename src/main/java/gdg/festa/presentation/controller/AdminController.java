@@ -1,14 +1,16 @@
 package gdg.festa.presentation.controller;
 
-import gdg.festa.application.usecase.lost.EditLostUsecase;
 import gdg.festa.application.usecase.lost.RegistLostUsecase;
 import gdg.festa.application.usecase.lost.RemoveLostUsecase;
+import gdg.festa.application.usecase.lost.UpdateLostUsecase;
 import gdg.festa.application.usecase.notice.CreateNoticeUsecase;
-import gdg.festa.application.usecase.notice.EditNoticeUsecase;
+import gdg.festa.application.usecase.notice.UpdateNoticeUsecase;
 import gdg.festa.application.usecase.notice.RemoveNoticeUsecase;
 import gdg.festa.core.common.CommonResponseDto;
-import gdg.festa.presentation.request.lost.LostRequestDto;
+import gdg.festa.presentation.request.lost.CreateLostRequestDto;
+import gdg.festa.presentation.request.lost.UpdateLostRequestDto;
 import gdg.festa.presentation.request.notice.CreateNoticeRequestDto;
+import gdg.festa.presentation.request.notice.UpdateNoticeRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,9 +19,9 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AdminController {
     private final CreateNoticeUsecase createNoticeUsecase;
-    private final EditNoticeUsecase editNoticeUsecase;
+    private final UpdateNoticeUsecase updateNoticeUsecase;
     private final RemoveNoticeUsecase removeNoticeUsecase;
-    private final EditLostUsecase editLostUsecase;
+    private final UpdateLostUsecase updateLostUsecase;
     private final RemoveLostUsecase removeLostUsecase;
     private final RegistLostUsecase registLostUsecase;
 
@@ -30,12 +32,11 @@ public class AdminController {
         return CommonResponseDto.ok(createNoticeUsecase.execute(createNoticeRequestDto));
     }
 
-    @PatchMapping("/notices/{noticeId}")
-    public CommonResponseDto<?> editNotice(
-            @PathVariable Long noticeId,
-            @ModelAttribute CreateNoticeRequestDto createNoticeRequestDto
+    @PatchMapping("/notices")
+    public CommonResponseDto<?> updateNotice(
+            @ModelAttribute UpdateNoticeRequestDto updateNoticeRequestDto
     ){
-        editNoticeUsecase.execute(noticeId,createNoticeRequestDto);
+        updateNoticeUsecase.execute(updateNoticeRequestDto);
         return CommonResponseDto.created(true);
     }
 
@@ -49,19 +50,18 @@ public class AdminController {
 
     @PostMapping("/losts")
     public CommonResponseDto<?> LostsRegister(
-            @ModelAttribute LostRequestDto lostRequestDto
+            @ModelAttribute CreateLostRequestDto createLostRequestDto
     ){
-        registLostUsecase.execute(lostRequestDto);
+        registLostUsecase.execute(createLostRequestDto);
         return CommonResponseDto.created(true);
     }
 
 
-    @PatchMapping("/losts/{lostsId}")
+    @PatchMapping("/losts")
     public CommonResponseDto<?> editLostsItem(
-            @PathVariable Long lostsId,
-            @ModelAttribute LostRequestDto lostRequestDto
+            @ModelAttribute UpdateLostRequestDto updateLostRequestDto
     ) {
-        editLostUsecase.execute(lostsId, lostRequestDto);
+        updateLostUsecase.execute(updateLostRequestDto);
         return CommonResponseDto.created(true);
     }
 

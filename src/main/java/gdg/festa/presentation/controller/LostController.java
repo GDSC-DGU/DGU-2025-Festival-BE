@@ -1,18 +1,10 @@
 package gdg.festa.presentation.controller;
 
-import gdg.festa.application.usecase.lost.EditLostUsecase;
 import gdg.festa.application.usecase.lost.GetLostUsecase;
-import gdg.festa.application.usecase.lost.RegistLostUsecase;
-import gdg.festa.application.usecase.lost.RemoveLostUsecase;
 import gdg.festa.core.common.CommonResponseDto;
-import gdg.festa.presentation.request.lost.LostRequestDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 

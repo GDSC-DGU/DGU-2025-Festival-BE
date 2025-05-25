@@ -1,9 +1,9 @@
 package gdg.festa.application.usecase.lost;
 
 import gdg.festa.core.annotation.UseCase;
-import gdg.festa.presentation.request.lost.LostRequestDto;
+import gdg.festa.presentation.request.lost.CreateLostRequestDto;
 
 @UseCase
 public interface RegistLostUsecase {
-    void execute(LostRequestDto lostRequestDto);
+    void execute(CreateLostRequestDto createLostRequestDto);
 }

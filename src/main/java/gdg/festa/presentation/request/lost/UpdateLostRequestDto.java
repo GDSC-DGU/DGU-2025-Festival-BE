@@ -5,7 +5,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-public record LostRequestDto(
+public record UpdateLostRequestDto(
+        Long lostId,
         String title,
         String color,
         String brand,
@@ -13,11 +14,15 @@ public record LostRequestDto(
         String note,
         TagStatus tag,
         String category,
-        List<MultipartFile> images
+        List<MultipartFile> images, // 추가할 이미지
+        List<String> deleteUrls // 삭제할 이미지 url
 ) {
-    public LostRequestDto {
+    public UpdateLostRequestDto {
         if (images == null) {
             images = List.of(); // 불변 빈 리스트로 초기화
+        }
+        if (deleteUrls == null) {
+            deleteUrls = List.of(); // 불변 빈 리스트로 초기화
         }
     }
 }
