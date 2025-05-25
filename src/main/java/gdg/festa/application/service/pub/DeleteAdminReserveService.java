@@ -23,7 +23,10 @@ public class DeleteAdminReserveService implements DeleteAdminReserveUseCase {
         Reserve reserve = reserveRepository.findById(completedReserveRequestDto.reserveId());
 
         Long currentPeople = reserve.getPub().getWaitPeople();
-        reserve.getPub().updateWaitPeople(currentPeople);
+
+        if(reserve.getReserveStatus().equals(ReserveStatus.WAITING))
+            reserve.getPub().updateWaitPeople(currentPeople);
+
         reserve.updateStatus(ReserveStatus.CANCELED);
 
         fcmUtil.sendMessage(
