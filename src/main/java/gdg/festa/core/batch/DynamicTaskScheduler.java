@@ -41,7 +41,7 @@ public class DynamicTaskScheduler {
         ScheduledFuture<?> future = taskScheduler.schedule(
                 () -> {
                     Reserve checkReserve = reserveRepository.findById(reserve.getReserveId());
-                    if ( checkReserve.getReserveStatus() == ReserveStatus.CALLED) {
+                    if ( checkReserve.getReserveStatus().equals(ReserveStatus.CALLED)) {
                         checkReserve.updateStatus(ReserveStatus.LATE);
                     }
                 },
