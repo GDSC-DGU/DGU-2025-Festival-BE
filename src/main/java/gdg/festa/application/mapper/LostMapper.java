@@ -2,7 +2,7 @@ package gdg.festa.application.mapper;
 
 import gdg.festa.application.dto.lost.GetLostResponseDto;
 import gdg.festa.domain.entity.Lost;
-import gdg.festa.presentation.request.lost.LostRequestDto;
+import gdg.festa.presentation.request.lost.CreateLostRequestDto;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -10,15 +10,15 @@ import java.util.Collections;
 @Service
 public class LostMapper {
 
-    public Lost toEntity(LostRequestDto lostRequestDto) {
+    public Lost toEntity(CreateLostRequestDto createLostRequestDto) {
         return Lost.LostBuilder()
-                .title(lostRequestDto.title())
-                .color(lostRequestDto.color())
-                .brand(lostRequestDto.brand())
-                .location(lostRequestDto.location())
-                .note(lostRequestDto.note())
-                .tag(lostRequestDto.tag())
-                .category(lostRequestDto.category())
+                .title(createLostRequestDto.title())
+                .color(createLostRequestDto.color())
+                .brand(createLostRequestDto.brand())
+                .location(createLostRequestDto.location())
+                .note(createLostRequestDto.note())
+                .tag(createLostRequestDto.tag())
+                .category(createLostRequestDto.category())
                 .build();
     }
 
