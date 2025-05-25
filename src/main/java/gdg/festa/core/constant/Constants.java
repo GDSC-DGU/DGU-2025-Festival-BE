@@ -7,6 +7,8 @@ public final class Constants {
     public static final String AUTHORIZATION_HEADER = "Authorization";
     public static final String USER_ID_CLAIM_NAME = "userId";
     public static final String USER_ROLE_CLAIM_NAME = "userRole";
+    public static final String REDIS_LOST_KEY_PREFIX = "losts:";
+    public static final String REDIS_NOTICE_KEY_PREFIX = "notices:";
     public static final String CONTENT_TYPE = "Content-Type";
 
     // 인증이 필요 없는 URL
