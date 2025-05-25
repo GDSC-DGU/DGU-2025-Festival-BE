@@ -25,6 +25,8 @@ public class CalledReserveService implements CalledReserveUseCase {
         Long currentPeople = reserve.getPub().getWaitPeople();
         reserve.getPub().updateWaitPeople(currentPeople);
 
+        reserve.updateStatus(ReserveStatus.CALLED);
+
         fcmUtil.sendMessage(
                 reserve.getPub().getName() + " 주점 입장 가능 알림 ",
                 "5분내로 오셔야합니다.",
