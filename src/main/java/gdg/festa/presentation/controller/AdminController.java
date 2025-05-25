@@ -47,7 +47,7 @@ public class AdminController {
         return CommonResponseDto.created(true);
     }
 
-    @PostMapping("")
+    @PostMapping("/losts")
     public CommonResponseDto<?> LostsRegister(
             @ModelAttribute LostRequestDto lostRequestDto
     ){
@@ -56,7 +56,7 @@ public class AdminController {
     }
 
 
-    @PatchMapping("/{lostsId}")
+    @PatchMapping("/losts/{lostsId}")
     public CommonResponseDto<?> editLostsItem(
             @PathVariable Long lostsId,
             @ModelAttribute LostRequestDto lostRequestDto
@@ -66,7 +66,7 @@ public class AdminController {
     }
 
 
-    @DeleteMapping("/{lostsId}")
+    @DeleteMapping("/losts/{lostsId}")
     public CommonResponseDto<?> removeLostsItem(
             @PathVariable Long lostsId
     ) {
