@@ -1,6 +1,7 @@
 package gdg.festa.presentation.controller;
 
 import gdg.festa.application.dto.pub.ReadPubWaitingUserListResponseDto;
+import gdg.festa.application.usecase.pubs.DeleteAdminReserveUseCase;
 import gdg.festa.application.usecase.pubs.ReadAdminPubUsecase;
 import gdg.festa.application.usecase.pubs.ReadPubsUsecase;
 import gdg.festa.application.usecase.pubs.UpdatePubUsecase;
@@ -10,6 +11,7 @@ import gdg.festa.core.annotation.UserId;
 import gdg.festa.core.common.CommonResponseDto;
 import gdg.festa.presentation.request.reserve.CompletedReserveRequestDto;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.sql.Delete;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -23,6 +25,7 @@ public class PubController {
     private final CompleteReserveUseCase completeReserveUseCase;
     private final ReadAdminPubUsecase readAdminPubUsecase;
     private final CalledReserveUseCase calledReserveUseCase;
+    private final DeleteAdminReserveUseCase deleteAdminReserveUseCase;
 
 
     @PatchMapping("/admin/pub")
@@ -53,6 +56,14 @@ public class PubController {
             @RequestBody CompletedReserveRequestDto completedReserveRequestDto
     ) {
         return CommonResponseDto.ok(calledReserveUseCase.execute(completedReserveRequestDto));
+    }
+
+    @DeleteMapping("/admin/pub")
+    public CommonResponseDto<?> reserveAdminDelete(
+            @UserId UUID adminId,
+            @RequestBody CompletedReserveRequestDto completedReserveRequestDto
+    ) {
+        return CommonResponseDto.ok(deleteAdminReserveUseCase.execute(completedReserveRequestDto, adminId));
     }
 
     @GetMapping("/admin/pub")

@@ -62,5 +62,9 @@ public class Reserve extends BaseEntity {
         this.reserveStatus = ReserveStatus.WAITING;
     }
 
+    public void deleteReserve() {
+        this.deletedAt = LocalDateTime.now();
+    }
+
 
 }
