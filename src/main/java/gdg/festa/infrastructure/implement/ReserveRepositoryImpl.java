@@ -65,5 +65,11 @@ public class ReserveRepositoryImpl implements ReserveRepository {
     public List<Reserve> findByPubsAndReserveStatusAndOrderIn(Long pubsId, List<Integer> orders) {
         return reserveJpaRepository.findByPubsAndReserveStatusAndOrderIn(pubsId, ReserveStatus.WAITING.name(), orders);
     }
+
+    @Override
+    public Boolean existsByPhoneNumberAndReserveStatus(String phoneNumber, ReserveStatus reserveStatus) {
+        return reserveJpaRepository.existsByPhoneNumberAndReserveStatus(phoneNumber, reserveStatus);
+    }
+
 }
 
