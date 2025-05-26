@@ -51,6 +51,10 @@ public enum ErrorCode {
     EMPTY_AUTHENTICATION("40301", HttpStatus.FORBIDDEN, "인증 토큰이 비었습니다."),
     ACCESS_DENIED_LEADER("40301", HttpStatus.FORBIDDEN, "당신은 리더가 아닙니다."),
     INVALID_ROLE("40303", HttpStatus.FORBIDDEN, "권한이 맞지 않습니다."),
+    NOT_YOUR_TURN("40304", HttpStatus.FORBIDDEN, "입장 대상자가 아닙니다."),
+    ACCESS_AVAILABLE("40305", HttpStatus.FORBIDDEN, "예약없이 입장이 가능합니다."),
+    ACCESS_STOP("40306", HttpStatus.FORBIDDEN, "부스가 운영을 중단하였습니다."),
+    NOT_YOUR_CALL("40307", HttpStatus.FORBIDDEN, "호출 대상자가 아닙니다."),
 
     /**
      * 404** Not Found

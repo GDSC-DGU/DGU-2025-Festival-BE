@@ -2,6 +2,8 @@ package gdg.festa.application.service.reserve;
 
 import gdg.festa.application.usecase.reserve.CalledReserveUseCase;
 import gdg.festa.core.batch.DynamicTaskScheduler;
+import gdg.festa.core.exception.CustomException;
+import gdg.festa.core.exception.ErrorCode;
 import gdg.festa.core.util.FcmUtil;
 import gdg.festa.domain.entity.Reserve;
 import gdg.festa.domain.repository.ReserveRepository;
@@ -21,6 +23,9 @@ public class CalledReserveService implements CalledReserveUseCase {
 
     public Boolean execute(CompletedReserveRequestDto completedReserveRequestDto) {
         Reserve reserve = reserveRepository.findById(completedReserveRequestDto.reserveId());
+
+        if(!reserve.getReserveStatus().name().equals("WAITING"))
+            throw new CustomException(ErrorCode.NOT_YOUR_CALL);
 
         Long currentPeople = reserve.getPub().getWaitPeople();
         reserve.getPub().updateWaitPeople(currentPeople);

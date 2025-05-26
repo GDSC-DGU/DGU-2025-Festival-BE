@@ -2,6 +2,8 @@ package gdg.festa.application.service.reserve;
 
 import gdg.festa.application.usecase.reserve.CompleteReserveUseCase;
 import gdg.festa.core.batch.DynamicTaskScheduler;
+import gdg.festa.core.exception.CustomException;
+import gdg.festa.core.exception.ErrorCode;
 import gdg.festa.core.util.FcmUtil;
 import gdg.festa.domain.entity.PubAdmin;
 import gdg.festa.domain.entity.Reserve;
@@ -28,14 +30,14 @@ public class CompleteReserveService implements CompleteReserveUseCase {
     public Boolean execute(UUID adminId, CompletedReserveRequestDto completedReserveRequestDto) {
         Reserve reserve = reserveRepository.findById(completedReserveRequestDto.reserveId());
 
+        if(!(reserve.getReserveStatus().name().equals("CALLED") || reserve.getReserveStatus().name().equals("LATE")))
+            throw new CustomException(ErrorCode.NOT_YOUR_TURN); // 입장 대상자가 아닙니다.
+
         reserve.updateStatus(ReserveStatus.COMPLETED);
-
-
 
         PubAdmin pubAdmin = pubAdminRepository.findById(adminId);
 
         List<Reserve> nextReserve = reserveRepository.findByPubsAndReserveStatus(pubAdmin.getPub());
-
         //fcm 근처에서 대기하십쇼
         nextReserve.forEach(
                 reserves1 -> fcmUtil.sendMessage(
