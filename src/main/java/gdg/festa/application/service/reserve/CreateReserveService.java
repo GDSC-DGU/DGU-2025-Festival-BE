@@ -21,6 +21,13 @@ public class CreateReserveService implements CreateReserveUseCase {
     private final PubRepository pubRepository;
     @Override
     public Boolean execute(Long boothId, CreateReserveRequestDto createReserveRequestDto) {
+        Pub pub = pubRepository.findById(boothId);
+        if(pub.getPubStatus().name().equals("AVAILABLE"))
+            throw new CustomException(ErrorCode.SERVER_ERROR); // 예약없이 입장이 가능합니다.
+
+        if(pub.getPubStatus().name().equals("END") || pub.getPubStatus().name().equals("PREPARING"))
+            throw new CustomException(ErrorCode.SERVER_ERROR); // 부스가 운영을 중단하였습니다.
+
         if(reserveRepository.existsByPhoneNumberAndReserveStatus(createReserveRequestDto.phoneNumber(), ReserveStatus.WAITING))
             throw new CustomException(ErrorCode.CONFLICT_RESERVE);
 
@@ -29,7 +36,7 @@ public class CreateReserveService implements CreateReserveUseCase {
 
         Reserve reserve = reserveRepository.findByPhoneNumberAndReserveStatus(createReserveRequestDto.phoneNumber());
 
-        Pub pub = pubRepository.findById(boothId);
+
 
         reserve.updateReserve(
                 createReserveRequestDto.attendance(),

@@ -55,7 +55,7 @@ public class SmsUtil {
                 .msg_type("sms")
                 .dest_phone(phoneNumber)
                 .send_phone(fromNumber)
-                .msg_body(randomNum)
+                .msg_body("Dirvana 인증번호 : " + randomNum)
                 .build();
 
     }
