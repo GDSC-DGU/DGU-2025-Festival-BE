@@ -92,8 +92,7 @@ public class UpdateReserveStateService implements UpdateReserveUsecase {
         List<Reserve> notifyList = switch (currentOrder) {
             case 1 -> reserveRepository.findByPubsAndReserveStatusAndOrderIn(pub.getPubId(), Arrays.asList(2, 3, 4));
             case 2 -> reserveRepository.findByPubsAndReserveStatusAndOrderIn(pub.getPubId(), Arrays.asList(3, 4));
-            case 3 ->
-                    reserveRepository.findByPubsAndReserveStatusAndOrderIn(pub.getPubId(), Collections.singletonList(4));
+            case 3 -> reserveRepository.findByPubsAndReserveStatusAndOrderIn(pub.getPubId(), Collections.singletonList(4));
             default -> Collections.emptyList();
         };
 
