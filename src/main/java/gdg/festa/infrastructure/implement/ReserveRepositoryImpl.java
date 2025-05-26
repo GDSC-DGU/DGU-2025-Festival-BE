@@ -34,8 +34,8 @@ public class ReserveRepositoryImpl implements ReserveRepository {
     }
 
     @Override
-    public Reserve findByPhoneNumberAndReserveStatus(String phoneNumber) {
-        return reserveJpaRepository.findByPhoneNumberAndReserveStatus(phoneNumber, ReserveStatus.ENABLED)
+    public Reserve findByPhoneNumberAndReserveStatus(String phoneNumber, ReserveStatus reserveStatus) {
+        return reserveJpaRepository.findByPhoneNumberAndReserveStatus(phoneNumber, reserveStatus)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_VERIFY));
     }
 

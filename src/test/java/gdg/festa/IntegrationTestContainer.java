@@ -64,9 +64,7 @@ public abstract class IntegrationTestContainer {
     protected static final Long BOOTH_FULL_ID = 2L; // 만석인 부스 ID
     protected static final Long BOOTH_PREPARING_ID = 3L; // 준비 중인 부스 ID
     protected static final Long BOOTH_END_ID = 4L; // 종료된 부스 ID
-
-
-
+    protected static final Long BOOTH_FULL_ID_2 = 5L; // 만석인 부스 ID 2
 
     @Container
     public static MySQLContainer<?> mySQLContainer =
@@ -84,10 +82,4 @@ public abstract class IntegrationTestContainer {
 
     }
 
-    // 커스텀 컨테이너 클래스들
-    public static class KMySQLContainer extends MySQLContainer<KMySQLContainer> {
-        public KMySQLContainer(DockerImageName dockerImageName) {
-            super(dockerImageName);
-        }
-    }
 }

@@ -1,6 +1,8 @@
 package gdg.festa.reserve;
 
 import gdg.festa.IntegrationTestContainer;
+import gdg.festa.core.exception.CustomException;
+import gdg.festa.core.exception.ErrorCode;
 import gdg.festa.domain.entity.Pub;
 import gdg.festa.domain.entity.Reserve;
 import gdg.festa.domain.type.PubStatus;
@@ -9,15 +11,23 @@ import gdg.festa.infrastructure.redis.SmsCertification;
 import gdg.festa.presentation.request.reserve.CreateReserveRequestDto;
 import gdg.festa.presentation.request.sms.SmsVerifyRequestDto;
 import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.MySQLContainer;
+import org.testcontainers.junit.jupiter.Container;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 
@@ -29,6 +39,9 @@ public class ReserveIntegrationTest extends IntegrationTestContainer {
     @MockitoBean
     private SmsCertification smsCertification;
 
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
     @BeforeEach
     public void setUp() {
         // 인증 키가 존재한다고 하고, 발급 번호도 일치하도록 stub
@@ -39,8 +52,11 @@ public class ReserveIntegrationTest extends IntegrationTestContainer {
 
     @AfterEach
     public void tearDown() {
-        reserveRepository.deleteAll();
-        pubRepository.deleteAll();
+        // Truncate tables to reset AUTO_INCREMENT sequences
+        jdbcTemplate.execute("SET FOREIGN_KEY_CHECKS = 0");
+        jdbcTemplate.execute("TRUNCATE TABLE reserves");
+        jdbcTemplate.execute("TRUNCATE TABLE pubs");
+        jdbcTemplate.execute("SET FOREIGN_KEY_CHECKS = 1");
     }
 
     @Test
@@ -49,6 +65,11 @@ public class ReserveIntegrationTest extends IntegrationTestContainer {
         // given
         makeExamplePubs();
         Reserve reserve = verifyUser();
+
+        pubRepository.findAll().forEach(pub -> {
+            System.out.println(pub.getPubId() + " " + pub.getPubStatus());
+        });
+
         // when
         createReserveUseCase.execute(
                 BOOTH_FULL_ID,
@@ -64,18 +85,45 @@ public class ReserveIntegrationTest extends IntegrationTestContainer {
         assertThat(reserve.getReserveStatus()).isEqualTo(ReserveStatus.WAITING);
         assertThat(reserve.getPub().getWaitPeople())
                 .isGreaterThan(0L)
-                .isEqualTo( 1L);
+                .isEqualTo(1L);
         assertThat(reserve.getPub().getPubStatus()).isEqualTo(PubStatus.FULL);
     }
 
     @Test
     @DisplayName("어느 야간 부스에 예약을 이미 한 사용자는 해당 부스와 다른 부스에 다시 예약을 할 수 없다.")
     public void createReserveFailTest() {
-        // 예약 실패 테스트 로직 작성
-        // 예: createReserveUseCase.execute(boothId, requestDto);
-        // Assertions.assertThrows(AlreadyReservedException.class, () -> {
-        //     createReserveUseCase.execute(boothId, requestDto);
-        // });
+        // given
+        makeExamplePubs();
+        Reserve reserve = verifyUser();
+
+        pubRepository.findAll().forEach(pub -> {
+            System.out.println(pub.getPubId() + " " + pub.getPubStatus());
+        });
+
+        createReserveUseCase.execute(
+                BOOTH_FULL_ID,
+                new CreateReserveRequestDto(
+                        TEST_USER_BROWSER_TOKEN,
+                        TEST_USER_PHONE,
+                        TEST_USER_NAME,
+                        5L
+                )
+        );
+
+        // when
+        CustomException exception = assertThrows(CustomException.class, () -> {
+            createReserveUseCase.execute(
+                    BOOTH_FULL_ID_2,
+                    new CreateReserveRequestDto(
+                            TEST_USER_BROWSER_TOKEN,
+                            TEST_USER_PHONE,
+                            TEST_USER_NAME,
+                            3L
+                    )
+            );
+        });
+
+        assertThat(exception.getMessage()).isEqualTo(ErrorCode.CONFLICT_RESERVE.getMessage());
     }
 
     @Test
@@ -242,6 +290,17 @@ public class ReserveIntegrationTest extends IntegrationTestContainer {
                 0L, // 대기 인원 수
                 PubStatus.END // 부스 상태
         ));
+
+        pubRepository.save(new Pub(
+                null,
+                "testBooth5",
+                "test location",
+                "test Menus",
+                "test picture",
+                "test Note",
+                0L, // 대기 인원 수
+                PubStatus.FULL // 부스 상태
+        ));
     }
 
 
@@ -259,4 +318,49 @@ public class ReserveIntegrationTest extends IntegrationTestContainer {
         return reserve;
     }
 
+    @Test
+    @DisplayName("사용자가 전화번호 인증을 하지 않은 경우 예약을 할 수 없다.")
+    public void createReserveFailWhenNotVerifiedTest() {
+        // given
+        makeExamplePubs();
+
+        // when
+        CustomException exception = assertThrows(CustomException.class, () -> {
+            createReserveUseCase.execute(
+                    BOOTH_FULL_ID,
+                    new CreateReserveRequestDto(
+                            TEST_USER_BROWSER_TOKEN,
+                            TEST_USER_PHONE,
+                            TEST_USER_NAME,
+                            5L
+                    )
+            );
+        });
+
+        // then
+        assertThat(exception.getMessage()).isEqualTo(ErrorCode.NOT_FOUND_VERIFY.getMessage());
+    }
+
+    @Test
+    @DisplayName("사용자가 전화번호 인증을 마치고, 다시 전화번호 인증을 하면 값이 추가되지 않는다.")
+    public void smsVertifyTwiceTest() {
+        // given
+        makeExamplePubs();
+        Reserve reserve = verifyUser();
+        reserveRepository.findById(reserve.getReserveId());
+
+        // when
+        Reserve noAddReserve = smsVertifyUseCase.execute(
+                new SmsVerifyRequestDto(
+                        TEST_USER_PHONE,
+                        TEST_CERTIFICATION_CODE,
+                        TEST_USER_BROWSER_TOKEN
+                )
+        );
+
+        assertThat(noAddReserve.getReserveId()).isEqualTo(reserve.getReserveId());
+    }
+
 }
+
+
