@@ -33,5 +33,14 @@ public class PubRepositoryImpl implements PubRepository {
         pubJpaRepository.decreseWaitPeople(id);
     }
 
+    @Override
+    public Pub save(Pub pub) {
+        return pubJpaRepository.saveAndFlush(pub);
+    }
+
+    @Override
+    public void deleteAll() {
+        pubJpaRepository.deleteAll();
+    }
 
 }

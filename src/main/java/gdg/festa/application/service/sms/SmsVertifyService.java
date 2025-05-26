@@ -21,7 +21,7 @@ public class SmsVertifyService implements SmsVertifyUseCase {
     private final SmsCertification smsCertification;
 
     @Override
-    public Boolean execute(SmsVerifyRequestDto smsVerifyRequestDto) {
+    public Reserve execute(SmsVerifyRequestDto smsVerifyRequestDto) {
         if (isVerify(smsVerifyRequestDto)) {
             throw new CustomException(ErrorCode.SMS_VERIFY_FAILED);
         }
@@ -33,13 +33,12 @@ public class SmsVertifyService implements SmsVertifyUseCase {
                 smsVerifyRequestDto.browserToken()
         );
 
-        reserveRepository.save(reserve);
+        return reserveRepository.save(reserve);
 
-        return true;
     }
 
 
-    private boolean isVerify(SmsVerifyRequestDto smsVerifyRequestDto) {
+    public boolean isVerify(SmsVerifyRequestDto smsVerifyRequestDto) {
         return !(smsCertification.hasKey(smsVerifyRequestDto.phoneNumber()) &&
                 smsCertification.getSmsCertification(smsVerifyRequestDto.phoneNumber())
                         .equals(smsVerifyRequestDto.certificationNumber()));

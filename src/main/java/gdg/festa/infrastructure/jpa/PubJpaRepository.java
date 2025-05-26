@@ -9,7 +9,10 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PubJpaRepository extends JpaRepository<Pub, Long> {
+
+    @Query("SELECT p FROM Pub p WHERE p.pubId = :id")
     Optional<Pub> findById(Long id);
+
     List<Pub> findAll();
 
     @Modifying(clearAutomatically = true)

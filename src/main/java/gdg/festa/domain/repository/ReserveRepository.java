@@ -12,7 +12,7 @@ public interface ReserveRepository {
 
     Reserve findByPhoneNumber(String number);
 
-    void save(Reserve reserve);
+    Reserve save(Reserve reserve);
 
     Reserve findByPhoneNumberAndReserveStatus(String phoneNumber);
 
@@ -32,4 +32,6 @@ public interface ReserveRepository {
     Boolean existsByPhoneNumberAndReserveStatus(String phoneNumber, ReserveStatus reserveStatus);
 
     void updateUserStatus(@Param("id") UUID id, @Param("status") ReserveStatus status);
+
+    void deleteAll();
 }

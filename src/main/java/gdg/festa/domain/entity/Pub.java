@@ -39,6 +39,17 @@ public class Pub {
     @Enumerated(EnumType.STRING)
     private PubStatus pubStatus;
 
+    public Pub(Long pubId, String name, String location, String menus, String picture, String note, Long waitPeople, PubStatus pubStatus) {
+        this.pubId = pubId;
+        this.name = name;
+        this.location = location;
+        this.menus = menus;
+        this.picture = picture;
+        this.note = note;
+        this.waitPeople = waitPeople;
+        this.pubStatus = pubStatus;
+    }
+
     public void updateState(PubStatus pubStatus) {
         this.pubStatus = pubStatus;
     }

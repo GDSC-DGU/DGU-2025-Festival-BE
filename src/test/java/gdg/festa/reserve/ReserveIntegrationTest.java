@@ -1,23 +1,71 @@
 package gdg.festa.reserve;
 
 import gdg.festa.IntegrationTestContainer;
+import gdg.festa.domain.entity.Pub;
+import gdg.festa.domain.entity.Reserve;
+import gdg.festa.domain.type.PubStatus;
+import gdg.festa.domain.type.ReserveStatus;
+import gdg.festa.infrastructure.redis.SmsCertification;
+import gdg.festa.presentation.request.reserve.CreateReserveRequestDto;
+import gdg.festa.presentation.request.sms.SmsVerifyRequestDto;
 import jakarta.transaction.Transactional;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
 
 @SpringBootTest
 @Rollback
 @Transactional
 public class ReserveIntegrationTest extends IntegrationTestContainer {
 
+    @MockitoBean
+    private SmsCertification smsCertification;
+
+    @BeforeEach
+    public void setUp() {
+        // 인증 키가 존재한다고 하고, 발급 번호도 일치하도록 stub
+        given(smsCertification.hasKey(anyString())).willReturn(true);
+        given(smsCertification.getSmsCertification(anyString()))
+                .willReturn(TEST_CERTIFICATION_CODE);
+    }
+
+    @AfterEach
+    public void tearDown() {
+        reserveRepository.deleteAll();
+        pubRepository.deleteAll();
+    }
+
     @Test
     @DisplayName("전화번호 인증을 마친 사용자는 만석인 야간 부스에 예약을 할 수 있다.")
     public void createReserveTest() {
-        // 예약 생성 테스트 로직 작성
-        // 예: createReserveUseCase.execute(boothId, requestDto);
-        // Assertions.assertTrue(result);
+        // given
+        makeExamplePubs();
+        Reserve reserve = verifyUser();
+        // when
+        createReserveUseCase.execute(
+                BOOTH_FULL_ID,
+                new CreateReserveRequestDto(
+                        TEST_USER_BROWSER_TOKEN,
+                        TEST_USER_PHONE,
+                        TEST_USER_NAME,
+                        5L
+                )
+        );
+
+        // then
+        assertThat(reserve.getReserveStatus()).isEqualTo(ReserveStatus.WAITING);
+        assertThat(reserve.getPub().getWaitPeople())
+                .isGreaterThan(0L)
+                .isEqualTo( 1L);
+        assertThat(reserve.getPub().getPubStatus()).isEqualTo(PubStatus.FULL);
     }
 
     @Test
@@ -107,9 +155,17 @@ public class ReserveIntegrationTest extends IntegrationTestContainer {
     }
 
     @Test
-    @DisplayName("관리자가 사용자를 대기 삭제하는 경우, 예약 상태가 CANCELED로 변경되고 대기 팀 수는 변하지 않는다.")
+    @DisplayName("관리자가 늦은 사용자를 대기 삭제하는 경우, 예약 상태가 CANCELED로 변경되고 대기 팀 수는 변하지 않는다.")
     public void deleteReserveDoesNotChangeWaitingTeamCountTest() {
         // 관리자가 대기 삭제 후 대기 팀 수가 변경되지 않는지 테스트 로직 작성
+        // 예: updateReserveUsecase.execute(number);
+        // Assertions.assertEquals(expectedWaitingCount, booth.getWaitingTeamCount());
+    }
+
+    @Test
+    @DisplayName("관리자가 예약 중인 사용자를 대기 삭제하는 경우, 예약 상태가 CANCELED로 변경되고 대기 팀 수가 감소한다.")
+    public void deleteReserveWhenWaitingTest() {
+        // 관리자가 대기 삭제 후 대기 팀 수 감소 테스트 로직 작성
         // 예: updateReserveUsecase.execute(number);
         // Assertions.assertEquals(expectedWaitingCount, booth.getWaitingTeamCount());
     }
@@ -142,5 +198,65 @@ public class ReserveIntegrationTest extends IntegrationTestContainer {
         // });
     }
 
+    private void makeExamplePubs() {
+        pubRepository.save(new Pub(
+                null,
+                "testBooth1",
+                "test location",
+                "test Menus",
+                "test picture",
+                "test Note",
+                0L, // 대기 인원 수
+                PubStatus.AVAILABLE // 부스 상태
+        ));
+
+        pubRepository.save(new Pub(
+                null,
+                "testBooth2",
+                "test location",
+                "test Menus",
+                "test picture",
+                "test Note",
+                0L, // 대기 인원 수
+                PubStatus.FULL // 부스 상태
+        ));
+
+        pubRepository.save(new Pub(
+                null,
+                "testBooth 3",
+                "test location",
+                "test Menus",
+                "test picture",
+                "test Note",
+                0L, // 대기 인원 수
+                PubStatus.PREPARING // 부스 상태
+        ));
+
+        pubRepository.save(new Pub(
+                null,
+                "testBooth 4",
+                "test location",
+                "test Menus",
+                "test picture",
+                "test Note",
+                0L, // 대기 인원 수
+                PubStatus.END // 부스 상태
+        ));
+    }
+
+
+    private Reserve verifyUser() {
+        Reserve reserve = smsVertifyUseCase.execute(
+                new SmsVerifyRequestDto(
+                        TEST_USER_PHONE,
+                        TEST_CERTIFICATION_CODE,
+                        TEST_USER_BROWSER_TOKEN
+                )
+        );
+
+        assertThat(reserve.getReserveStatus()).isEqualTo(ReserveStatus.ENABLED);
+
+        return reserve;
+    }
 
 }

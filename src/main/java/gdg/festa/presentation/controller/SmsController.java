@@ -22,7 +22,8 @@ public class SmsController {
     public CommonResponseDto<?> verify(
             @RequestBody SmsVerifyRequestDto smsVerifyRequestDto
     ) {
-        return CommonResponseDto.ok(smsVertifyUseCase.execute(smsVerifyRequestDto));
+        smsVertifyUseCase.execute(smsVerifyRequestDto);
+        return CommonResponseDto.ok(true);
     }
 
     @PostMapping("/certify")
