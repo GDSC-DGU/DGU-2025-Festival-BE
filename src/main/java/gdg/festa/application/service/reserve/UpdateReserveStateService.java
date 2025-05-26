@@ -9,6 +9,8 @@ import gdg.festa.domain.entity.Reserve;
 import gdg.festa.domain.repository.PubRepository;
 import gdg.festa.domain.repository.ReserveRepository;
 import gdg.festa.domain.type.ReserveStatus;
+import gdg.festa.infrastructure.redis.SmsCertification;
+import gdg.festa.infrastructure.sms.SmsUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,6 +27,9 @@ public class UpdateReserveStateService implements UpdateReserveUsecase {
     private final ReserveRepository reserveRepository;
     private final PubRepository pubRepository;
     private final FcmUtil fcmUtil;
+
+    private final SmsUtil smsUtil;
+    private final SmsCertification smsCertification;
 
     @Override
     public Boolean execute(String number) {
@@ -94,6 +99,7 @@ public class UpdateReserveStateService implements UpdateReserveUsecase {
                     reserveRepository.findByPubsAndReserveStatusAndOrderIn(pub.getPubId(), Collections.singletonList(4));
             default -> Collections.emptyList();
         };
+        // ==========> 들어낼 부분
 
         notifyList.stream()
                 .forEach(reserve -> fcmUtil.sendMessage(
@@ -102,6 +108,18 @@ public class UpdateReserveStateService implements UpdateReserveUsecase {
                         reserve.getBrowserToken(),
                         reserve.getReserveId()
                 ));
+        // ==========> 들어낼 부분
+
+        notifyList.stream()
+                .forEach(reserve -> {
+                    String code = smsUtil.sendMessage(reserve.getPhoneNumber());
+                    if (code.isEmpty()) {
+                        throw new CustomException(ErrorCode.SMS_SEND_FAIL);
+                    }
+
+                    smsCertification.createSmsCertification(reserve.getPhoneNumber(), code);
+                });
+
 
 
         return true;

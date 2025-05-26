@@ -24,12 +24,12 @@ public interface ReserveJpaRepository extends JpaRepository<Reserve, UUID> {
     @Query("SELECT r "
             + "FROM Reserve r "
             + "where r.pub = :pub AND r.reserveStatus = :reserveStatus "
-            + "order by r.createdAt ASC "
+            + "order by r.updatedAt ASC "
             + "limit 2")
     List<Reserve> findByPubAndReserveStatus(Pub pub, ReserveStatus reserveStatus);
 
     @Query("SELECT r FROM Reserve r WHERE r.pub.pubId = :pubId " +
-            "order by r.createdAt ASC")
+            "order by r.updatedAt ASC")
     List<Reserve> findAllByPubId(Long pubId);
 
     @Query("SELECT r "

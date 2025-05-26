@@ -10,6 +10,8 @@ import gdg.festa.domain.entity.Reserve;
 import gdg.festa.domain.repository.PubAdminRepository;
 import gdg.festa.domain.repository.ReserveRepository;
 import gdg.festa.domain.type.ReserveStatus;
+import gdg.festa.infrastructure.redis.SmsCertification;
+import gdg.festa.infrastructure.sms.SmsUtil;
 import gdg.festa.presentation.request.reserve.CompletedReserveRequestDto;
 import java.util.List;
 import java.util.UUID;
@@ -25,6 +27,8 @@ public class CompleteReserveService implements CompleteReserveUseCase {
     private final PubAdminRepository pubAdminRepository;
     private final FcmUtil fcmUtil;
     private final DynamicTaskScheduler dynamicTaskScheduler;
+    private final SmsUtil smsUtil;
+    private final SmsCertification smsCertification;
 
     @Override
     public Boolean execute(UUID adminId, CompletedReserveRequestDto completedReserveRequestDto) {
@@ -43,6 +47,7 @@ public class CompleteReserveService implements CompleteReserveUseCase {
             return true;
         }
 
+        // ==========> 들어낼 부분
         //fcm 근처에서 대기하십쇼
         nextReserve.forEach(
                 reserves1 -> fcmUtil.sendMessage(
@@ -52,6 +57,17 @@ public class CompleteReserveService implements CompleteReserveUseCase {
                         reserves1.getReserveId()
                 )
         );
+        // ==========> 들어낼 부분
+
+        nextReserve.stream()
+                .forEach(reserve1 -> {
+                    String code = smsUtil.sendMessage(reserve.getPhoneNumber());
+                    if (code.isEmpty()) {
+                        throw new CustomException(ErrorCode.SMS_SEND_FAIL);
+                    }
+                    smsCertification.createSmsCertification(reserve.getPhoneNumber(), code);
+                });
+
 
         return true;
 
