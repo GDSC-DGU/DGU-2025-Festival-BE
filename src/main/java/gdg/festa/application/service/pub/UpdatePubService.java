@@ -42,6 +42,7 @@ public class UpdatePubService implements UpdatePubUsecase {
         *  */
 
         pub.updateState(pubStatus);
+        pub.updateWaitPeopleZero();
 
         if (pubStatus == PubStatus.END) {
             List<Reserve> reserves = reserveRepository.findAllPubsAndReserveStatus(pub);
