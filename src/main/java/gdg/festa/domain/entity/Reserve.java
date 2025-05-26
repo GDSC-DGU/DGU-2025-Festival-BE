@@ -8,10 +8,12 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
+import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
 @Getter
 @NoArgsConstructor
+@DynamicUpdate
 @Table(name = "reserves")
 public class Reserve extends BaseEntity {
 
