@@ -9,6 +9,7 @@ import gdg.festa.domain.repository.PubAdminRepository;
 import gdg.festa.domain.repository.PubRepository;
 import gdg.festa.domain.repository.ReserveRepository;
 import gdg.festa.domain.type.PubStatus;
+import gdg.festa.domain.type.ReserveStatus;
 import gdg.festa.infrastructure.sms.SmsUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -45,10 +46,12 @@ public class UpdatePubService implements UpdatePubUsecase {
         if (pubStatus == PubStatus.END) {
             List<Reserve> reserves = reserveRepository.findAllPubsAndReserveStatus(pub);
             String message = pub.getName() + " 주점 휴식 알림 : 주점 측 사정으로 인해 잠시 운영이 중단됩니다.";
-            reserves.forEach(
-                    reserve -> smsUtil.sendMessage(reserve.getPhoneNumber(), message)
-            );
+            reserves.forEach(reserve -> {
+                reserve.updateStatus(ReserveStatus.CANCELED);
+                smsUtil.sendMessage(reserve.getPhoneNumber(), message);
+            });
         }
+
 
 //        fcmUtil.sendMessage(
 //                pub.getName() + " 주점 휴식 알림",
