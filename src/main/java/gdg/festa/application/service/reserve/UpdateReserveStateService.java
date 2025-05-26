@@ -67,7 +67,7 @@ public class UpdateReserveStateService implements UpdateReserveUsecase {
         // 대기 순번 - 하기
         Pub pub = reserves.getPub();
         pub.updateWaitPeople(pub.getWaitPeople());
-        pubRepository.decreseWaitPeople(pub.getPubId());
+        //pubRepository.decreseWaitPeople(pub.getPubId());
 
         // LATE인 사용자는 분기 종료
         if (status == ReserveStatus.LATE) {
@@ -92,8 +92,7 @@ public class UpdateReserveStateService implements UpdateReserveUsecase {
         List<Reserve> notifyList = switch (currentOrder) {
             case 1 -> reserveRepository.findByPubsAndReserveStatusAndOrderIn(pub.getPubId(), Arrays.asList(2, 3, 4));
             case 2 -> reserveRepository.findByPubsAndReserveStatusAndOrderIn(pub.getPubId(), Arrays.asList(3, 4));
-            case 3 ->
-                    reserveRepository.findByPubsAndReserveStatusAndOrderIn(pub.getPubId(), Collections.singletonList(4));
+            case 3 -> reserveRepository.findByPubsAndReserveStatusAndOrderIn(pub.getPubId(), Collections.singletonList(4));
             default -> Collections.emptyList();
         };
 
