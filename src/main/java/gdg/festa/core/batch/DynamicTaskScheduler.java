@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Date;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
@@ -41,7 +42,8 @@ public class DynamicTaskScheduler {
         ScheduledFuture<?> future = taskScheduler.schedule(
                 () -> {
                     Reserve checkReserve = reserveRepository.findById(reserve.getReserveId());
-                    if ( checkReserve.getReserveStatus().equals(ReserveStatus.CALLED)) {
+                    log.error(String.valueOf(checkReserve.getReserveStatus()));
+                    if (Objects.equals(String.valueOf(checkReserve.getReserveStatus()), ReserveStatus.CALLED.name())) {
                         checkReserve.updateStatus(ReserveStatus.LATE);
                     }
                 },
