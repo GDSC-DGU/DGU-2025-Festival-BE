@@ -6,6 +6,7 @@ import gdg.festa.domain.entity.Reserve;
 import gdg.festa.domain.type.ReserveStatus;
 import java.util.List;
 import java.util.UUID;
+import org.springframework.data.repository.query.Param;
 
 public interface ReserveRepository {
 
@@ -29,4 +30,6 @@ public interface ReserveRepository {
     List<Reserve> findByPubsAndReserveStatusAndOrderIn(Long pubsId, List<Integer> orders);
 
     Boolean existsByPhoneNumberAndReserveStatus(String phoneNumber, ReserveStatus reserveStatus);
+
+    void updateUserStatus(@Param("id") UUID id, @Param("status") ReserveStatus status);
 }

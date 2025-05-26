@@ -9,6 +9,7 @@ import gdg.festa.domain.type.ReserveStatus;
 import gdg.festa.infrastructure.jpa.ReserveJpaRepository;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -71,5 +72,9 @@ public class ReserveRepositoryImpl implements ReserveRepository {
         return reserveJpaRepository.existsByPhoneNumberAndReserveStatus(phoneNumber, reserveStatus);
     }
 
+    @Override
+    public void updateUserStatus(@Param("id") UUID id, @Param("status") ReserveStatus status) {
+        reserveJpaRepository.updateUserStatus(id, status);
+    }
 }
 
