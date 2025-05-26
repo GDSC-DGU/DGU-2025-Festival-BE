@@ -1,4 +1,4 @@
-package gdg.festa.application.service.Lost;
+package gdg.festa.application.service.lost;
 
 import gdg.festa.application.usecase.lost.UpdateLostUsecase;
 import gdg.festa.application.usecase.notice.UpdateNoticeUsecase;

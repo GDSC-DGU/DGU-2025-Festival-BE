@@ -24,6 +24,7 @@ public class ReadPubsService implements ReadPubsUsecase {
                 .map(pubs -> ReadPubsWaitingUserListResponseDto.builder()
                         .pubsId(pubs.getPubId())
                         .waitTeam(pubs.getWaitPeople())
+                        .status(pubs.getPubStatus())
                         .build())
                 .collect(Collectors.toList());
     }
