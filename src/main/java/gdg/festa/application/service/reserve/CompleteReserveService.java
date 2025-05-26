@@ -38,6 +38,11 @@ public class CompleteReserveService implements CompleteReserveUseCase {
         PubAdmin pubAdmin = pubAdminRepository.findById(adminId);
 
         List<Reserve> nextReserve = reserveRepository.findByPubsAndReserveStatus(pubAdmin.getPub());
+
+        if (nextReserve.isEmpty()){
+            return true;
+        }
+
         //fcm 근처에서 대기하십쇼
         nextReserve.forEach(
                 reserves1 -> fcmUtil.sendMessage(
