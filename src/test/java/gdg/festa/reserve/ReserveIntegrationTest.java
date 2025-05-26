@@ -1,6 +1,9 @@
 package gdg.festa.reserve;
 
 import gdg.festa.IntegrationTestContainer;
+import gdg.festa.application.dto.reserve.ReadReserveStateDto;
+import gdg.festa.application.service.reserve.UpdateReserveStateService;
+import gdg.festa.application.usecase.pubs.DeleteAdminReserveUseCase;
 import gdg.festa.core.exception.CustomException;
 import gdg.festa.core.exception.ErrorCode;
 import gdg.festa.core.util.FcmUtil;
@@ -42,6 +45,10 @@ public class ReserveIntegrationTest extends IntegrationTestContainer {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+    @Autowired
+    private UpdateReserveStateService updateReserveStateService;
+    @Autowired
+    private DeleteAdminReserveUseCase deleteAdminReserveUseCase;
 
     @BeforeEach
     public void setUp() {
@@ -67,7 +74,7 @@ public class ReserveIntegrationTest extends IntegrationTestContainer {
     public void createReserveTest() {
         // given
         makeExamplePubs();
-        Reserve reserve = verifyUser();
+        Reserve reserve = verifyUser(TEST_USER_PHONE);
 
         pubRepository.findAll().forEach(pub -> {
             System.out.println(pub.getPubId() + " " + pub.getPubStatus());
@@ -97,7 +104,7 @@ public class ReserveIntegrationTest extends IntegrationTestContainer {
     public void createReserveFailTest() {
         // given
         makeExamplePubs();
-        Reserve reserve = verifyUser();
+        Reserve reserve = verifyUser(TEST_USER_PHONE);
 
         pubRepository.findAll().forEach(pub -> {
             System.out.println(pub.getPubId() + " " + pub.getPubStatus());
@@ -134,7 +141,7 @@ public class ReserveIntegrationTest extends IntegrationTestContainer {
     public void cancelReserveTest() {
         // given
         makeExamplePubs();
-        Reserve reserve = verifyUser();
+        Reserve reserve = verifyUser(TEST_USER_PHONE);
         createReserveUseCase.execute(
                 BOOTH_FULL_ID,
                 new CreateReserveRequestDto(
@@ -149,7 +156,7 @@ public class ReserveIntegrationTest extends IntegrationTestContainer {
         updateReserveUsecase.execute(TEST_USER_PHONE);
 
         // when
-        Reserve newReserve = verifyUser();
+        Reserve newReserve = verifyUser(TEST_USER_PHONE);
 
         createReserveUseCase.execute(
                 BOOTH_FULL_ID_2,
@@ -174,7 +181,7 @@ public class ReserveIntegrationTest extends IntegrationTestContainer {
 
         // when
         updateReserveUsecase.execute(TEST_USER_PHONE);
-        Reserve newSecondReserve = verifyUser();
+        Reserve newSecondReserve = verifyUser(TEST_USER_PHONE);
 
         createReserveUseCase.execute(
                 BOOTH_FULL_ID,
@@ -203,7 +210,7 @@ public class ReserveIntegrationTest extends IntegrationTestContainer {
     public void createReserveSuccessWhenBoothAvailableTest() {
         // given
         makeExamplePubs();
-        Reserve reserve = verifyUser();
+        Reserve reserve = verifyUser(TEST_USER_PHONE);
         createReserveUseCase.execute(
                 BOOTH_FULL_ID,
                 new CreateReserveRequestDto(
@@ -216,7 +223,7 @@ public class ReserveIntegrationTest extends IntegrationTestContainer {
         assertThat(reserve.getReserveStatus()).isEqualTo(ReserveStatus.WAITING);
         updateReserveUsecase.execute(TEST_USER_PHONE);
         // when
-        Reserve newReserve = verifyUser();
+        Reserve newReserve = verifyUser(TEST_USER_PHONE);
         // then
         assertThat(newReserve.getReserveId()).isNotEqualTo(reserve.getReserveId());
         assertThat(newReserve.getReserveStatus()).isEqualTo(ReserveStatus.ENABLED);
@@ -224,11 +231,55 @@ public class ReserveIntegrationTest extends IntegrationTestContainer {
     }
 
     @Test
+    @DisplayName("예약 후 야간 부스에 입장한 사용자가 다시 휴대폰 인증을 시도하는 경우, 새로운 예약이 생성된다.")
+    public void createReserveSuccessAfterEnteringBoothTest() {
+        // given
+        // given
+        UUID pubAdminId = registerUseCase.execute(
+                new LoginRequestDto(
+                        PUB_ADMIN_LOGIN_ID,
+                        PUB_ADMIN_LOGIN_PASSWORD,
+                        "ADPUB"
+                )
+        );
+        makeExamplePubs();
+        Reserve reserve = verifyUser(TEST_USER_PHONE);
+        createReserveUseCase.execute(
+                BOOTH_FULL_ID,
+                new CreateReserveRequestDto(
+                        TEST_USER_BROWSER_TOKEN,
+                        TEST_USER_PHONE,
+                        TEST_USER_NAME,
+                        5L
+                )
+        );
+        assertThat(reserve.getReserveStatus()).isEqualTo(ReserveStatus.WAITING);
+        calledReserveUseCase.execute(new CompletedReserveRequestDto(
+                reserve.getReserveId()
+        ));
+        assertThat(reserve.getReserveStatus()).isEqualTo(ReserveStatus.CALLED);
+        completeReserveUseCase.execute(
+                pubAdminId,
+                new CompletedReserveRequestDto(
+                        reserve.getReserveId()
+                )
+        );
+        assertThat(reserve.getReserveStatus()).isEqualTo(ReserveStatus.COMPLETED);
+
+        // when
+        Reserve newReserve = verifyUser(TEST_USER_PHONE);
+
+        // then
+        assertThat(newReserve.getReserveId()).isNotEqualTo(reserve.getReserveId());
+        assertThat(newReserve.getReserveStatus()).isEqualTo(ReserveStatus.ENABLED);
+    }
+
+    @Test
     @DisplayName("예약을 원하는 부스가 바로 입장 가능한 상태라면 예약을 할 수 없다.")
     public void createReserveFailWhenBoothAvailableTest() {
         // given
         makeExamplePubs();
-        Reserve reserve = verifyUser();
+        Reserve reserve = verifyUser(TEST_USER_PHONE);
 
         // when
         CustomException exception = assertThrows(CustomException.class, () -> {
@@ -252,7 +303,7 @@ public class ReserveIntegrationTest extends IntegrationTestContainer {
     public void createReserveSuccessWhenBoothFullTest() {
         // given
         makeExamplePubs();
-        Reserve reserve = verifyUser();
+        Reserve reserve = verifyUser(TEST_USER_PHONE);
 
         // when
         createReserveUseCase.execute(
@@ -274,7 +325,7 @@ public class ReserveIntegrationTest extends IntegrationTestContainer {
     public void createReserveFailWhenBoothPreparingOrClosedTest() {
         // given
         makeExamplePubs();
-        Reserve reserve = verifyUser();
+        Reserve reserve = verifyUser(TEST_USER_PHONE);
 
         // when
         CustomException exception = assertThrows(CustomException.class, () -> {
@@ -298,7 +349,7 @@ public class ReserveIntegrationTest extends IntegrationTestContainer {
     public void createReserveFailWhenBoothEndTest() {
         // given
         makeExamplePubs();
-        Reserve reserve = verifyUser();
+        Reserve reserve = verifyUser(TEST_USER_PHONE);
 
         // when
         CustomException exception = assertThrows(CustomException.class, () -> {
@@ -322,7 +373,7 @@ public class ReserveIntegrationTest extends IntegrationTestContainer {
     public void reserveIncreasesWaitingTeamCountTest() {
         // given
         makeExamplePubs();
-        Reserve reserve = verifyUser();
+        Reserve reserve = verifyUser(TEST_USER_PHONE);
 
         // when
         createReserveUseCase.execute(
@@ -347,7 +398,7 @@ public class ReserveIntegrationTest extends IntegrationTestContainer {
     public void cancelReserveDecreasesWaitingTeamCountTest() {
         // given
         makeExamplePubs();
-        Reserve reserve = verifyUser();
+        Reserve reserve = verifyUser(TEST_USER_PHONE);
         createReserveUseCase.execute(
                 BOOTH_FULL_ID,
                 new CreateReserveRequestDto(
@@ -369,11 +420,12 @@ public class ReserveIntegrationTest extends IntegrationTestContainer {
     }
 
     @Test
-    @DisplayName("관리자가 사용자를 호출하는 경우 대기 팀 수가 감소하고 예약 상태가 CALLED로 변경된다.")
+    @DisplayName("관리자가 사용자를 호출하는 경우 대기 팀 수가 감소하고 예약 상태가 CALLED로 변경된다. " +
+            "이 작업은 예약이 WAITING 상태일 때만 가능하다.")
     public void calledReserveDecreasesWaitingTeamCountTest() {
         // given
         makeExamplePubs();
-        Reserve reserve = verifyUser();
+        Reserve reserve = verifyUser(TEST_USER_PHONE);
         createReserveUseCase.execute(
                 BOOTH_FULL_ID,
                 new CreateReserveRequestDto(
@@ -409,7 +461,7 @@ public class ReserveIntegrationTest extends IntegrationTestContainer {
                 )
         );
         makeExamplePubs();
-        Reserve reserve = verifyUser();
+        Reserve reserve = verifyUser(TEST_USER_PHONE);
         createReserveUseCase.execute(
                 BOOTH_FULL_ID,
                 new CreateReserveRequestDto(
@@ -441,61 +493,244 @@ public class ReserveIntegrationTest extends IntegrationTestContainer {
     }
 
     @Test
-    @Disabled
     @DisplayName("관리자가 늦은 사용자를 입장 완료 처리하는 경우, 대기 팀 수는 변경되지 않고 예약 상태가 COMPLETED로 변경된다.")
     public void completeLateReserveDoesNotChangeWaitingTeamCountTest() {
-        // 늦은 사용자 입장 완료 처리 후 대기 팀 수가 변경되지 않는지 테스트 로직 작성
-        // 예: completeReserveUseCase.execute(number);
-        // Assertions.assertEquals(expectedWaitingCount, booth.getWaitingTeamCount());
+        // given
+        UUID pubAdminId = registerUseCase.execute(
+                new LoginRequestDto(
+                        PUB_ADMIN_LOGIN_ID,
+                        PUB_ADMIN_LOGIN_PASSWORD,
+                        "ADPUB"
+                )
+        );
+        makeExamplePubs();
+        Reserve reserve = verifyUser(TEST_USER_PHONE);
+        createReserveUseCase.execute(
+                BOOTH_FULL_ID,
+                new CreateReserveRequestDto(
+                        TEST_USER_BROWSER_TOKEN,
+                        TEST_USER_PHONE,
+                        TEST_USER_NAME,
+                        5L
+                )
+        );
+        assertThat(reserve.getReserveStatus()).isEqualTo(ReserveStatus.WAITING);
+        assertThat(reserve.getPub().getWaitPeople()).isEqualTo(1L);
+
+        calledReserveUseCase.execute(new CompletedReserveRequestDto(
+                reserve.getReserveId()));
+        assertThat(reserve.getReserveStatus()).isEqualTo(ReserveStatus.CALLED);
+        assertThat(reserve.getPub().getWaitPeople()).isEqualTo(0L);
+        updateReserveStateService.updateReserveStateToLate(reserve.getReserveId());
+
+        // when
+        completeReserveUseCase.execute(
+                pubAdminId,
+                new CompletedReserveRequestDto(
+                        reserve.getReserveId()
+                )
+        );
+
+        // then
+        assertThat(reserve.getReserveStatus()).isEqualTo(ReserveStatus.COMPLETED);
+        assertThat(reserve.getPub().getWaitPeople()).isEqualTo(0L);
     }
 
     @Test
-    @Disabled
     @DisplayName("관리자가 늦은 사용자를 대기 삭제하는 경우, 예약 상태가 CANCELED로 변경되고 대기 팀 수는 변하지 않는다.")
     public void deleteReserveDoesNotChangeWaitingTeamCountTest() {
-        // 관리자가 대기 삭제 후 대기 팀 수가 변경되지 않는지 테스트 로직 작성
-        // 예: updateReserveUsecase.execute(number);
-        // Assertions.assertEquals(expectedWaitingCount, booth.getWaitingTeamCount());
+        // given
+        UUID pubAdminId = registerUseCase.execute(
+                new LoginRequestDto(
+                        PUB_ADMIN_LOGIN_ID,
+                        PUB_ADMIN_LOGIN_PASSWORD,
+                        "ADPUB"
+                )
+        );
+        makeExamplePubs();
+        Reserve reserve = verifyUser(TEST_USER_PHONE);
+        createReserveUseCase.execute(
+                BOOTH_FULL_ID,
+                new CreateReserveRequestDto(
+                        TEST_USER_BROWSER_TOKEN,
+                        TEST_USER_PHONE,
+                        TEST_USER_NAME,
+                        5L
+                )
+        );
+        assertThat(reserve.getReserveStatus()).isEqualTo(ReserveStatus.WAITING);
+        assertThat(reserve.getPub().getWaitPeople()).isEqualTo(1L);
+
+        calledReserveUseCase.execute(new CompletedReserveRequestDto(
+                reserve.getReserveId()));
+        assertThat(reserve.getReserveStatus()).isEqualTo(ReserveStatus.CALLED);
+        assertThat(reserve.getPub().getWaitPeople()).isEqualTo(0L);
+        updateReserveStateService.updateReserveStateToLate(reserve.getReserveId());
+
+        // when
+        deleteAdminReserveUseCase.execute(
+                new CompletedReserveRequestDto(
+                        reserve.getReserveId()
+                ),
+                pubAdminId
+        );
+
+        // then
+        assertThat(reserve.getReserveStatus()).isEqualTo(ReserveStatus.CANCELED);
+        assertThat(reserve.getPub().getWaitPeople()).isEqualTo(0L);
     }
 
     @Test
-    @Disabled
-    @DisplayName("관리자가 예약 중인 사용자를 대기 삭제하는 경우, 예약 상태가 CANCELED로 변경되고 대기 팀 수가 감소한다.")
+    @DisplayName("관리자가 예약 중인 사용자를 대기 삭제하는 경우, 예약 상태가 CANCELED로 변경되고 대기 팀 수는 변하지 않는다.")
     public void deleteReserveWhenWaitingTest() {
-        // 관리자가 대기 삭제 후 대기 팀 수 감소 테스트 로직 작성
-        // 예: updateReserveUsecase.execute(number);
-        // Assertions.assertEquals(expectedWaitingCount, booth.getWaitingTeamCount());
+        // given
+        UUID pubAdminId = registerUseCase.execute(
+                new LoginRequestDto(
+                        PUB_ADMIN_LOGIN_ID,
+                        PUB_ADMIN_LOGIN_PASSWORD,
+                        "ADPUB"
+                )
+        );
+        makeExamplePubs();
+        Reserve reserve = verifyUser(TEST_USER_PHONE);
+        createReserveUseCase.execute(
+                BOOTH_FULL_ID,
+                new CreateReserveRequestDto(
+                        TEST_USER_BROWSER_TOKEN,
+                        TEST_USER_PHONE,
+                        TEST_USER_NAME,
+                        5L
+                )
+        );
+        assertThat(reserve.getReserveStatus()).isEqualTo(ReserveStatus.WAITING);
+        assertThat(reserve.getPub().getWaitPeople()).isEqualTo(1L);
+
+        calledReserveUseCase.execute(new CompletedReserveRequestDto(
+                reserve.getReserveId()));
+        assertThat(reserve.getReserveStatus()).isEqualTo(ReserveStatus.CALLED);
+        assertThat(reserve.getPub().getWaitPeople()).isEqualTo(0L);
+
+        // when
+        deleteAdminReserveUseCase.execute(
+                new CompletedReserveRequestDto(
+                        reserve.getReserveId()
+                ),
+                pubAdminId
+        );
+        // then
+        assertThat(reserve.getReserveStatus()).isEqualTo(ReserveStatus.CANCELED);
+        assertThat(reserve.getPub().getWaitPeople()).isEqualTo(0L);
     }
 
     @Test
-    @Disabled
     @DisplayName("사용자는 자신의 예약한 야간 부스에서의 자신의 대기 순번을 확인할 수 있다.")
     public void readReserveTest() {
-        // 자신의 예약한 야간 부스에서 대기 순번 확인 테스트 로직 작성
-        // 예: readReserveUsecase.execute(number);
-        // Assertions.assertEquals(expectedQueueNumber, reserve.getQueueNumber());
+        // given
+        makeExamplePubs();
+        Reserve reserve = verifyUser(TEST_USER_PHONE);
+        Reserve secondReserve = verifyUser("01099876543");
+        Reserve thirdReserve = verifyUser("01012341234");
+
+        createReserveUseCase.execute(
+                BOOTH_FULL_ID,
+                new CreateReserveRequestDto(
+                        TEST_USER_BROWSER_TOKEN,
+                        TEST_USER_PHONE,
+                        TEST_USER_NAME,
+                        5L
+                )
+        );
+        createReserveUseCase.execute(
+                BOOTH_FULL_ID,
+                new CreateReserveRequestDto(
+                        TEST_USER_BROWSER_TOKEN,
+                        "01099876543",
+                        TEST_USER_NAME,
+                        5L
+                )
+        );
+        createReserveUseCase.execute(
+                BOOTH_FULL_ID,
+                new CreateReserveRequestDto(
+                        TEST_USER_BROWSER_TOKEN,
+                        "01012341234",
+                        TEST_USER_NAME,
+                        5L
+                )
+        );
+        assertThat(reserve.getReserveStatus()).isEqualTo(ReserveStatus.WAITING);
+        assertThat(secondReserve.getReserveStatus()).isEqualTo(ReserveStatus.WAITING);
+        assertThat(thirdReserve.getReserveStatus()).isEqualTo(ReserveStatus.WAITING);
+        assertThat(reserve.getPub().getWaitPeople()).isEqualTo(3L);
+
+        // when
+        ReadReserveStateDto readReserve = readReserveUsecase.execute(TEST_USER_PHONE);
+
+        // then
+        assertThat(readReserve.reserveStatus()).isEqualTo(ReserveStatus.WAITING);
+        assertThat(readReserve.waitTeam()).isEqualTo(1L);
+
+        // when
+        ReadReserveStateDto thirdReadReserve = readReserveUsecase.execute("01012341234");
+        // then
+        assertThat(thirdReadReserve.reserveStatus()).isEqualTo(ReserveStatus.WAITING);
+        assertThat(thirdReadReserve.waitTeam()).isEqualTo(3L);
     }
 
     @Test
-    @Disabled
     @DisplayName("사용자가 예약 취소를 했다면 해당 부스에 대한 자신의 대기 순번을 확인할 수 없다.")
     public void readReserveAfterCancelTest() {
-        // 예약 취소 후 대기 순번 확인 시도 테스트 로직 작성
-        // 예: readReserveUsecase.execute(number);
-        // Assertions.assertThrows(NoSuchReserveException.class, () -> {
-        //     readReserveUsecase.execute(number);
-        // });
-    }
+        // given
+        makeExamplePubs();
+        Reserve reserve = verifyUser(TEST_USER_PHONE);
+        Reserve secondReserve = verifyUser("01099876543");
+        Reserve thirdReserve = verifyUser("01012341234");
 
-    @Test
-    @Disabled
-    @DisplayName("관리자가 대기자를 호출할 때, 해당 대기자는 예약을 취소하지 않은 WAITING 상태여야만 가능하다.")
-    public void calledReserveOnlyWhenWaitingTest() {
-        // 관리자가 대기자를 호출할 때 WAITING 상태인지 확인하는 테스트 로직 작성
-        // 예: calledReserveUseCase.execute(number);
-        // Assertions.assertThrows(InvalidReserveStatusException.class, () -> {
-        //     calledReserveUseCase.execute(number);
-        // });
+        createReserveUseCase.execute(
+                BOOTH_FULL_ID,
+                new CreateReserveRequestDto(
+                        TEST_USER_BROWSER_TOKEN,
+                        TEST_USER_PHONE,
+                        TEST_USER_NAME,
+                        5L
+                )
+        );
+        createReserveUseCase.execute(
+                BOOTH_FULL_ID,
+                new CreateReserveRequestDto(
+                        TEST_USER_BROWSER_TOKEN,
+                        "01099876543",
+                        TEST_USER_NAME,
+                        5L
+                )
+        );
+        createReserveUseCase.execute(
+                BOOTH_FULL_ID,
+                new CreateReserveRequestDto(
+                        TEST_USER_BROWSER_TOKEN,
+                        "01012341234",
+                        TEST_USER_NAME,
+                        5L
+                )
+        );
+        assertThat(reserve.getReserveStatus()).isEqualTo(ReserveStatus.WAITING);
+        assertThat(secondReserve.getReserveStatus()).isEqualTo(ReserveStatus.WAITING);
+        assertThat(thirdReserve.getReserveStatus()).isEqualTo(ReserveStatus.WAITING);
+        assertThat(reserve.getPub().getWaitPeople()).isEqualTo(3L);
+
+        ReadReserveStateDto secondReadReserve = readReserveUsecase.execute("01099876543");
+        assertThat(secondReadReserve.reserveStatus()).isEqualTo(ReserveStatus.WAITING);
+        assertThat(secondReadReserve.waitTeam()).isEqualTo(2L);
+
+        // when
+        updateReserveUsecase.execute("01099876543");
+        CustomException exception = assertThrows(CustomException.class, () -> {
+            ReadReserveStateDto secondReadReserveAfterCancel = readReserveUsecase.execute("01099876543");
+        });
+
+        // then
+        assertThat(exception.getMessage()).isEqualTo(ErrorCode.NOT_FOUND_RESERVE.getMessage());
+
     }
 
     @Test
@@ -526,7 +761,7 @@ public class ReserveIntegrationTest extends IntegrationTestContainer {
     public void smsVerifyTwiceTest() {
         // given
         makeExamplePubs();
-        Reserve reserve = verifyUser();
+        Reserve reserve = verifyUser(TEST_USER_PHONE);
         reserveRepository.findById(reserve.getReserveId());
 
         // when
@@ -598,10 +833,10 @@ public class ReserveIntegrationTest extends IntegrationTestContainer {
         ));
     }
 
-    private Reserve verifyUser() {
+    private Reserve verifyUser(String phoneNumber) {
         Reserve reserve = smsVertifyUseCase.execute(
                 new SmsVerifyRequestDto(
-                        TEST_USER_PHONE,
+                        phoneNumber,
                         TEST_CERTIFICATION_CODE,
                         TEST_USER_BROWSER_TOKEN
                 )
