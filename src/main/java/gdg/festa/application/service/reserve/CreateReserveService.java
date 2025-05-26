@@ -19,24 +19,27 @@ import org.springframework.transaction.annotation.Transactional;
 public class CreateReserveService implements CreateReserveUseCase {
     private final ReserveRepository reserveRepository;
     private final PubRepository pubRepository;
+
     @Override
     public Boolean execute(Long boothId, CreateReserveRequestDto createReserveRequestDto) {
         Pub pub = pubRepository.findById(boothId);
-        if(pub.getPubStatus().name().equals("AVAILABLE"))
+      
+        if (pub.getPubStatus().name().equals("AVAILABLE"))
             throw new CustomException(ErrorCode.ACCESS_AVAILABLE); // 예약없이 입장이 가능합니다.
 
-        if(pub.getPubStatus().name().equals("END") || pub.getPubStatus().name().equals("PREPARING"))
+        if (pub.getPubStatus().name().equals("END") || pub.getPubStatus().name().equals("PREPARING"))
+
             throw new CustomException(ErrorCode.ACCESS_STOP); // 부스가 운영을 중단하였습니다.
 
-        if(reserveRepository.existsByPhoneNumberAndReserveStatus(createReserveRequestDto.phoneNumber(), ReserveStatus.WAITING))
+        if (reserveRepository.existsByPhoneNumberAndReserveStatus(createReserveRequestDto.phoneNumber(), ReserveStatus.WAITING))
             throw new CustomException(ErrorCode.CONFLICT_RESERVE);
 
-        if(reserveRepository.existsByPhoneNumberAndReserveStatus(createReserveRequestDto.phoneNumber(), ReserveStatus.CALLED))
+        if (reserveRepository.existsByPhoneNumberAndReserveStatus(createReserveRequestDto.phoneNumber(), ReserveStatus.CALLED))
             throw new CustomException(ErrorCode.CONFLICT_RESERVE);
 
-        Reserve reserve = reserveRepository.findByPhoneNumberAndReserveStatus(createReserveRequestDto.phoneNumber());
-
-
+        Reserve reserve = reserveRepository.findByPhoneNumberAndReserveStatusIsEnabled(
+                createReserveRequestDto.phoneNumber()
+        );
 
         reserve.updateReserve(
                 createReserveRequestDto.attendance(),

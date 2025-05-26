@@ -10,11 +10,13 @@ import org.springframework.data.repository.query.Param;
 
 public interface ReserveRepository {
 
-    Reserve findByPhoneNumber(String number);
+    Reserve findByPhoneNumberAndReserveStatusIsEnabled(
+            String number
+    );
 
-    void save(Reserve reserve);
+    Reserve save(Reserve reserve);
 
-    Reserve findByPhoneNumberAndReserveStatus(String phoneNumber);
+    Reserve findByPhoneNumberAndReserveStatus(String phoneNumber, ReserveStatus reserveStatus);
 
     Reserve findById(UUID reserveId);
 
@@ -32,4 +34,8 @@ public interface ReserveRepository {
     Boolean existsByPhoneNumberAndReserveStatus(String phoneNumber, ReserveStatus reserveStatus);
 
     void updateUserStatus(@Param("id") UUID id, @Param("status") ReserveStatus status);
+
+    void deleteAll();
+
+    void flush();
 }

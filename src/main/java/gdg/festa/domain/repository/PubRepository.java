@@ -9,4 +9,8 @@ public interface PubRepository {
     List<Pub> findAll();
 
     void decreseWaitPeople(Long id);
+
+    Pub save(Pub pub);
+
+    void deleteAll();
 }

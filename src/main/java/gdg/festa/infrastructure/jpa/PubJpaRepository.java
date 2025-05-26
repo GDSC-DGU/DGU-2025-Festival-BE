@@ -9,12 +9,15 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PubJpaRepository extends JpaRepository<Pub, Long> {
+
+    @Query("SELECT p FROM Pub p WHERE p.pubId = :id")
     Optional<Pub> findById(Long id);
+
     List<Pub> findAll();
 
     @Modifying(clearAutomatically = true)
-    @Query(value = "UPDATE pubs SET wait_people = wait_people - 1 WHERE pubs_id = :id AND wait_people > 0",
+    @Query(value = "UPDATE pubs SET pub_wait_people = pub_wait_people - 1 WHERE pub_id = :id AND pub_wait_people > 0",
             nativeQuery = true)
-    void decreseWaitPeople(Long id);
+    void decreaseWaitPeople(Long id);
 
 }

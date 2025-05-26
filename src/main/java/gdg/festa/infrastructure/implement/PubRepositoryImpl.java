@@ -30,8 +30,17 @@ public class PubRepositoryImpl implements PubRepository {
 
     @Override
     public void decreseWaitPeople(Long id) {
-        pubJpaRepository.decreseWaitPeople(id);
+        pubJpaRepository.decreaseWaitPeople(id);
     }
 
+    @Override
+    public Pub save(Pub pub) {
+        return pubJpaRepository.saveAndFlush(pub);
+    }
+
+    @Override
+    public void deleteAll() {
+        pubJpaRepository.deleteAll();
+    }
 
 }

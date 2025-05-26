@@ -6,6 +6,7 @@ import gdg.festa.core.exception.CustomException;
 import gdg.festa.core.exception.ErrorCode;
 import gdg.festa.domain.entity.Reserve;
 import gdg.festa.domain.repository.ReserveRepository;
+import gdg.festa.domain.type.ReserveStatus;
 import gdg.festa.infrastructure.redis.SmsCertification;
 import gdg.festa.presentation.request.sms.SmsVerifyRequestDto;
 import lombok.RequiredArgsConstructor;
@@ -21,25 +22,34 @@ public class SmsVertifyService implements SmsVertifyUseCase {
     private final SmsCertification smsCertification;
 
     @Override
-    public Boolean execute(SmsVerifyRequestDto smsVerifyRequestDto) {
+    public Reserve execute(SmsVerifyRequestDto smsVerifyRequestDto) {
         if (isVerify(smsVerifyRequestDto)) {
             throw new CustomException(ErrorCode.SMS_VERIFY_FAILED);
         }
 
         smsCertification.deleteSmsCertification(smsVerifyRequestDto.phoneNumber());
 
+        // 이미 전화번호 인증을 마친 경우
+        if (reserveRepository.existsByPhoneNumberAndReserveStatus(
+                smsVerifyRequestDto.phoneNumber(), ReserveStatus.ENABLED
+        )) {
+            return reserveRepository.findByPhoneNumberAndReserveStatusIsEnabled(
+                    smsVerifyRequestDto.phoneNumber()
+            );
+        }
+
+        // 전화번호 인증을 처음 하는 경우
         Reserve reserve = reserveMapper.toEntity(
                 smsVerifyRequestDto.phoneNumber(),
                 smsVerifyRequestDto.browserToken()
         );
 
-        reserveRepository.save(reserve);
+        return reserveRepository.save(reserve);
 
-        return true;
     }
 
 
-    private boolean isVerify(SmsVerifyRequestDto smsVerifyRequestDto) {
+    public boolean isVerify(SmsVerifyRequestDto smsVerifyRequestDto) {
         return !(smsCertification.hasKey(smsVerifyRequestDto.phoneNumber()) &&
                 smsCertification.getSmsCertification(smsVerifyRequestDto.phoneNumber())
                         .equals(smsVerifyRequestDto.certificationNumber()));

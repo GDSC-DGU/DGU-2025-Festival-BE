@@ -29,7 +29,9 @@ public class UpdateReserveStateService implements UpdateReserveUsecase {
     @Override
     public Boolean execute(String number) {
 
-        Reserve reserves = reserveRepository.findByPhoneNumber(number);
+        Reserve reserves = reserveRepository.findByPhoneNumberAndReserveStatus(
+                number, ReserveStatus.WAITING
+        );
 
         /*  예약자가 예약을 취소하는 경우
          *  CANCELED 으로 바뀌는 경우, 대기 인원(-하고,) 해당 2,3순번에게 알람 전송하기
@@ -83,23 +85,23 @@ public class UpdateReserveStateService implements UpdateReserveUsecase {
         // 취소 처리
         reserves.updateStatus(ReserveStatus.CANCELED);
 
-
-
+        reserveRepository.save(reserves);
 
         List<Reserve> notifyList = switch (currentOrder) {
             case 1 -> reserveRepository.findByPubsAndReserveStatusAndOrderIn(pub.getPubId(), Arrays.asList(2, 3, 4));
             case 2 -> reserveRepository.findByPubsAndReserveStatusAndOrderIn(pub.getPubId(), Arrays.asList(3, 4));
-            case 3 -> reserveRepository.findByPubsAndReserveStatusAndOrderIn(pub.getPubId(), Collections.singletonList(4));
+            case 3 ->
+                    reserveRepository.findByPubsAndReserveStatusAndOrderIn(pub.getPubId(), Collections.singletonList(4));
             default -> Collections.emptyList();
         };
 
         notifyList.stream()
                 .forEach(reserve -> fcmUtil.sendMessage(
-                    pub.getName() + " 대기 순번 변경 알림",
-                    "앞 순서가 취소되어 대기 순번이 앞당겨졌습니다.",
-                    reserve.getBrowserToken(),
-                    reserve.getReserveId()
-            ));
+                        pub.getName() + " 대기 순번 변경 알림",
+                        "앞 순서가 취소되어 대기 순번이 앞당겨졌습니다.",
+                        reserve.getBrowserToken(),
+                        reserve.getReserveId()
+                ));
 
 
         return true;

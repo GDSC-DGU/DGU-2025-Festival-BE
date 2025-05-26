@@ -7,7 +7,9 @@ import gdg.festa.domain.entity.Reserve;
 import gdg.festa.domain.repository.ReserveRepository;
 import gdg.festa.domain.type.ReserveStatus;
 import gdg.festa.infrastructure.jpa.ReserveJpaRepository;
+
 import java.util.UUID;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -21,20 +23,20 @@ public class ReserveRepositoryImpl implements ReserveRepository {
     private final ReserveJpaRepository reserveJpaRepository;
 
     @Override
-    public Reserve findByPhoneNumber(String number) {
-        return reserveJpaRepository.findByPhoneNumber(number)
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
-    }
-
-    @Override
-    public void save(Reserve reserve) {
-        reserveJpaRepository.save(reserve);
-    }
-
-    @Override
-    public Reserve findByPhoneNumberAndReserveStatus(String phoneNumber) {
-        return reserveJpaRepository.findByPhoneNumberAndReserveStatus(phoneNumber, ReserveStatus.ENABLED)
+    public Reserve findByPhoneNumberAndReserveStatusIsEnabled(String number) {
+        return reserveJpaRepository.findByPhoneNumberAndReserveStatus(number, ReserveStatus.ENABLED)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_VERIFY));
+    }
+
+    @Override
+    public Reserve save(Reserve reserve) {
+        return reserveJpaRepository.save(reserve);
+    }
+
+    @Override
+    public Reserve findByPhoneNumberAndReserveStatus(String phoneNumber, ReserveStatus reserveStatus) {
+        return reserveJpaRepository.findByPhoneNumberAndReserveStatus(phoneNumber, reserveStatus)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_RESERVE));
     }
 
     @Override
@@ -50,8 +52,9 @@ public class ReserveRepositoryImpl implements ReserveRepository {
 
     @Override
     public List<Reserve> findAllByPubId(Long pubId) {
-        return reserveJpaRepository.findAllByPubId(pubId);}
-      
+        return reserveJpaRepository.findAllByPubId(pubId);
+    }
+
     @Override
     public List<Reserve> findAllPubsAndReserveStatus(Pub pub) {
         return reserveJpaRepository.findAllPubsAndReserveStatus(pub, ReserveStatus.WAITING);
@@ -75,6 +78,16 @@ public class ReserveRepositoryImpl implements ReserveRepository {
     @Override
     public void updateUserStatus(@Param("id") UUID id, @Param("status") ReserveStatus status) {
         reserveJpaRepository.updateUserStatus(id, status);
+    }
+
+    @Override
+    public void deleteAll() {
+        reserveJpaRepository.deleteAll();
+    }
+
+    @Override
+    public void flush() {
+        reserveJpaRepository.flush();
     }
 }
 
