@@ -14,7 +14,7 @@ public interface ReserveRepository {
 
     Reserve save(Reserve reserve);
 
-    Reserve findByPhoneNumberAndReserveStatus(String phoneNumber);
+    Reserve findByPhoneNumberAndReserveStatus(String phoneNumber, ReserveStatus reserveStatus);
 
     Reserve findById(UUID reserveId);
 

@@ -34,9 +34,9 @@ public class CreateReserveService implements CreateReserveUseCase {
         if(reserveRepository.existsByPhoneNumberAndReserveStatus(createReserveRequestDto.phoneNumber(), ReserveStatus.CALLED))
             throw new CustomException(ErrorCode.CONFLICT_RESERVE);
 
-        Reserve reserve = reserveRepository.findByPhoneNumberAndReserveStatus(createReserveRequestDto.phoneNumber());
-
-
+        Reserve reserve = reserveRepository.findByPhoneNumberAndReserveStatus(
+                createReserveRequestDto.phoneNumber(), ReserveStatus.ENABLED
+                );
 
         reserve.updateReserve(
                 createReserveRequestDto.attendance(),

@@ -6,6 +6,7 @@ import gdg.festa.core.exception.CustomException;
 import gdg.festa.core.exception.ErrorCode;
 import gdg.festa.domain.entity.Reserve;
 import gdg.festa.domain.repository.ReserveRepository;
+import gdg.festa.domain.type.ReserveStatus;
 import gdg.festa.infrastructure.redis.SmsCertification;
 import gdg.festa.presentation.request.sms.SmsVerifyRequestDto;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,17 @@ public class SmsVertifyService implements SmsVertifyUseCase {
 
         smsCertification.deleteSmsCertification(smsVerifyRequestDto.phoneNumber());
 
+        // 이미 전화번호 인증을 마친 경우
+        if (reserveRepository.existsByPhoneNumberAndReserveStatus(
+                smsVerifyRequestDto.phoneNumber(), ReserveStatus.ENABLED
+        )) {
+            return reserveRepository.findByPhoneNumberAndReserveStatus(
+                    smsVerifyRequestDto.phoneNumber(), ReserveStatus.ENABLED
+            );
+
+        }
+
+        // 전화번호 인증을 처음 하는 경우
         Reserve reserve = reserveMapper.toEntity(
                 smsVerifyRequestDto.phoneNumber(),
                 smsVerifyRequestDto.browserToken()
