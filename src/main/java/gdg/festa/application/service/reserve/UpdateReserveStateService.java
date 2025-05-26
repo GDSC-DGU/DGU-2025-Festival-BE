@@ -67,7 +67,7 @@ public class UpdateReserveStateService implements UpdateReserveUsecase {
         // 대기 순번 - 하기
         Pub pub = reserves.getPub();
         pub.updateWaitPeople(pub.getWaitPeople());
-        pubRepository.decreseWaitPeople(pub.getPubId());
+        //pubRepository.decreseWaitPeople(pub.getPubId());
 
         // LATE인 사용자는 분기 종료
         if (status == ReserveStatus.LATE) {
