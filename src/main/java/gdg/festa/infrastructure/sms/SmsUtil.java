@@ -49,20 +49,20 @@ public class SmsUtil {
         return randomNum;
     }
 
-    private SendSmsRequestDto makeBody(String phoneNumber, String randomNum) {
+    private SendSmsRequestDto makeBody(String phoneNumber, String message) {
         return SendSmsRequestDto.builder()
                 .token_key(apiSecret)
                 .msg_type("sms")
                 .dest_phone(phoneNumber)
                 .send_phone(fromNumber)
-                .msg_body("Dirvana 인증번호 : " + randomNum)
+                .msg_body(message)
                 .build();
 
     }
 
-    public String sendMessage(String phoneNumber) {
+    public void sendMessage(String phoneNumber, String message) {
         String response;
-        String randomNum = createRandomNumber();
+
         try {
             response = restClient.post()
                     .uri(url)
@@ -72,7 +72,43 @@ public class SmsUtil {
                         httpHeaders.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 // 수정
                     })
-                    .body(makeBody(phoneNumber, randomNum))
+                    .body(makeBody(phoneNumber, message))
+                    .retrieve()
+                    .toEntity(String.class)
+                    .getBody();
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            throw new CustomException(ErrorCode.EXTERNAL_SERVER_ERROR);
+        }
+        String code;
+        ObjectMapper objectMapper = new ObjectMapper();
+        log.error(response);
+        try{
+            JsonNode rootNode = objectMapper.readTree(response);
+            code = rootNode.get("code").asText();
+            if(!Objects.equals(code, "200"))
+                throw new CustomException(ErrorCode.SERVER_ERROR);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            throw new CustomException(ErrorCode.SERVER_ERROR);
+        }
+
+    }
+
+    public String sendMessageRandom(String phoneNumber) {
+        String response;
+        String randomNum = createRandomNumber();
+        String message = "Dirvana 인증번호 : " + randomNum;
+        try {
+            response = restClient.post()
+                    .uri(url)
+                    .headers(httpHeaders -> {
+                        httpHeaders.set("x-api-key", apiKey);
+                        httpHeaders.set("Content-Type", "application/json; charset=utf-8");
+                        httpHeaders.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+// 수정
+                    })
+                    .body(makeBody(phoneNumber, message))
                     .retrieve()
                     .toEntity(String.class)
                     .getBody();

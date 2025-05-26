@@ -48,7 +48,7 @@ public interface ReserveJpaRepository extends JpaRepository<Reserve, UUID> {
               SELECT pub_id FROM reserves
               WHERE reserve_phone_number = :phoneNumber
               AND reserve_state = :reserveStatus
-              ORDER BY created_at DESC
+              ORDER BY update_at ASC
               LIMIT 1
           )
     ) ranked
@@ -56,7 +56,7 @@ public interface ReserveJpaRepository extends JpaRepository<Reserve, UUID> {
         SELECT reserve_id FROM reserves
         WHERE reserve_phone_number = :phoneNumber
         AND reserve_state = :reserveStatus
-        ORDER BY created_at DESC
+        ORDER BY update_at ASC
         LIMIT 1
     )
     """, nativeQuery = true)

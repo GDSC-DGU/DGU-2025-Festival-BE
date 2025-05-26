@@ -10,6 +10,7 @@ import gdg.festa.domain.entity.Reserve;
 import gdg.festa.domain.repository.PubAdminRepository;
 import gdg.festa.domain.repository.ReserveRepository;
 import gdg.festa.domain.type.ReserveStatus;
+import gdg.festa.infrastructure.sms.SmsUtil;
 import gdg.festa.presentation.request.reserve.CompletedReserveRequestDto;
 import java.util.List;
 import java.util.UUID;
@@ -24,6 +25,7 @@ public class CompleteReserveService implements CompleteReserveUseCase {
     private final ReserveRepository reserveRepository;
     private final PubAdminRepository pubAdminRepository;
     private final FcmUtil fcmUtil;
+    private final SmsUtil smsUtil;
     private final DynamicTaskScheduler dynamicTaskScheduler;
 
     @Override
@@ -45,14 +47,19 @@ public class CompleteReserveService implements CompleteReserveUseCase {
 
         //fcm 근처에서 대기하십쇼
         nextReserve.forEach(
-                reserves1 -> fcmUtil.sendMessage(
-                        reserves1.getPub().getName() + " 주점 대기 번호 임박 알림 ",
-                        "대기 번호가 가까워 졌습니다. 부스 근처에서 대기해주세요.",
-                        reserves1.getBrowserToken(),
-                        reserves1.getReserveId()
-                )
+                reserves1 ->
+                    smsUtil.sendMessage(
+                            reserves1.getPhoneNumber(),
+                            reserves1.getPub().getName() + " 주점 대기 번호 임박 알림 : 대기 번호가 가까워 졌습니다. 부스 근처에서 대기해주세요."
+                    )
         );
 
+
+//        fcmUtil.sendMessage(
+//                reserves1.getPub().getName() + " 주점 대기 번호 임박 알림 ",
+//                "대기 번호가 가까워 졌습니다. 부스 근처에서 대기해주세요.",
+//                reserves1.getBrowserToken(),
+//                reserves1.getReserveId()
         return true;
 
     }

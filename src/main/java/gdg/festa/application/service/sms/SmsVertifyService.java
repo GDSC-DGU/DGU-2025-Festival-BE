@@ -40,8 +40,7 @@ public class SmsVertifyService implements SmsVertifyUseCase {
 
         // 전화번호 인증을 처음 하는 경우
         Reserve reserve = reserveMapper.toEntity(
-                smsVerifyRequestDto.phoneNumber(),
-                smsVerifyRequestDto.browserToken()
+                smsVerifyRequestDto.phoneNumber()
         );
 
         return reserveRepository.save(reserve);

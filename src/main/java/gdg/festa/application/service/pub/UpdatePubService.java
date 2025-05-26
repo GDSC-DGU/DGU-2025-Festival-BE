@@ -9,6 +9,7 @@ import gdg.festa.domain.repository.PubAdminRepository;
 import gdg.festa.domain.repository.PubRepository;
 import gdg.festa.domain.repository.ReserveRepository;
 import gdg.festa.domain.type.PubStatus;
+import gdg.festa.infrastructure.sms.SmsUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,7 @@ public class UpdatePubService implements UpdatePubUsecase {
     private final PubRepository pubRepository;
     private final ReserveRepository reserveRepository;
     private final FcmUtil fcmUtil;
+    private final SmsUtil smsUtil;
 
     @Override
     public Boolean execute(UUID id, String status) {
@@ -42,14 +44,17 @@ public class UpdatePubService implements UpdatePubUsecase {
 
         if (pubStatus == PubStatus.END) {
             List<Reserve> reserves = reserveRepository.findAllPubsAndReserveStatus(pub);
-            reserves.stream()
-                    .forEach(reserve -> fcmUtil.sendMessage(
-                            pub.getName() + " 주점 휴식 알림",
-                            "주점 측 사정으로 인해 잠시 운영이 중단됩니다.",
-                            reserve.getBrowserToken(),
-                            reserve.getReserveId()
-                    ));
+            String message = pub.getName() + " 주점 휴식 알림 : 주점 측 사정으로 인해 잠시 운영이 중단됩니다.";
+            reserves.forEach(
+                    reserve -> smsUtil.sendMessage(reserve.getPhoneNumber(), message)
+            );
         }
+
+//        fcmUtil.sendMessage(
+//                pub.getName() + " 주점 휴식 알림",
+//                "주점 측 사정으로 인해 잠시 운영이 중단됩니다.",
+//                reserve.getBrowserToken(),
+//                reserve.getReserveId()
 
         /*
          *  END 으로 바뀌는 경우, 대기 인원들 대기 정보 CANCELED로 수정하기
