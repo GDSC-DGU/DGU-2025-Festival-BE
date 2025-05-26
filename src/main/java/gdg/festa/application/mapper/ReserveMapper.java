@@ -6,10 +6,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class ReserveMapper {
 
-    public Reserve toEntity(String phoneNumber, String browserToken) {
+    public Reserve toEntity(String phoneNumber) {
         return Reserve.reservesBuilder()
                 .phoneNumber(phoneNumber)
-                .browserToken(browserToken)
                 .build();
     }
 }
