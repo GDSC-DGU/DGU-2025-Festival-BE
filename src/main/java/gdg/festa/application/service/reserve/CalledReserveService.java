@@ -34,7 +34,7 @@ public class CalledReserveService implements CalledReserveUseCase {
 
         fcmUtil.sendMessage(
                 reserve.getPub().getName() + " 주점 입장 가능 알림 ",
-                "5분내로 오셔야합니다.",
+                "지금 입장하실 수 있습니다. 10분 이내로 입장해 주세요.",
                 reserve.getBrowserToken(),
                 reserve.getReserveId()
         );
