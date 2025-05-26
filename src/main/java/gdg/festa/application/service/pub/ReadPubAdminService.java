@@ -32,6 +32,7 @@ public class ReadPubAdminService implements ReadAdminPubUsecase {
         List<ReserveInfo> reserveList = reserveQueryService.readAllReserveInfoOf(pubId);
 
         return ReadPubWaitingUserListResponseDto.builder()
+                .pubStatus(pubAdmin.getPub().getPubStatus().name())
                 .waitingTotalCount(reserveList.stream().filter(
                         reserveInfo -> reserveInfo.status().equals(ReserveStatus.WAITING)
                 ).count(
