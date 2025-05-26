@@ -54,6 +54,7 @@ public enum ErrorCode {
     NOT_YOUR_TURN("40304", HttpStatus.FORBIDDEN, "입장 대상자가 아닙니다."),
     ACCESS_AVAILABLE("40305", HttpStatus.FORBIDDEN, "예약없이 입장이 가능합니다."),
     ACCESS_STOP("40306", HttpStatus.FORBIDDEN, "부스가 운영을 중단하였습니다."),
+    NOT_YOUR_CALL("40307", HttpStatus.FORBIDDEN, "호출 대상자가 아닙니다."),
 
     /**
      * 404** Not Found
