@@ -24,12 +24,12 @@ public interface ReserveJpaRepository extends JpaRepository<Reserve, UUID> {
     @Query("SELECT r "
             + "FROM Reserve r "
             + "where r.pub = :pub AND r.reserveStatus = :reserveStatus "
-            + "order by r.createdAt ASC "
+            + "order by r.updatedAt ASC "
             + "limit 2")
     List<Reserve> findByPubAndReserveStatus(Pub pub, ReserveStatus reserveStatus);
 
     @Query("SELECT r FROM Reserve r WHERE r.pub.pubId = :pubId " +
-            "order by r.createdAt ASC")
+            "order by r.updatedAt ASC")
     List<Reserve> findAllByPubId(Long pubId);
 
     @Query("SELECT r "
@@ -41,14 +41,14 @@ public interface ReserveJpaRepository extends JpaRepository<Reserve, UUID> {
     SELECT ranking FROM (
         SELECT
             reserve_id,
-            ROW_NUMBER() OVER (ORDER BY created_at) AS ranking
+            ROW_NUMBER() OVER (ORDER BY updated_at) AS ranking
         FROM reserves
         WHERE reserve_state = :reserveStatus
           AND pub_id = (
               SELECT pub_id FROM reserves
               WHERE reserve_phone_number = :phoneNumber
               AND reserve_state = :reserveStatus
-              ORDER BY update_at ASC
+              ORDER BY updated_at ASC
               LIMIT 1
           )
     ) ranked
@@ -56,7 +56,7 @@ public interface ReserveJpaRepository extends JpaRepository<Reserve, UUID> {
         SELECT reserve_id FROM reserves
         WHERE reserve_phone_number = :phoneNumber
         AND reserve_state = :reserveStatus
-        ORDER BY update_at ASC
+        ORDER BY updated_at ASC
         LIMIT 1
     )
     """, nativeQuery = true)
@@ -65,7 +65,7 @@ public interface ReserveJpaRepository extends JpaRepository<Reserve, UUID> {
     @Query(value = """
     SELECT * FROM (
         SELECT *,
-               ROW_NUMBER() OVER (ORDER BY created_at) AS row_num
+               ROW_NUMBER() OVER (ORDER BY updated_at) AS row_num
         FROM reserves
         WHERE reserve_state = :reserveStatus
           AND pub_id = :pubId
