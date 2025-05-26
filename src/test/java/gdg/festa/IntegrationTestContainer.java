@@ -1,5 +1,6 @@
 package gdg.festa;
 
+import gdg.festa.application.usecase.auth.RegisterUseCase;
 import gdg.festa.application.usecase.reserve.*;
 import gdg.festa.application.usecase.sms.SmsCertifyUseCase;
 import gdg.festa.application.usecase.sms.SmsVertifyUseCase;
@@ -18,6 +19,8 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
+import java.util.UUID;
+
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -31,6 +34,9 @@ public abstract class IntegrationTestContainer {
 
     @Autowired
     protected CalledReserveUseCase calledReserveUseCase;
+
+    @Autowired
+    protected RegisterUseCase registerUseCase;
 
     @Autowired
     protected CompleteReserveUseCase completeReserveUseCase;
@@ -65,6 +71,8 @@ public abstract class IntegrationTestContainer {
     protected static final Long BOOTH_PREPARING_ID = 3L; // 준비 중인 부스 ID
     protected static final Long BOOTH_END_ID = 4L; // 종료된 부스 ID
     protected static final Long BOOTH_FULL_ID_2 = 5L; // 만석인 부스 ID 2
+    protected static final String PUB_ADMIN_LOGIN_ID = "testPubId"; // 관리자 ID
+    protected static final String PUB_ADMIN_LOGIN_PASSWORD = "testPubPassword"; // 관리자 비밀번호
 
     @Container
     public static MySQLContainer<?> mySQLContainer =

@@ -23,9 +23,9 @@ public class ReserveRepositoryImpl implements ReserveRepository {
     private final ReserveJpaRepository reserveJpaRepository;
 
     @Override
-    public Reserve findByPhoneNumber(String number) {
-        return reserveJpaRepository.findByPhoneNumber(number)
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
+    public Reserve findByPhoneNumberAndReserveStatusIsEnabled(String number) {
+        return reserveJpaRepository.findByPhoneNumberAndReserveStatus(number, ReserveStatus.ENABLED)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_VERIFY));
     }
 
     @Override
@@ -36,7 +36,7 @@ public class ReserveRepositoryImpl implements ReserveRepository {
     @Override
     public Reserve findByPhoneNumberAndReserveStatus(String phoneNumber, ReserveStatus reserveStatus) {
         return reserveJpaRepository.findByPhoneNumberAndReserveStatus(phoneNumber, reserveStatus)
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_VERIFY));
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_RESERVE));
     }
 
     @Override
@@ -83,6 +83,11 @@ public class ReserveRepositoryImpl implements ReserveRepository {
     @Override
     public void deleteAll() {
         reserveJpaRepository.deleteAll();
+    }
+
+    @Override
+    public void flush() {
+        reserveJpaRepository.flush();
     }
 }
 

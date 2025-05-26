@@ -85,6 +85,7 @@ public class UpdateReserveStateService implements UpdateReserveUsecase {
         // 취소 처리
         reserves.updateStatus(ReserveStatus.CANCELED);
 
+        reserveRepository.save(reserves);
 
         List<Reserve> notifyList = switch (currentOrder) {
             case 1 -> reserveRepository.findByPubsAndReserveStatusAndOrderIn(pub.getPubId(), Arrays.asList(2, 3, 4));

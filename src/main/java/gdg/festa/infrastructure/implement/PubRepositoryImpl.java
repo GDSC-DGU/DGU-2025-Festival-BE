@@ -30,7 +30,7 @@ public class PubRepositoryImpl implements PubRepository {
 
     @Override
     public void decreseWaitPeople(Long id) {
-        pubJpaRepository.decreseWaitPeople(id);
+        pubJpaRepository.decreaseWaitPeople(id);
     }
 
     @Override

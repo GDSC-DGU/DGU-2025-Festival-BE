@@ -15,6 +15,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -25,39 +27,35 @@ public class RegisterService implements RegisterUseCase {
     private final FestaAdminJpaRepository festaAdminJpaRepository;
 
     @Override
-    public Boolean execute(LoginRequestDto loginRequestDto) {
+    public UUID execute(LoginRequestDto loginRequestDto) {
         switch (ERole.valueOf(loginRequestDto.role().toUpperCase())) {
             case ADFESTA -> {
-                findAdFesta(loginRequestDto.loginId(), loginRequestDto.password());
-                break;
+                return findAdFesta(loginRequestDto.loginId(), loginRequestDto.password()).getFestaAdminId();
             }
             case ADPUB -> {
-                findAdPub(loginRequestDto.loginId(), loginRequestDto.password());
-                break;
+                return findAdPub(loginRequestDto.loginId(), loginRequestDto.password()).getPubAdminId();
             }
             default -> throw new CustomException(ErrorCode.INVALID_LOGIN_TYPE);
-        };
+        }
 
-        return true;
     }
 
-    private void findAdPub(String loginId, String password) {
+    private PubAdmin findAdPub(String loginId, String password) {
         PubAdmin pubAdmin = PubAdmin.builder()
                                 .loginId(loginId)
                                 .password(passwordEncoder.encode(password))
                                 .role(ERole.ADPUB)
                                 .build();
 
-        pubAdminJpaRepository.save(pubAdmin);
+        return pubAdminJpaRepository.save(pubAdmin);
     }
 
-    private void findAdFesta(String loginId, String password) {
+    private FestaAdmin findAdFesta(String loginId, String password) {
         FestaAdmin festaAdmin = FestaAdmin.builder()
                 .loginId(loginId)
                 .password(passwordEncoder.encode(password))
                 .role(ERole.ADFESTA)
                 .build();
-        festaAdminJpaRepository.save(festaAdmin);
-
+        return festaAdminJpaRepository.save(festaAdmin);
     }
 }

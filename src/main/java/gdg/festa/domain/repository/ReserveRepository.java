@@ -10,7 +10,9 @@ import org.springframework.data.repository.query.Param;
 
 public interface ReserveRepository {
 
-    Reserve findByPhoneNumber(String number);
+    Reserve findByPhoneNumberAndReserveStatusIsEnabled(
+            String number
+    );
 
     Reserve save(Reserve reserve);
 
@@ -34,4 +36,6 @@ public interface ReserveRepository {
     void updateUserStatus(@Param("id") UUID id, @Param("status") ReserveStatus status);
 
     void deleteAll();
+
+    void flush();
 }

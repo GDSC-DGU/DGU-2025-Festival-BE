@@ -15,6 +15,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface ReserveJpaRepository extends JpaRepository<Reserve, UUID> {
     Optional<Reserve> findByPhoneNumber(String phoneNumber);
+
+    @Query("SELECT r FROM Reserve r WHERE r.phoneNumber = :phoneNumber " +
+            "AND r.reserveStatus = :reserveStatus " +
+            "AND r.deletedAt IS NULL ")
     Optional<Reserve> findByPhoneNumberAndReserveStatus(String phoneNumber, ReserveStatus reserveStatus);
 
     @Query("SELECT r "
@@ -37,18 +41,18 @@ public interface ReserveJpaRepository extends JpaRepository<Reserve, UUID> {
         SELECT
             reserve_id,
             ROW_NUMBER() OVER (ORDER BY created_at) AS ranking
-        FROM reserve
+        FROM reserves
         WHERE reserve_state = :reserveStatus
           AND pub_id = (
-              SELECT pub_id FROM reserve
-              WHERE phone_number = :phoneNumber
+              SELECT pub_id FROM reserves
+              WHERE reserve_phone_number = :phoneNumber
               AND reserve_state = :reserveStatus
               ORDER BY created_at DESC
               LIMIT 1
           )
     ) ranked
     WHERE reserve_id = (
-        SELECT reserve_id FROM reserve
+        SELECT reserve_id FROM reserves
         WHERE reserve_phone_number = :phoneNumber
         AND reserve_state = :reserveStatus
         ORDER BY created_at DESC
@@ -61,7 +65,7 @@ public interface ReserveJpaRepository extends JpaRepository<Reserve, UUID> {
     SELECT * FROM (
         SELECT *,
                ROW_NUMBER() OVER (ORDER BY created_at) AS row_num
-        FROM reserve
+        FROM reserves
         WHERE reserve_state = :reserveStatus
           AND pub_id = :pubId
     ) AS ordered

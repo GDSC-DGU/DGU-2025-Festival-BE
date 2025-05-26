@@ -33,10 +33,9 @@ public class SmsVertifyService implements SmsVertifyUseCase {
         if (reserveRepository.existsByPhoneNumberAndReserveStatus(
                 smsVerifyRequestDto.phoneNumber(), ReserveStatus.ENABLED
         )) {
-            return reserveRepository.findByPhoneNumberAndReserveStatus(
-                    smsVerifyRequestDto.phoneNumber(), ReserveStatus.ENABLED
+            return reserveRepository.findByPhoneNumberAndReserveStatusIsEnabled(
+                    smsVerifyRequestDto.phoneNumber()
             );
-
         }
 
         // 전화번호 인증을 처음 하는 경우

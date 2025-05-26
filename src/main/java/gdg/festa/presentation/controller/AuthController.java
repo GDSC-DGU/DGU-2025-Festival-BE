@@ -28,6 +28,7 @@ public class AuthController {
     public CommonResponseDto<?> register(
             @RequestBody LoginRequestDto loginRequestDto
     ) {
-        return CommonResponseDto.ok(registerUseCase.execute(loginRequestDto));
+        registerUseCase.execute(loginRequestDto);
+        return CommonResponseDto.ok(true);
     }
 }

@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class FcmUtil {
 
-    public void sendMessage(String title, String body, String token, UUID workspaceId) {
+    public boolean sendMessage(String title, String body, String token, UUID workspaceId) {
         Map<String, String> putData = new HashMap<>();
         putData.put("workspaceId", String.valueOf(workspaceId));
         Message message = Message.builder()
@@ -38,6 +38,8 @@ public class FcmUtil {
             throw new CustomException(ErrorCode.SERVER_ERROR);
         }
         System.out.println("message " + response);
+
+        return true;
     }
 
 }
