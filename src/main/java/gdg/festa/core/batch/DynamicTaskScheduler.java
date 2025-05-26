@@ -32,7 +32,7 @@ public class DynamicTaskScheduler {
 
     @Transactional
     public void scheduleSingleUserTask(Reserve reserve) {
-        LocalTime adjustedTime = LocalTime.from(LocalDateTime.now().plusMinutes(5));
+        LocalTime adjustedTime = LocalTime.from(LocalDateTime.now().plusMinutes(1));
         long delay = calculateDelay(adjustedTime);
 
         scheduleTask(reserve, delay);
@@ -43,7 +43,7 @@ public class DynamicTaskScheduler {
                 () -> {
                     Reserve checkReserve = reserveRepository.findById(reserve.getReserveId());
                     log.error(String.valueOf(checkReserve.getReserveStatus()));
-                    if (Objects.equals(String.valueOf(checkReserve.getReserveStatus()), ReserveStatus.CALLED.name())) {
+                    if (checkReserve.getReserveStatus().name().equals("CALLED")) {
                         checkReserve.updateStatus(ReserveStatus.LATE);
                     }
                 },
