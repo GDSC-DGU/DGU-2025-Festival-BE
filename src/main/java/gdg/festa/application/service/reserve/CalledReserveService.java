@@ -34,7 +34,7 @@ public class CalledReserveService implements CalledReserveUseCase {
 
         reserve.updateStatus(ReserveStatus.CALLED);
 
-        String message = reserve.getPub().getName() + " 주점 입장 가능 알림 : 지금 입장하실 수 있습니다. 10분 이내로 입장해 주세요.";
+        String message = reserve.getPub().getName() + " 주점 입장 가능 알림 : 지금 입장하실 수 있습니다. 3분 이내로 입장해 주세요.";
         smsUtil.sendMessage(reserve.getPhoneNumber(), message);
 
 //        fcmUtil.sendMessage(
