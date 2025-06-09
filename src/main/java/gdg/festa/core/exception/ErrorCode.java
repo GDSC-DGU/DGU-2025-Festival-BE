@@ -27,6 +27,7 @@ public enum ErrorCode {
     INVALID_LABEL_TYPE("40014", HttpStatus.BAD_REQUEST, "잘못된 라벨 타입입니다."),
     NOT_FOUND_MISSION("40015", HttpStatus.BAD_REQUEST, "해당 미션을 찾을 수 없습니다."),
     NOT_SAVE_PROPER("40016",HttpStatus.BAD_REQUEST,"저장에 실패하였습니다"),
+    INVALID_RESERVE_TYPE("40017", HttpStatus.BAD_REQUEST, "잘못된 예약 타입입니다."),
 
     /**
      * 401** Unauthorized
@@ -94,7 +95,9 @@ public enum ErrorCode {
      */
     SERVER_ERROR("50000", HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 오류입니다."),
     SMS_SEND_FAIL("50102", HttpStatus.INTERNAL_SERVER_ERROR, "메세지 전송 실패"),
-    EXTERNAL_SERVER_ERROR("50101", HttpStatus.INTERNAL_SERVER_ERROR, "서버 외부 오류");
+    EXTERNAL_SERVER_ERROR("50101", HttpStatus.INTERNAL_SERVER_ERROR, "서버 외부 오류"),
+    ;
+
     private final String code;
     private final HttpStatus httpStatus;
     private final String message;

@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -113,6 +114,20 @@ public class UpdateReserveStateService implements UpdateReserveUsecase {
         return true;
     }
 
+    public Reserve updateReserveStateToLate(UUID reserveId) {
 
+        Reserve reserve = reserveRepository.findById(reserveId);
+
+        if (reserve == null) {
+            throw new CustomException(ErrorCode.NOT_FOUND_RESERVE);
+        }
+        if (reserve.getReserveStatus() != ReserveStatus.CALLED) {
+            throw new CustomException(ErrorCode.INVALID_RESERVE_TYPE);
+        }
+
+        reserve.updateStatus(ReserveStatus.LATE);
+
+        return reserveRepository.save(reserve);
+    }
 }
 
