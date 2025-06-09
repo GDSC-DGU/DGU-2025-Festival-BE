@@ -19,7 +19,7 @@ public class SmsCertifyService implements SmsCertifyUseCase {
 
     public Boolean execute(SmsCertifyRequestDto smsCertifyRequestDto) {
         String phone = smsCertifyRequestDto.phoneNumber();
-        String code = smsUtil.sendMessage(phone);
+        String code = smsUtil.sendMessageRandom(phone);
         if(code.isEmpty()){
             throw new CustomException(ErrorCode.SMS_SEND_FAIL);
         }

@@ -39,15 +39,11 @@ public class Reserve extends BaseEntity {
     @Column(name = "reserve_name")
     private String name;
 
-    @Column(name = "reserve_browser_token")
-    private String browserToken;
-
     @Builder(builderMethodName = "reservesBuilder")
-    public Reserve(String phoneNumber, String browserToken) {
+    public Reserve(String phoneNumber) {
         super(LocalDateTime.now(), LocalDateTime.now(), null);
         this.phoneNumber = phoneNumber;
         this.reserveStatus = ReserveStatus.ENABLED;
-        this.browserToken = browserToken;
     }
 
     public void updateStatus() {

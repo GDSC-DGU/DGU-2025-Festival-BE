@@ -25,6 +25,7 @@ public interface ReserveRepository {
   
     List<Reserve> findAllByPubId(Long pubId);
   
+    List<Reserve> findAllPubsAndReserveStatus(Pub pub, ReserveStatus reserveStatus);
     List<Reserve> findAllPubsAndReserveStatus(Pub pub);
 
     Integer findMyOrder(String phoneNumber);

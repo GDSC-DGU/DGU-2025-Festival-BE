@@ -9,6 +9,7 @@ import gdg.festa.domain.entity.Reserve;
 import gdg.festa.domain.repository.PubRepository;
 import gdg.festa.domain.repository.ReserveRepository;
 import gdg.festa.domain.type.ReserveStatus;
+import gdg.festa.infrastructure.sms.SmsUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,7 @@ public class UpdateReserveStateService implements UpdateReserveUsecase {
     private final ReserveRepository reserveRepository;
     private final PubRepository pubRepository;
     private final FcmUtil fcmUtil;
+    private final SmsUtil smsUtil;
 
     @Override
     public Boolean execute(String number) {
@@ -66,7 +68,7 @@ public class UpdateReserveStateService implements UpdateReserveUsecase {
         // 대기 순번 - 하기
         Pub pub = reserves.getPub();
         pub.updateWaitPeople(pub.getWaitPeople());
-        pubRepository.decreseWaitPeople(pub.getPubId());
+        //pubRepository.decreseWaitPeople(pub.getPubId());
 
         // LATE인 사용자는 분기 종료
         if (status == ReserveStatus.LATE) {
@@ -89,22 +91,26 @@ public class UpdateReserveStateService implements UpdateReserveUsecase {
         reserveRepository.save(reserves);
 
         List<Reserve> notifyList = switch (currentOrder) {
-            case 1 -> reserveRepository.findByPubsAndReserveStatusAndOrderIn(pub.getPubId(), Arrays.asList(2, 3, 4));
-            case 2 -> reserveRepository.findByPubsAndReserveStatusAndOrderIn(pub.getPubId(), Arrays.asList(3, 4));
-            case 3 ->
-                    reserveRepository.findByPubsAndReserveStatusAndOrderIn(pub.getPubId(), Collections.singletonList(4));
+            case 1 -> reserveRepository.findByPubsAndReserveStatusAndOrderIn(pub.getPubId(), Arrays.asList(1, 2, 3));
+            case 2 -> reserveRepository.findByPubsAndReserveStatusAndOrderIn(pub.getPubId(), Arrays.asList(2, 3));
+            case 3 -> reserveRepository.findByPubsAndReserveStatusAndOrderIn(pub.getPubId(), Collections.singletonList(3));
             default -> Collections.emptyList();
         };
 
-        notifyList.stream()
-                .forEach(reserve -> fcmUtil.sendMessage(
-                        pub.getName() + " 대기 순번 변경 알림",
-                        "앞 순서가 취소되어 대기 순번이 앞당겨졌습니다.",
-                        reserve.getBrowserToken(),
-                        reserve.getReserveId()
+        String message = pub.getName() + " 대기 순번 변경 알림 : 앞 순서가 취소되어 대기 순번이 앞당겨졌습니다.";
+        notifyList.forEach(reserve -> smsUtil.sendMessage(
+                        reserve.getPhoneNumber(),
+                        message
                 ));
 
 
+
+//        fcmUtil.sendMessage(
+//                pub.getName() + " 대기 순번 변경 알림",
+//                "앞 순서가 취소되어 대기 순번이 앞당겨졌습니다.",
+//                reserve.getBrowserToken(),
+//                reserve.getReserveId()
+//        )
         return true;
     }
 
